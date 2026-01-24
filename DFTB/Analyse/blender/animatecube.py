@@ -125,9 +125,7 @@ class cube:
         self.header=file.readline()
         self.header=self.header+" "+file.readline()
         line=file.readline().split()
-            self.natom=abs(int(line[0]))                                            # number of atoms
-            self.origin=[float(line[1]),float(line[2]),float(line[3])]        # origin of the cube file
-            line=file.readline().split()
+            self.natom=abs(int(line[0]))                                            # number of atoms self.origin=[float(line[1]),float(line[2]),float(line[3])]        # origin of the cube file line=file.readline().split()
             self.nx=int(line[0])                                                # number of points in the x-direction
             self.ivec=[float(line[1]),float(line[2]),float(line[3])]
         self.dx=math.sqrt(self.ivec[0]**2+self.ivec[1]**2+self.ivec[2]**2)
@@ -213,14 +211,12 @@ class cube2blender:
                             if (vec.length-distcovalent)<=0.10*distcovalent:
                                     me=Mesh.Primitives.Tube(32,stickradius,vec.length)
                         for face in me.faces:
-                        face.smooth=True
-                                    obj=self.scene.objects.new(me,'Cylinder')
+                        face.smooth=True obj=self.scene.objects.new(me,'Cylinder')
                                     axis=Mathutils.CrossVecs(Vector([0,0,1]),vec)
                                     angle=Mathutils.AngleBetweenVecs(Vector([0,0,1]),vec)
                                     rotmat=Mathutils.RotationMatrix(angle,4,"R",axis)
                                     obj.setMatrix(obj.matrix*rotmat)
-                    loc = (vec1+vec2)*0.5 + Mathutils.Vector(self.cursorXYZ)
-                                    obj.setLocation(loc)
+                    loc = (vec1+vec2)*0.5 + Mathutils.Vector(self.cursorXYZ) obj.setLocation(loc)
         
     def isosurface(self,cubeobject,isovalue):
             me = Mesh.New()
@@ -440,8 +436,7 @@ class GUI:
 
         elif event == EVENT_Button_Animate:
             filenamelist1=os.listdir(os.path.dirname(inputfile.val))
-            indexlist=[]
-                        name0 = os.path.basename(inputfile.val)
+            indexlist=[] name0 = os.path.basename(inputfile.val)
             for name in filenamelist1:
                                 print("File: %s" % name)
                                 if name[-5:] == ".cube" and name[:-9] == name0[:-9]:

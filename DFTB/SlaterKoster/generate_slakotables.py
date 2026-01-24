@@ -20,8 +20,7 @@ except ImportError as e:
         
 def slako_table(atom1,atom2):
     """write and plot Slater-Koster table for atom pair"""
-    print("-compute Slater-Koster integrals for atom pair %s-%s" )
-        % (atom_names[atom1.Z-1], atom_names[atom2.Z-1])
+    print("-compute Slater-Koster integrals for atom pair %s-%s" % (atom_names[atom1.Z-1], atom_names[atom2.Z-1]))
     dimer = AtomPair(atom1,atom2)
 
 #    slako_dir = "/tmp/"

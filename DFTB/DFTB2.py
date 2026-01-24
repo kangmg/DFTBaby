@@ -59,8 +59,7 @@ class SCFChargeInconsistency(Exception):
     pass
 
 class DFTB2(object):
-    def __init__(self, atomlist, parameter_set="homegrown",
-                 missing_reppots="error", 
+    def __init__(self, atomlist, parameter_set="homegrown", missing_reppots="error", 
                  reppot_paths="[]",
                  point_charges_xyz=None, initial_charge_guess=None,
                  save_converged_charges=None, verbose=1,
@@ -89,16 +88,14 @@ class DFTB2(object):
 
         Parameters:
         ===========
-        atomlist:  list of tuples (Zi, [xi,yi,zi])
-                   Zi is the atomic number of atom i
+        atomlist:  list of tuples (Zi, [xi,yi,zi]) Zi is the atomic number of atom i
                    [xi,yi,zi] is the cartesian position vector of atom i
         Parametrization.parameter_set:  
                    "homegrown" - my own parametrization
                    "hotbit"  - hotbit parameters
                    "mio" - mio-0-1 DFTB+ parameters set
         Parametrization.reppot_paths: list of additional search paths for repulsive potentials. Folders are searched for the repulsive potential modules `a_b.py` in the order: 1) any folder specified in `reppot_paths` 2) the default location for repulsive potentials, i.e. 'DFTB/RepulsivePotentials/reppot_tables/'.
-        Parametrization.missing_reppots: determines how missing reppots are treated,  
-                   "error" - stop program
+        Parametrization.missing_reppots: determines how missing reppots are treated, "error" - stop program
                    "dummy" - for the missing potential a dummy with Vrep=0 is used. Electronic spectra do not depend on the repulsive potentials, however optimizations and dynamics simulation will be nonsense with dummy potentials.
         Charges.point_charges_xyz: path to file with point charges which interact electrostatically with the molecular partial charges 
         Charges.initial_charge_guess: path to file with initial partial charges, on each line the partial charge for one atom should be given in the same order as in the xyz file
@@ -162,8 +159,7 @@ class DFTB2(object):
         self.mulliken_dipoles = mulliken_dipoles
         self.dispersion_correction = dispersion_correction
         if qmmm_partitioning != None:
-            self.qmmm = QMMM(atomlist, qmmm_partitioning, embedding=qmmm_embedding,
-                             pff_file=periodic_force_field, verbose=verbose)
+            self.qmmm = QMMM(atomlist, qmmm_partitioning, embedding=qmmm_embedding, pff_file=periodic_force_field, verbose=verbose)
             # filter the atomlist so that the rest of the DFTB
             # module only sees the QM part
             atomlist = self.qmmm.partitionGeometry(atomlist)
@@ -331,9 +327,7 @@ class DFTB2(object):
             for Zi in atomtypes:
                 orbital_energies = list(set([self.orbital_energies[Zi][(ni,li)] for (ni,li,mi) in self.valorbs[Zi]]))
                 orbital_energies.sort()
-                print(atom_names[Zi-1].ljust(3) + 16*" " + str(self.ne_val[Zi]).rjust(3) )
-                                   + 25*" " + str(len(self.valorbs[Zi])).rjust(3) + 15*" " + ("%+10.8f" % self.hubbard_U[Zi]) + \
-                                   + 5*" " + str(orbital_energies) + "\n" 
+                print(atom_names[Zi-1].ljust(3) + 16*" " + str(self.ne_val[Zi]).rjust(3) + 25*" " + str(len(self.valorbs[Zi])).rjust(3) + 15*" " + ("%+10.8f" % self.hubbard_U[Zi]) + 5*" " + str(orbital_energies) + "\n") 
         # INITIALIZE GAMMA MATRIX
         if self.fluctuation_functions == "Gaussian":
             sigmas = GM.gaussian_decay(self.hubbard_U, self.valorbs, self.long_range_radius, self.long_range_correction, verbose=self.verbose)
@@ -444,8 +438,7 @@ class DFTB2(object):
 
         Parameters:
         ===========
-        atomlist:  list of tuples (Zi, [xi,yi,zi])
-                   Zi is the atomic number of atom i
+        atomlist:  list of tuples (Zi, [xi,yi,zi]) Zi is the atomic number of atom i
                    [xi,yi,zi] is the cartesian position vector of atom i
         charge: total charge of molecule.
         keep_charge: if True ignore the parameter charge and keep the old one if it exists
@@ -501,8 +494,7 @@ class DFTB2(object):
             print("")
     def setPointCharges(self, point_charges):
         """
-        point_charges: list of tuples (Zi, [xi,yi,zi]) with point charges
-                   which interact electrostatically with the molecular partial charges 
+        point_charges: list of tuples (Zi, [xi,yi,zi]) with point charges which interact electrostatically with the molecular partial charges 
         """
         self.point_charges = point_charges
         if self.verbose > 0 and len(self.point_charges) > 0:
@@ -671,8 +663,7 @@ class DFTB2(object):
         NOTE: Since h1_(mu,nu) does not depend on the orbital but 
         only on the atom where the orbital sits, it has block form.
         """
-        estatpot = dot(gamma,dq) # electrostatic potential on each atom
-                                 # due to partial charging
+        estatpot = dot(gamma,dq) # electrostatic potential on each atom # due to partial charging
         self.h1 = zeros((self.dim,self.dim))
         # iterate over atoms
         mu = 0
@@ -883,8 +874,7 @@ class DFTB2(object):
 #            self.dq = self.dqm[::4]
 #            self.ddip[:,0] = self.dqm[1::4]
 #            self.ddip[:,1] = self.dqm[2::4]
-#            self.ddip[:,2] = self.dqm[3::4]            
-            #            # save Mulliken charges for each SCF step
+#            self.ddip[:,2] = self.dqm[3::4] #            # save Mulliken charges for each SCF step
 #            Mulliken.save_partial_dipoles("/tmp/mulliken_dipoles_%.4d.dat" % self.i, self.atomlist, self.ddip)
 
         """
@@ -1020,8 +1010,7 @@ class DFTB2(object):
                 hpc = self._construct_h_point_charges()
                 Hcoul += hpc*self.S
 #            print "h1 = %s" % h1
-#            print "dq = %s" % self.dq
-            H = self.H0 + Hcoul
+#            print "dq = %s" % self.dq H = self.H0 + Hcoul
             if self.onsite_correction == 1:
                 H_onsite = self._onsite_hamiltonian()
                 H += H_onsite
@@ -1087,8 +1076,7 @@ class DFTB2(object):
                     self.orbs = np.dot(X, Cp)
         #
 ##########################
-#            print self.orbe
-            self._constructDensityMatrix()
+#            print self.orbe self._constructDensityMatrix()
             # use DIIS or other mixing scheme to speed up convergence
             if density_mixer != None and converged == False and mixing_flag == True:
                 next_P = density_mixer.next_approximation(self.P)
@@ -1313,8 +1301,7 @@ class DFTB2(object):
     #############################################
     def tune_long_range_radius(self):
         """
-        minimize  J^2(R_lr) = (e_HOMO(R_lr) + IE(R_lr))^2
-                            = (e_HOMO(R_lr) + E_gs(N-1,R_lr) - E_gs(N,R_lr))^2
+        minimize  J^2(R_lr) = (e_HOMO(R_lr) + IE(R_lr))^2 = (e_HOMO(R_lr) + E_gs(N-1,R_lr) - E_gs(N,R_lr))^2
         """
         if self.tune_range_radius == 0:
             return
@@ -1361,8 +1348,7 @@ class DFTB2(object):
         if self.save_tuning_curve != None:
             print("Calculate tuning curve")
             gs = np.linspace(0.5, 15.0, 100)
-            lr = self.long_range_radius # save original value as it is modified 
-                                        # in map
+            lr = self.long_range_radius # save original value as it is modified # in map
             IEhomoJ = map(Jfunc, gs)
             self.long_range_radius = lr # restore old value
             tuning_curve = np.c_[gs, np.array(IEhomoJ)]
@@ -1548,8 +1534,7 @@ class DFTB2(object):
                 SmnT, H0mnT = self._constructH0andS_translated(translation=t)
             #
 #            SmnT = self.nearest_neighbour_approximation(SmnT, translation=t, cutoff=4.0)
-#            H0mnT = self.nearest_neighbour_approximation(H0mnT, translation=t, cutoff=4.0)
-            #
+#            H0mnT = self.nearest_neighbour_approximation(H0mnT, translation=t, cutoff=4.0) #
             Smn.append(SmnT)
             H0mn.append(H0mnT)
 
@@ -1592,14 +1577,12 @@ class DFTB2(object):
             mu, fk = fermi_occupation(orbe_k, self.Nelec_val, T=0.0)
             occ_indx = where(fk > 0.0)[0]
             occ_orbs = orbs_k[:,occ_indx]
-#            Pk = dot(fk[occ_indx]*occ_orbs,occ_orbs.conjugate().transpose())
-            Pk = dot(fk[occ_indx]*occ_orbs.conjugate(),occ_orbs.transpose())
+#            Pk = dot(fk[occ_indx]*occ_orbs,occ_orbs.conjugate().transpose()) Pk = dot(fk[occ_indx]*occ_orbs.conjugate(),occ_orbs.transpose())
             # Mulliken charges
             qk = zeros(len(self.atomlist), dtype=complex)
             Qk = Pk * Sk
             q_mu = sum(0.5*(Qk + Qk.transpose().conjugate()), axis=1)
-#            q_mu = sum(Qk,axis=1)
-            # sum over all orbitals mu belonging to atom I
+#            q_mu = sum(Qk,axis=1) # sum over all orbitals mu belonging to atom I
             for i in range(0, len(self.atomlist)):
                 qk[i] = sum(q_mu[self.orbitals_on_atom[i]])
             yield (k, orbe_k, orbs_k, fk, qk, Sk, H0k)
@@ -1763,8 +1746,7 @@ class DFTB2(object):
         print("perform DFTB calculation for each k-vector ...")
         for k in ks:
             # TODO: parallelize over k
-#            print "K-Vector = %s" % k
-            Sk = zeros((self.dim,self.dim), dtype=complex)
+#            print "K-Vector = %s" % k Sk = zeros((self.dim,self.dim), dtype=complex)
             H0k = zeros((self.dim,self.dim), dtype=complex)
             # build periodic hamiltonian and overlap
             for t,SmnT,H0mnT in itertools.izip(T,Smn,H0mn):
@@ -1798,8 +1780,7 @@ class DFTB2(object):
                 qk[i] = sum(q_mu[self.orbitals_on_atom[i]])
                 dqk[i] = qk[i] - self.q0[i] # excess charge
 #            print "sum qk = %s" % sum(qk)
-#            print "sum dqk= %s" % sum(dqk)
-            #
+#            print "sum dqk= %s" % sum(dqk) #
             self.q += qk
             self.dq += dqk
             if la.norm(k) < 1.0e-10:
@@ -1891,8 +1872,7 @@ class DFTB2(object):
                         # iterate over constraints and build constraining potential matrices
                         for F,(fragment_indecesF, NF) in enumerate(self.constraints):
 #                            if i in fragment_indecesF:
-#                                Vconstr[F][mu,nu] = self.S[mu,nu]
-                            #
+#                                Vconstr[F][mu,nu] = self.S[mu,nu] #
                             if i in fragment_indecesF: 
                                 Vconstr[F][mu,nu] += 0.5*self.S[mu,nu]
                             if j in fragment_indecesF:
@@ -1921,8 +1901,7 @@ class DFTB2(object):
             for i in range(0, len(self.atomlist)):
                 if i in fragment_indecesF:
                     Constr[F] -= self.q0[i]
-            Constr[F] -= (-NF) # since -NF is the number of additional electron
-                               # NF=+1 means we have 1 electron less
+            Constr[F] -= (-NF) # since -NF is the number of additional electron # NF=+1 means we have 1 electron less
         return Constr
     def runConstrainedSCC(self, maxiter=1000, scc_conv=1.0e-6, constr_conv=1.0e-12, temperature=0.0, DIIS_memory=4, search_bracket=(-3.0, 3.0), **opts): # convergence 10e-12
         """
@@ -2027,8 +2006,7 @@ class DFTB2(object):
         def f(x):
             solveKSnonSCC([x])
             Constr = self._constraints_values(Vconstr)
-#            print "Constr = %s" % Constr
-            return Constr[0]
+#            print "Constr = %s" % Constr return Constr[0]
 
         self.relative_change = 0.0
         diis_dq = DIIS_80(DIIS_memory) # does not really work
@@ -2052,8 +2030,7 @@ class DFTB2(object):
 
                     self.writeIteration()
                 if cur_constr < constr_conv: #or abs(a-b) < 1.0e-14: # NOOOO
-#                    diis_dq.reset()
-                    break
+#                    diis_dq.reset() break
                 if self.i > maxiter:
                     from numpy import linspace, argmin
                     lagrange_arr = array(lagrange_arr)
@@ -2082,8 +2059,7 @@ class DFTB2(object):
                 #dq = 0.9*dq + 0.1*self.dq
                 rel_change = sum(abs(dq - self.dq))/sum(abs(self.dq))
                 #
-#                print "nr trial vectors = %s" % len(diis_dq.trial_vectors)
-                if DIIS_memory > 1:
+#                print "nr trial vectors = %s" % len(diis_dq.trial_vectors) if DIIS_memory > 1:
                     diis_dq.next_approximation(dq) # add trial vectors
                 #
             if self.verbose > 0:
@@ -2213,8 +2189,7 @@ class DFTB2(object):
         ========
         band structure energy E_bs, Coulomb energy E_coulomb, total electronic energy, repulsive energy and total energy
         """
-        self.E_bs = sum(self.P*self.H0) # band structure energy
-                                 # E_bs = sum_a f_a <a|H0|a>
+        self.E_bs = sum(self.P*self.H0) # band structure energy # E_bs = sum_a f_a <a|H0|a>
         # Coulomb energy from monopoles
         self.E_coulomb = 0.5*np.dot(self.dq, np.dot(self.gamma, self.dq))
         if self.mulliken_dipoles == 1:
@@ -2300,8 +2275,7 @@ class DFTB2(object):
         ########################################
 
         if len(self.constraints) == 0:
-#            print "SCC"
-            self.runSCC(**opts)
+#            print "SCC" self.runSCC(**opts)
 #            self.runNonSCC()  
         else:
             # constrained SCC calculation

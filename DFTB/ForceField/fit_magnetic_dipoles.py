@@ -287,7 +287,7 @@ class MagneticDipoleFitter:  # magnetic dipoles from vector potential
             print("  #          Element        Mx           My           Mz              Mx           My           Mz    ")
             print("======================================================================================================")
             for i,(Zi, posi) in enumerate(self.atomlist):
-                print("  %4.1d     %4.2s           %+7.5f     %+7.5f     %+7.5f        %+7.5f     %+7.5f     %+7.5f" % (i, AtomicData.atom_names[Zi-1].capitalize()) mvec[0,i], mvec[1,i], mvec[2,i], mvec_proj[0,i], mvec_proj[1,i], mvec_proj[2,i]) , end=" ")
+                print("  %4.1d     %4.2s           %+7.5f     %+7.5f     %+7.5f        %+7.5f     %+7.5f     %+7.5f" % (i, AtomicData.atom_names[Zi-1].capitalize(), mvec[0,i], mvec[1,i], mvec[2,i], mvec_proj[0,i], mvec_proj[1,i], mvec_proj[2,i]))
 
             print("")
             

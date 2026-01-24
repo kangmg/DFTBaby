@@ -81,7 +81,7 @@ def function_to_cubefile(atomlist, func, **opts):
                 if abs(amp) < 1e-12: 
                     amp = 0.0
                 print(" %11.5e" % amp.real, end=" ")
-                if k % 6 == 5: print "\n ",
+                if k % 6 == 5: print("\n ", end=" ")
             print("\n ", end=" ")
     """write grid to cube file"""
     # close file
@@ -462,9 +462,9 @@ class CubeExporterEx(CubeExporter):
             self.Ssq = sla.sqrtm(S)
         for st in cube_states:
             if density_type == "transition":
-                self.exportTransitionDensity(st-1, \ tdense_cubefile=join(cubedir, "%s_tdense_%.4d%s.cube" % (self.name, st, self.tddftb.Irreps[st-1])), \ save_transition_density=save_transition_density)
+                self.exportTransitionDensity(st-1, tdense_cubefile=join(cubedir, "%s_tdense_%.4d%s.cube" % (self.name, st, self.tddftb.Irreps[st-1])), save_transition_density=save_transition_density)
             elif density_type == "difference":
-                self.exportDifferenceDensity(st-1, \ difdense_cubefile=join(cubedir, "%s_difdense_%.4d%s.cube" % (self.name, st, self.tddftb.Irreps[st-1])))
+                self.exportDifferenceDensity(st-1, difdense_cubefile=join(cubedir, "%s_difdense_%.4d%s.cube" % (self.name, st, self.tddftb.Irreps[st-1])))
             else:
                 raise ValueError("option 'density_type' can be 'difference' or 'transition' but not %s" % density_type)
 ###### READING AND WRITING GRID DATA TO CUBE FILES ###########

@@ -25,8 +25,7 @@ from DFTB.ImplicitSolvent import SolventCavity
 from DFTB.LR_TDDFTB import LR_TDDFTB
 
 class MolecularDynamics:
-    def __init__(self,
-                     charge=0, initial_state='0', nstates=0, 
+    def __init__(self, charge=0, initial_state='0', nstates=0, 
                      nstep=1000, nuclear_step=0.1,
                      dyn_mode="E", temp=300.0, timecoupling=1.0, 
                      scalar_coupling_threshold=0.01,
@@ -49,7 +48,7 @@ class MolecularDynamics:
                 Molecular Dynamics.timecoupling: Time constant for Berendsen thermostat in fs. The strength of the coupling to the external heat bath is proportional to 1/timecoupling. 
                 Molecular Dynamics.scalar_coupling_threshold: Excitation coefficients that are smaller than this threshold are neglected when calculating scalar couplings from the overlap between electronic states at successive time steps. For large molecules this value should be reduced.
                 Molecular Dynamics.switch_to_groundstate: If set to 1, a hop to the ground state is forced if the S0-S1 energy gap drops below 0.1 eV. In TD-DFT(B) conical intersections to the ground state are not described correctly. If a point of point of degeneracy between S0 and S1 is reached, the TD-DFT(B) calculation usually breaks down. 
-If something goes wrong in the excited state calculation, the trajectory continues with the ground state gradients until the excited state calculation starts working again.
+                If something goes wrong in the excited state calculation, the trajectory continues with the ground state gradients until the excited state calculation starts working again.
                 Molecular Dynamics.artificial_energy_conservation: Energy conservation can be enforced artificially by rescaling the velocities after each time step. This avoids the drift of the total energy observed for long dynamics simulations. This option only takes effect if dyn_mode=="E".
                 Molecular Dynamics.time_series: To better analyze trajectories it is helpful to write out time series of additional quantities along the trajectory. You can specify a list of the desired quantities (so far only --time_series="['particle-hole charges']" is available).
                 Molecular Dynamics.output_step: Output is written to disk only for every N'th time step. 
@@ -331,8 +330,7 @@ If something goes wrong in the excited state calculation, the trajectory continu
                     if self.printcoeff>1:
                         f=open("prob.dat","a")
                         f.write(str(self.time*self.au_to_fs)+" "+str(hopping_probabilities[item])+" "+str(random_number)+"\n")
-                        f.close()
-                                        break
+                        f.close() break
                 # added by A.Humeniuk
                 # If the energy gap between the first excited state and the ground state
                 # approaches zero, because the trajectory has hit a conical intersection to
@@ -362,8 +360,7 @@ If something goes wrong in the excited state calculation, the trajectory continu
                 #hop is rejected when kinetic energy is too low
                 if (self.state>self.oldstate) and ((self.energy[self.state]-self.energy[self.oldstate])>self.kinetic_energy):
             if self.printcoeff>1:
-                out=open("rej_hop.dat","a")
-                            out.write(str(self.time*self.au_to_fs)+" "+str(self.oldstate)+" "+str(self.state)+"\n")
+                out=open("rej_hop.dat","a") out.write(str(self.time*self.au_to_fs)+" "+str(self.oldstate)+" "+str(self.state)+"\n")
                             out.close()
                         self.state=self.oldstate
         else:

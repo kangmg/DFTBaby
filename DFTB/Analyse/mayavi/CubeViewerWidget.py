@@ -540,8 +540,7 @@ class ChargesObject:
                 cavity.constructCOSMO()
                 induced_charges = cavity.getInducedCharges(charges)
                 screening_energy = cavity.getScreeningEnergy(charges)
-                print("screening energy: %10.6f Hartree  %10.6f kcal/mol" )
-                    % (screening_energy, screening_energy * AtomicData.hartree_to_kcalmol)
+                print("screening energy: %10.6f Hartree  %10.6f kcal/mol"  % (screening_energy, screening_energy * AtomicData.hartree_to_kcalmol))
                 # The surface points are colored and scaled
                 # according to their charge
                 #  negative -> blue   positive -> red

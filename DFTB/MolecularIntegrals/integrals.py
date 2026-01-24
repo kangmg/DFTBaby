@@ -184,20 +184,20 @@ def overlap_unnorm(alpha1,lmn1,A,alpha2,lmn2,B):
     wz = overlap_1D(n1,n2,P[2]-A[2],P[2]-B[2],gamma)
     return pre*wx*wy*wz
 
-def overlap(alpha1,(l1,m1,n1),A,alpha2,(l2,m2,n2),B):
+def overlap(alpha1, lmn1, A, alpha2, lmn2, B):
     """
     overlap <g1|g2> between two normalized cartesian Gaussian functions which
     are centered at A and B
 
                                   l1        m1       n1   -alpha1 (r-A)^2
     g1(x,y,z) = N(l1,m1,n1) (x-Ax)   (y-Ay)    (z-Az)    e
-    
+
     and a similar expression for g2(x,y,z).
-    
+
     Parameters
     ----------
     alpha1     :  exponent, > 0
-    (l1,m1,n1) :  powers, L=l1+m1+n1 is the angular momentum
+    lmn1 :  tuple (l1,m1,n1) - powers, L=l1+m1+n1 is the angular momentum
     A          :  3-dim vector, center of basis function
 
     and similary for second basis function
@@ -206,6 +206,8 @@ def overlap(alpha1,(l1,m1,n1),A,alpha2,(l2,m2,n2),B):
     -------
     scalar, <g1|g2>
     """
+    l1, m1, n1 = lmn1
+    l2, m2, n2 = lmn2
     olap = overlap_unnorm(alpha1,(l1,m1,n1),A,alpha2,(l2,m2,n2),B)
     norm1 = norm(alpha1,(l1,m1,n1))
     norm2 = norm(alpha2,(l2,m2,n2))
@@ -230,15 +232,17 @@ def overlap_1D(l1,l2,PAx,PBx,gamma):
               fact2(2*i-1)/pow(2*gamma,i)
     return sum
 
-def dipole(alpha1,(l1,m1,n1),A1, alpha2,(l2,m2,n2),A2):
+def dipole(alpha1, lmn1, A1, alpha2, lmn2, A2):
     """dipole matrix element between two Gaussian orbitals"""
+    l1, m1, n1 = lmn1
+    l2, m2, n2 = lmn2
     olap = overlap_unnorm(alpha1,(l1,  m1  ,n1  ),A1, alpha2,(l2,m2,n2),A2)
     Dx   = overlap_unnorm(alpha1,(l1+1,m1  ,n1  ),A1, alpha2,(l2,m2,n2),A2) + A1[0]*olap
     Dy   = overlap_unnorm(alpha1,(l1  ,m1+1,n1  ),A1, alpha2,(l2,m2,n2),A2) + A1[1]*olap
     Dz   = overlap_unnorm(alpha1,(l1  ,m1  ,n1+1),A1, alpha2,(l2,m2,n2),A2) + A1[2]*olap
     norm1 = norm(alpha1,(l1,m1,n1))
     norm2 = norm(alpha2,(l2,m2,n2))
-    
+
     return norm1*norm2*np.array([Dx,Dy,Dz])
 
 def angmomL(alphaA, nA, A, alphaB, nB, B):
@@ -316,10 +320,18 @@ def angmomL2(alphaA, nA, A, alphaB, nB, B):
 #
 ############################################################
 
-def coulomb_repulsion((xa,ya,za),norma,(la,ma,na),alphaa,
-                      (xb,yb,zb),normb,(lb,mb,nb),alphab,
-                      (xc,yc,zc),normc,(lc,mc,nc),alphac,
-                      (xd,yd,zd),normd,(ld,md,nd),alphad):
+def coulomb_repulsion(ra, norma, lmna, alphaa,
+                      rb, normb, lmnb, alphab,
+                      rc, normc, lmnc, alphac,
+                      rd, normd, lmnd, alphad):
+    xa, ya, za = ra
+    xb, yb, zb = rb
+    xc, yc, zc = rc
+    xd, yd, zd = rd
+    la, ma, na = lmna
+    lb, mb, nb = lmnb
+    lc, mc, nc = lmnc
+    ld, md, nd = lmnd
 
     rab2 = dist2((xa,ya,za),(xb,yb,zb))
     rcd2 = dist2((xc,yc,zc),(xd,yd,zd))

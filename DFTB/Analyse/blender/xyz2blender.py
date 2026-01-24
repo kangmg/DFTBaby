@@ -127,9 +127,9 @@ class cube2blender:
             for i in range(len(self.xyz.atomtypes)):
                     me = Mesh.Primitives.Icosphere(spheresubdivisions,atomicradii[self.xyz.atomtypes[i]])
             me.materials=[materials[self.xyz.atomtypes[i]]]
-                for face in me.faces:
+            for face in me.faces:
                 face.smooth=True
-                    obj=self.scene.objects.new(me,'Mesh')
+            obj=self.scene.objects.new(me,'Mesh')
                     obj.setLocation(self.xyz.coord[i][0],self.xyz.coord[i][1],self.xyz.coord[i][2])
             for i in range(len(self.xyz.atomtypes)):
                     for j in range(i+1,len(self.xyz.atomtypes)):
@@ -140,8 +140,7 @@ class cube2blender:
                             if (vec.length-distcovalent)<=0.10*distcovalent:
                                     me=Mesh.Primitives.Tube(32,stickradius,vec.length)
                         for face in me.faces:
-                        face.smooth=True
-                                    obj=self.scene.objects.new(me,'Cylinder')
+                        face.smooth=True obj=self.scene.objects.new(me,'Cylinder')
                                     axis=Mathutils.CrossVecs(Vector([0,0,1]),vec)
                                     angle=Mathutils.AngleBetweenVecs(Vector([0,0,1]),vec)
                                     rotmat=Mathutils.RotationMatrix(angle,4,"R",axis)

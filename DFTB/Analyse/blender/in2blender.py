@@ -108,7 +108,7 @@ class xyz:
     def __init__(self,filename):
         self.filename=filename
         self.coord=[]
-                self.vectors=[]
+        self.vectors=[]
         self.atomtypes=[]
     def readxyz(self,):
         fh=open(self.filename,"r")
@@ -117,13 +117,11 @@ class xyz:
             if line == "":
                                 break
                         nat = int(line.strip())
-#            title = fh.readline()
-            atoms = []
+#            title = fh.readline() atoms = []
                         # read coordinates
             for i in range(0,nat):
                 line = fh.readline()
-                words = line.split()
-                                # convert to Angstrom
+                words = line.split() # convert to Angstrom
                 x,y,z = map(lambda f: 0.529177249*float(f),words[1:])
                 atname = words[0].lower()
                 self.atomtypes.append(atname)
@@ -131,8 +129,7 @@ class xyz:
                         # read vectors
             for i in range(0,nat):
                 line = fh.readline()
-                words = line.split()
-                                # convert to Angstrom
+                words = line.split() # convert to Angstrom
                 vx,vy,vz = map(lambda f: 0.529177249*float(f),words)
                 self.vectors.append([vx,vy,vz])
         fh.close()
@@ -165,8 +162,7 @@ class cube2blender:
                             if (vec.length-distcovalent)<=0.10*distcovalent:
                                     me=Mesh.Primitives.Tube(32,stickradius,vec.length)
                         for face in me.faces:
-                        face.smooth=True
-                                    obj=self.scene.objects.new(me,'Bond')
+                        face.smooth=True obj=self.scene.objects.new(me,'Bond')
                                     axis=Mathutils.CrossVecs(Vector([0,0,1]),vec)
                                     angle=Mathutils.AngleBetweenVecs(Vector([0,0,1]),vec)
                                     rotmat=Mathutils.RotationMatrix(angle,4,"R",axis)
@@ -179,8 +175,7 @@ class cube2blender:
                         vec=Mathutils.Vector(self.xyz.vectors[i])*scale
                         # arrow tail
                         me=Mesh.Primitives.Tube(32,arrowradius,vec.length)
-            me.materials=[materials["arrow"]]
-                        for face in me.faces:
+            me.materials=[materials["arrow"]] for face in me.faces:
                                 face.smooth=True
                         obj=self.scene.objects.new(me,"Arrow-Tail")
                         axis=Mathutils.CrossVecs(Vector([0,0,1]),vec)
@@ -190,8 +185,7 @@ class cube2blender:
                         obj.setLocation(loc+0.5*vec)
                         # arrow head
                         me=Mesh.Primitives.Cone(32,2*arrowradius,0.5)
-            me.materials=[materials["arrow"]]
-                        for face in me.faces:
+            me.materials=[materials["arrow"]] for face in me.faces:
                                 face.smooth=True
                         obj=self.scene.objects.new(me,"Arrow-Head")
                         axis=Mathutils.CrossVecs(Vector([0,0,1]),vec)

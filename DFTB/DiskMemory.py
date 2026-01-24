@@ -60,7 +60,7 @@ class DiskMemory:
                             r = np.asarray(r)
                         res_nd.append( r )
                 else:
-                    if type(res) == np.core.memmap:
+                    if type(res) == np.memmap:
                         res_nd = np.asarray(res)
                     else:
                         res_nd = res
@@ -89,7 +89,7 @@ class DiskMemory:
         return arr
     def asarray_memmap(self, a, dtype=None, order=None):
         # if a is already a memmap object, nothing should be done
-        if type(a) == _np.core.memmap:
+        if type(a) == _np.memmap:
             return a
         arr_nd = self.np_old["asarray"](a, dtype=dtype, order=order)
         fh = tempfile.TemporaryFile(dir=self._tmpdir, prefix="dftbaby_memmap")
