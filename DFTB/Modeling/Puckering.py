@@ -7,6 +7,7 @@ ring puckering coordinates as defined in
 """
 from DFTB import XYZ, AtomicData
 from cmath import phase
+from functools import reduce
 
 import numpy as np
 import copy
@@ -104,7 +105,7 @@ class Ring:
             for i in range(0, N):
                 z[i] += np.sqrt(1.0/N)*puck_ampl[-1]*pow(-1,i)
         zold = self.displacements()
-        dz = map(lambda x,y: x-y, z, zold)
+        dz = list(map(lambda x,y: x-y, z, zold))
         """displace the ring atoms by an amount dz along the normal
         to achieve the desired puckering geometry"""
         n = self.ring_plane()

@@ -14,6 +14,7 @@ import numpy.linalg as la
 import scipy.linalg as sla
 import os
 from os.path import expandvars, expanduser
+from functools import reduce
 
 class Flake:
     def __init__(self, grid, orientation=None, weight=1, parent=None):

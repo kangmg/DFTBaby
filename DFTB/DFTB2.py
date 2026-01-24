@@ -1348,8 +1348,8 @@ class DFTB2(object):
         if self.save_tuning_curve != None:
             print("Calculate tuning curve")
             gs = np.linspace(0.5, 15.0, 100)
-            lr = self.long_range_radius # save original value as it is modified # in map
-            IEhomoJ = map(Jfunc, gs)
+            lr = self.long_range_radius # save original value as it is modified in loop
+            IEhomoJ = [Jfunc(g) for g in gs]
             self.long_range_radius = lr # restore old value
             tuning_curve = np.c_[gs, np.array(IEhomoJ)]
             # tuning curve contains the following columns

@@ -595,7 +595,7 @@ class Option:
         # Filter out None because early versions of Optik had exactly
         # one short option and one long option, either of which
         # could be None.
-        opts = filter(None, opts)
+        opts = list(filter(None, opts))
         if not opts:
             raise TypeError("at least one option string must be supplied")
         return opts

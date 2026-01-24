@@ -9,15 +9,18 @@ The latest version of DFTBaby and a short manual can be found on the following w
 
 Dependencies
 ============
- - python 3.12 or newer
- - numpy 1.26.0 or newer
- - scipy 1.11.0 or newer
+ - Python 3.12 or newer
+ - NumPy 2.0.0 or newer
+ - SciPy 1.14.0 or newer
  - f2py (included with numpy) for compiling the Fortran extensions
- - matplotlib 3.7.0 or newer
+ - Matplotlib 3.9.0 or newer
  - mpmath 1.3.0 or newer
- - sympy 1.12 or newer
+ - sympy 1.13 or newer
  - BLAS and LAPACK
  - libxc 3.0.0 (optional, only needed for atomic calculations of pseudoorbitals)
+
+Note: This project has been fully migrated to Python 3.12+ and NumPy 2.0+.
+See PYTHON3_MIGRATION.md for complete migration details and test results.
 
 
 DFTBaby makes extensive use of numpy and scipy for performing linear algebra operations.

@@ -14,6 +14,7 @@ whose center of masses are separated by 20 Ang.
 """
 from numpy import array, sqrt, dot, sin, cos, pi, eye
 from os.path import expandvars, expanduser, dirname, join, exists
+from functools import reduce
 from DFTB import XYZ
 
 def load_fragments(frag_links_file):

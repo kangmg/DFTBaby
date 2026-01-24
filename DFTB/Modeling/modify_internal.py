@@ -87,7 +87,7 @@ Example:
         raise ValueError("Format of scan '%s' not understood!" % scan)
 
     # shift indices to programmer's style (starting at 0)
-    IJKL = map(lambda I:I-1, IJKL)
+    IJKL = list(map(lambda I:I-1, IJKL))
     
     IC = InternalValenceCoords(atomlist0, freeze=freeze, verbose=opts.verbose)
     

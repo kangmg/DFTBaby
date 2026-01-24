@@ -111,7 +111,7 @@ def argsort_2d(arr):
     assert len(arr.shape) == 2
     nrows,ncols = arr.shape
     sort_indx = argsort(arr, axis=None)
-    row_sort = sort_indx / ncols
+    row_sort = sort_indx // ncols
     col_sort = sort_indx % ncols
     
     return row_sort, col_sort
