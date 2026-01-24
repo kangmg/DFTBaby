@@ -10,10 +10,10 @@ try:
     import Molecule
     from graphics import color
 except ImportError as e:
-    print e
-    print "This script is a plugin for VMD (Visual Molecular Dynamics)."
-    print "It should be imported from the python console of VMD or be called as"
-    print "  vmd -python -e %s -args <pattern for cube files>" % sys.argv[0]
+    print(e)
+    print("This script is a plugin for VMD (Visual Molecular Dynamics).")
+    print("It should be imported from the python console of VMD or be called as")
+    print("  vmd -python -e %s -args <pattern for cube files>" % sys.argv[0])
     exit(-1)
 
 import os
@@ -55,9 +55,9 @@ class CubeBrowser:
         listbox.
         """
         # index of the selected file
-        print self.Lb.curselection()
+        print(self.Lb.curselection())
         isel = int(self.Lb.curselection()[0])
-        print "Selected %d-th cube file %s" % (isel, self.cube_files[isel])
+        print("Selected %d-th cube file %s" % (isel, self.cube_files[isel]))
         # delete old molecule...
         self.mol.delete()
         # and load new one
@@ -99,7 +99,7 @@ if __name__ == "__main__":
         cube_files += glob.glob(pattern)
     #
     if len(cube_files) == 0:
-        print "No cube files found for patterns '%s'" % "".join(sys.argv[1:])
+        print("No cube files found for patterns '%s'" % "".join(sys.argv[1:]))
         exit(-1)
 
     browser.loadCubes(cube_files)

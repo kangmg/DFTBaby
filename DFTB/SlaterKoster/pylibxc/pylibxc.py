@@ -8,8 +8,8 @@ def list_functionals():
             func = _pylibxc.libXCFunctional(func_id)
         except ValueError:
             pass
-        print "================================="
-        print func.description()
+        print("=================================")
+        print(func.description())
 
 def interpolated_derivative(x, f):
     # interpolate f on a smooth grid and

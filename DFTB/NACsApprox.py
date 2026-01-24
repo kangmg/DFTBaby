@@ -141,4 +141,4 @@ if __name__ == "__main__":
     Nat = len(atomlist)
     np.savetxt(fh_nac, nac.transpose(), fmt="%+e")
 
-    print "Approximate non-adiabatic coupling vector written to %s" % nac_file
+    print("Approximate non-adiabatic coupling vector written to %s" % nac_file)

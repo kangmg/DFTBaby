@@ -17,8 +17,8 @@ from matplotlib.pyplot import *
 from numpy import *
 
 if len(sys.argv) < 2: 
-    print "Usage: %s slako-file1 slako-file2 ..." % sys.argv[0]
-    print "slako-files with the following extensions can be read: .skf, .par and .py"
+    print("Usage: %s slako-file1 slako-file2 ..." % sys.argv[0])
+    print("slako-files with the following extensions can be read: .skf, .par and .py")
     exit(-1)
 
 def plot_interpolation(dg, Ig, d):
@@ -42,7 +42,7 @@ ylabel("overlap", fontsize=15)
 title("Overlaps from %s" % slakofile)
 
 for fnr,slako_module in enumerate(sks):
-    for (l1,l2,i),olap in slako_module.S.iteritems():
+    for (l1,l2,i),olap in slako_module.S.items():
         # do not plot overlaps that are zero
         if all(abs(olap) < 1.0e-10):
             continue
@@ -59,7 +59,7 @@ xlabel(r"distance $d$ between centers / bohr", fontsize=15)
 ylabel("hamiltonian", fontsize=15)
 title("Hamilton integrals from %s" % slakofile)
 for fnr,slako_module in enumerate(sks):
-    for (l1,l2,i),H in slako_module.H.iteritems():
+    for (l1,l2,i),H in slako_module.H.items():
         # do not plot hamilton matrix elements that are zero
         if all(abs(H) < 1.0e-10):
             continue
@@ -84,7 +84,7 @@ title("Dipole integrals %s" % slakofile)
 for fnr,slako_module in enumerate(sks):
         if not hasattr(slako_module, "Dipole"):
             continue
-        for (l1,l2,i),D in slako_module.Dipole.iteritems():
+        for (l1,l2,i),D in slako_module.Dipole.items():
             lo1,mo1,lM,mM,lo2,mo2 = Tdip.index2tau[i]
             plot(slako_module.d, D, label="$Dipole_{%s,%s}(%s)(d)$" % \
                      (angmom_to_xyz[(lo1,mo1)],angmom_to_xyz[(lo2,mo2)],angmom_to_xyz[(lM,mM)]), lw=2)

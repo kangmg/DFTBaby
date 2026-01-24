@@ -57,7 +57,7 @@ if __name__ == "__main__":
     
     (opts, args) = parser.parse_args()
     if len(args) != 2:
-        print usage
+        print(usage)
         exit(-1)
 
     dynamics_file = args[0]
@@ -74,14 +74,14 @@ if __name__ == "__main__":
     for i in range(0, n):
         for j in range(i+1,n):
             if np.sum((isomer_connectivities[i] - isomer_connectivities[j])**2) == 0:
-                print "WARNING: Isomer %d and %d in file '%s' have the same adjacency matrices!" % (i+1,j+1, isomer_file)
+                print("WARNING: Isomer %d and %d in file '%s' have the same adjacency matrices!" % (i+1,j+1, isomer_file))
     
     fh = open(opts.out_file, "w")
 
     print>>fh, "# isomer indeces refer to the geometries in '%s'" % isomer_file
     print>>fh, "# GEOMETRY        ISOMER(S)"
 
-    print "classify geometries by comparison with isomers"
+    print("classify geometries by comparison with isomers")
     for i_step,atomlist in enumerate(XYZ.read_xyz_it(dynamics_file)):
 
         if i_step % opts.step != 0:
@@ -110,11 +110,11 @@ if __name__ == "__main__":
                     # fragment and isomer do not contain the same number of atoms
                     continue
                 if np.sum((A_can - isomer_connectivities[i])**2) == 0:
-                    print "%d-th fragment of %d-th geometry classified as isomer %d" % (i_frag, i_step, i)                    
+                    print("%d-th fragment of %d-th geometry classified as isomer %d" % (i_frag, i_step, i)                    )
                     classification.append( i )
                     break
             else:
-                print "%d-th fragment of %d-th geometry could not be classified" % (i_frag, i_step)
+                print("%d-th fragment of %d-th geometry could not be classified" % (i_frag, i_step))
                 continue
         # print table
         #
@@ -124,4 +124,4 @@ if __name__ == "__main__":
             print>>fh, "%d              %s" % (i_step, "   ".join(map(str, classification)))
 
     fh.close()
-    print "Table with classifications written to %s" % opts.out_file
+    print("Table with classifications written to %s" % opts.out_file)

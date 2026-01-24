@@ -270,20 +270,20 @@ class RadialPotential(object):
             penalty.append(f2)
 
             if f1*f2 < 0.0:
-                print "sign change in interval (%s,%s) from %s to %s" % (e1,e2, f1,f2)
+                print("sign change in interval (%s,%s) from %s to %s" % (e1,e2, f1,f2))
                 for fm,(a,b) in bisect(f,e1,e2):
                     energy_scan.append((a+b)/2.0)
                     penalty.append(fm)
                     if abs(fm) < eps_conv:
-                        print "eigenvalue found at E = %s" % ((a+b)/2.0)
-                        print "node_count = %s" % self.node_count
+                        print("eigenvalue found at E = %s" % ((a+b)/2.0))
+                        print("node_count = %s" % self.node_count)
                         if self.node_count != len(spectrum):
                             if self.node_count == len(spectrum)-1:
-                                print "Found eigenstate with the same node count twice !?"
+                                print("Found eigenstate with the same node count twice !?")
                                 break
                             else:
                                 msg = "Incorrect node count.\nSome eigenvalues have probably been missed.\nTry Increasing range and resolution of energy range."
-                                print msg
+                                print(msg)
                                 #raise Exception(msg)
                         E = (a+b)/2.0
                         spectrum.append(E)
@@ -293,7 +293,7 @@ class RadialPotential(object):
                         break
                     if abs(a-b) < eps_conv:
                         import time
-                        print "No eigenvalue, despite sign change???"
+                        print("No eigenvalue, despite sign change???")
                         #time.sleep(10)
                         break
             sys.stdout.flush()
@@ -322,7 +322,7 @@ class RadialPotential(object):
         wavefuncs = []
         nodes = []
         for l in range(0, lmax+1):
-            print "******** l = %s ***********" % l
+            print("******** l = %s ***********" % l)
             energy_scan_l, penalty_l, spectrum_l, nodes_l, wavefuncs_l = self.discrete_spectrum_angmom(l, energy_range, eps_conv=eps_conv)
             spectrum.append(spectrum_l)
             wavefuncs.append(wavefuncs_l)
@@ -461,11 +461,11 @@ class CoulombExpGrid(Coulomb):
         norm = sqrt(sum(u_rescaled**2 * exp(self.r) * self.h))
         u = u_rescaled / norm
         """
-        print "v.max() = %s" % v.max()
-        print "u.max() = %s" % u.max()
-        print "u_rescaled.max() = %s" % u_rescaled.max()
-        print "norm = %s" % norm
-        print "u_normalized.max() = %s" % u.max()
+        print("v.max() = %s" % v.max())
+        print("u.max() = %s" % u.max())
+        print("u_rescaled.max() = %s" % u_rescaled.max())
+        print("norm = %s" % norm)
+        print("u_normalized.max() = %s" % u.max())
         """
         return gE, node_count, u
     def match_scattering_solution(self, E, l, r1, r2, ul1, ul2):
@@ -488,7 +488,7 @@ def test_spectrum_Coulomb():
     lmax = 3
 
     spectrum, wavefunctions = Coulpot.discrete_spectrum(energy_range, lmax)
-    print "Eigenenergies: \n%s" % spectrum
+    print("Eigenenergies: \n%s" % spectrum)
     for l in range(0, lmax+1):
         for n, u in enumerate(wavefunctions[l]):
             plot(Coulpot.getRadialGrid(), u, label="n=%s l=%s" % (n,l))
@@ -507,7 +507,7 @@ def test_spectrum_Coulomb_on_expgrid():
     lmax = 3
 
     spectrum, wavefunctions = Coulpot.discrete_spectrum(energy_range, lmax)
-    print "Eigenenergies: \n%s" % spectrum
+    print("Eigenenergies: \n%s" % spectrum)
     for l in range(0, lmax+1):
         for n, u in enumerate(wavefunctions[l]):
             plot(exp(Coulpot.getRadialGrid()), u, ls="-.", lw=3, label="n=%s l=%s" % (n,l))

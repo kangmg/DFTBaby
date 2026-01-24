@@ -188,7 +188,7 @@ def sizes_of_holes(grid):
         size = len(ic)
         hole_sizes.append(size)
 
-    print Flake(grid)
+    print(Flake(grid))
         
     return hole_sizes
         
@@ -234,8 +234,8 @@ def test_random_selection():
         counts[i] += 1
 
     observed_probs = counts/np.sum(counts)
-    print "probabilities  %s" % probs
-    print "observed probabilities  %s" % observed_probs
+    print("probabilities  %s" % probs)
+    print("observed probabilities  %s" % observed_probs)
     assert la.norm(probs - observed_probs) < 0.05
 
 def grow_flakes_monte_carlo(max_generations, connectivity="meso_beta"):
@@ -269,12 +269,12 @@ def grow_flakes_monte_carlo(max_generations, connectivity="meso_beta"):
 
         #print flake
 
-    print Flake(flake.grid, orient)
+    print(Flake(flake.grid, orient))
 
     # analyse holes in grown island
     sizes =  sizes_of_holes(flake.grid)
-    print "number of holes : %d" % len(sizes)
-    print "sizes of Holes : %s" % sizes
+    print("number of holes : %d" % len(sizes))
+    print("sizes of Holes : %s" % sizes)
     
     return flake
 
@@ -335,7 +335,7 @@ def grow_flakes_monte_carlo_fast(max_generations,
     holes = []
     
     for s in range(0, num_samples):
-        print "sample %4.1d/%4.1d"  % (s+1, num_samples)
+        print("sample %4.1d/%4.1d"  % (s+1, num_samples))
     
         size = (max_generations+1)*2
         gr = np.zeros((size,size), dtype=int)
@@ -350,7 +350,7 @@ def grow_flakes_monte_carlo_fast(max_generations,
 
         for gen in range(1, max_generations+1):
             if gen % 100 == 0:
-                print "   generation %4.1d/%4.1d"  % (gen, max_generations)
+                print("   generation %4.1d/%4.1d"  % (gen, max_generations))
             
             # Find edges where a new monomer can be attached
             grid_ = np.copy(flake.grid)
@@ -363,8 +363,8 @@ def grow_flakes_monte_carlo_fast(max_generations,
             exterior_edges = np.copy(edges)
             exterior_edges[grid_ != 0] = 0
             
-            print "Flake"
-            print Flake(flake.grid)
+            print("Flake")
+            print(Flake(flake.grid))
             #print "Exterior Edges"
             #print Flake(exterior_edges)
             
@@ -385,7 +385,7 @@ def grow_flakes_monte_carlo_fast(max_generations,
                     coeffs_a2u[i,j] = orbH[idx]
                     # sum of modulus squares of a2u coefficients
                 prob_tot_a2u = np.sum(abs(coeffs_a2u)**2)
-                print np.sum(abs(orbH)**2)
+                print(np.sum(abs(orbH)**2))
                 #print "probability of a2u component in HOMO: %e" % prob_tot_a2u
 
                 if gen > 50:
@@ -432,8 +432,8 @@ def grow_flakes_monte_carlo_fast(max_generations,
             
         # analyse holes in grown island
         sizes =  sizes_of_holes(flake.grid)
-        print "number of holes : %d" % len(sizes)
-        print "sizes of Holes : %s" % sizes
+        print("number of holes : %d" % len(sizes))
+        print("sizes of Holes : %s" % sizes)
 
         num_holes = len(sizes)
         holes.append(num_holes)

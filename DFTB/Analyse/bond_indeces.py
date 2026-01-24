@@ -45,7 +45,7 @@ def plot_bond_indeces(atomlist, out_file):
                 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print "Usage: %s <xyz-file with list of nuclear geometries> <output file with bond indeces>" % sys.argv[0]
+        print("Usage: %s <xyz-file with list of nuclear geometries> <output file with bond indeces>" % sys.argv[0])
         exit(-1)
     xyz_file = sys.argv[1]
     out_file = sys.argv[2]

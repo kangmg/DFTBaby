@@ -101,5 +101,5 @@ def cn(symb, coord, ndx1, n, m, d, ndx2=[]):
             dr = dbond([coord[ndx1], coord_i])
             ds_dr[ndx1] += dcn*dr[0]
             ds_dr[i] = dcn*dr[1]
-    print cn
+    print(cn)
     return cn, ds_dr

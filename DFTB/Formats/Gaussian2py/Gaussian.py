@@ -31,7 +31,7 @@ def read_geometry(log_file):
         if l == "":
             break
         if ("Input orientation" in l) or ("Standard orientation" in l):
-            print "Found geometry"
+            print("Found geometry")
             
             # skip the next three lines
             for i in range(0, 4):
@@ -191,7 +191,7 @@ def read_symmetric_matrix(fh, N):
             for j,m in enumerate(mijs):
                 Mat[i,jbl+j] = m
     for jbl in range(0, N, 5):
-        print "Read block for columns %s-%s" % (jbl, jbl+5)
+        print("Read block for columns %s-%s" % (jbl, jbl+5))
         read_block(fh, jbl)
     Mdiag = np.diag(Mat)
     Moff = Mat - np.diag(Mdiag)
@@ -215,7 +215,7 @@ def read_force_constants(log_file):
         if l == "":
             break
         if "Force constants in Cartesian coordinates:" in l:
-            print "Found force constants"
+            print("Found force constants")
             H = read_symmetric_matrix(fh, 3*Nat)
     fh.close()
     if H == None:
@@ -296,8 +296,8 @@ def write_input(com_file, atomlist, chk_file="", route="", title="",
             com += con_line + "\n"
     fh = open(com_file,"w")
     if verbose > 1:
-        print "Gaussian Input:"
-        print com
+        print("Gaussian Input:")
+        print(com)
     fh.write(com)
     fh.close()
                    
@@ -315,8 +315,8 @@ class UFF_handler:
         try:
             scratch_dir = os.environ["GAUSS_SCRDIR"]
         except KeyError as e:
-            print "WARNING: Environment variable GAUSS_SCRDIR not set!"
-            print "         Check that g09 is installed correctly!"
+            print("WARNING: Environment variable GAUSS_SCRDIR not set!")
+            print("         Check that g09 is installed correctly!")
             #raise e
             scratch_dir="./"
         if unique_tmp == True:
@@ -359,8 +359,8 @@ class UFF_handler:
                     charge=charge, multiplicity=multiplicity, title="compute energies and gradients")
         # execute g09
         if self.verbose > 0:
-            print "Gaussian 09 ..."
-            print "  route: %s" % route
+            print("Gaussian 09 ...")
+            print("  route: %s" % route)
         ret = os.system("g09 < %s 2>&1 > %s" % (self.com_file, self.log_file))
         error_msg = "G09 Calculation failed! Check the log-file %s" % self.log_file
         assert ret == 0, error_msg
@@ -387,7 +387,7 @@ class UFF_handler:
             self.mm_gradient += gradCoul
     def clean_up(self):
         if self.verbose > 0:
-            print "removing temporary Gaussian files"
+            print("removing temporary Gaussian files")
         # remove temporary files
         for f in [self.com_file, self.chk_file, self.fchk_file, self.log_file]:
             os.remove(f)
@@ -416,7 +416,7 @@ class UFF_handler:
                 gradCoul[3*j:3*(j+1)] += gij
                 
         if self.verbose > 0:
-            print "MM electrostatic energy: %e" % enCoul        
+            print("MM electrostatic energy: %e" % enCoul        )
                 
         return enCoul, gradCoul
     def get_MM_Energy(self):
@@ -430,21 +430,21 @@ if __name__ == "__main__":
     import sys
     """
     log_file = sys.argv[1]
-    print read_geometry(log_file)
+    print(read_geometry(log_file))
 #    print read_forces(log_file)
 #    print read_force_constants(log_file)
     """
     xyz_file = sys.argv[1]
     atomlist = XYZ.read_xyz(xyz_file)[0]
     uff_handler = UFF_handler(atomlist)
-    print uff_handler.get_MM_Charges()
+    print(uff_handler.get_MM_Charges())
     uff_handler.calc(atomlist)
-    print uff_handler.get_MM_Gradient()
-    print uff_handler.get_MM_Energy()
+    print(uff_handler.get_MM_Gradient())
+    print(uff_handler.get_MM_Energy())
 
     uff_handler.calc(atomlist)
-    print uff_handler.get_MM_Gradient()
-    print uff_handler.get_MM_Energy()
+    print(uff_handler.get_MM_Gradient())
+    print(uff_handler.get_MM_Energy())
     
 #    uff_handler.clean_up()
     

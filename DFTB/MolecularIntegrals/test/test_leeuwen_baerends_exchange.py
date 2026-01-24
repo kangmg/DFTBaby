@@ -70,7 +70,7 @@ if __name__ == "__main__":
     # blows up.
     alphas = [0.1, 0.5, 1.0]
     for alpha in alphas:
-        print "density rho(r) = N*exp(-alpha*r) decays with exponential  alpha= %e" % alpha
+        print("density rho(r) = N*exp(-alpha*r) decays with exponential  alpha= %e" % alpha)
         # define density function 
         def rho(x,y,z):
             r = np.sqrt(x*x+y*y+z*z)
@@ -82,7 +82,7 @@ if __name__ == "__main__":
             nrm = alpha**3/(8.0*np.pi)
             return nrm * n
 
-        print "(grad rho)^2 ..."
+        print("(grad rho)^2 ...")
         # GGA xc-functionals need the gradient squared of the density
         #          __     2
         # sigma = (\/ rho)
@@ -166,7 +166,7 @@ if __name__ == "__main__":
                                 lebedev_order=settings.lebedev_order)
 
         dr = np.sqrt(dr2)
-        print "sqrt(<r^2>)= %e" % dr
+        print("sqrt(<r^2>)= %e" % dr)
         
         omega = 100.0
         chi = dr/r

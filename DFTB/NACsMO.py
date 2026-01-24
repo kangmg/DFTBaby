@@ -101,13 +101,13 @@ class NACsMO:
                     of length 3*Nat between the excited state j and the ground state
         """
         if self.dftb.verbose > 0:
-            print "  gradients of S and H0 from Slater-Koster rules"
+            print("  gradients of S and H0 from Slater-Koster rules")
         atomlist = self.dftb.getGeometry()
         valorbs = self.dftb.valorbs
         gradS, gradH0 = gradients_H0andS(atomlist, valorbs,
                                          self.dftb.SKT, self.dftb.Mproximity)
         if self.dftb.verbose > 0:
-            print "  non-adiabatic coupling vectors in MO basis"
+            print("  non-adiabatic coupling vectors in MO basis")
         # NACV's are only computed between active occupied and virtual orbitals
         orbe_occ, orbe_virt, orbs_occ, orbs_virt = self.activeOrbitals()
         nacvMO = coupling_vectors_kohn_sham(orbe_occ, orbe_virt, orbs_occ, orbs_virt,

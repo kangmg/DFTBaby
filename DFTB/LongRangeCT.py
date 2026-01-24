@@ -61,8 +61,7 @@ class LongRangeCTCorrection_Neugebauer:
         Sia,Ria,Dia = self.Sia, self.Ria, self.Dia
         # The term exp(-(Rc/Ria)**2) is new, it avoids the correction
         # for delocalized orbitals
-        Tia = np.exp(-(Sia/Sc)**2) \
-            * np.exp(-(Rc/Ria)**2) \
+        Tia = np.exp(-(Sia/Sc)**2) * np.exp(-(Rc/Ria)**2) \
             * (Dia - 1.0/Ria + (Dia - 1.0/Ria)**2/(2*omega))
         # correction is only added if Tia > 0
         Tia = np.clip(Tia,0.0, 1.0e10)
@@ -73,21 +72,19 @@ class LongRangeCTCorrection_Neugebauer:
             # sort by KS energy differences
             indx = omega.argsort(axis=None, kind='mergesort')
             indi, inda = np.unravel_index(indx, omega.shape)
-            print "Excitations i->a with Charge Transfer Character (Tia > %e)" % thresh
-            print "======================================================================================================="
-            print "  i  ->   a         Sia              Ria              Tia              w_ia / eV        w_ia+Tia / eV "
-            print "-------------------------------------------------------------------------------------------------------"
+            print("Excitations i->a with Charge Transfer Character (Tia > %e)" % thresh)
+            print("=======================================================================================================")
+            print("  i  ->   a         Sia              Ria              Tia              w_ia / eV        w_ia+Tia / eV ")
+            print("-------------------------------------------------------------------------------------------------------")
             for ia in range(0, len(indi)):
                 i,a = indi[ia], inda[ia]
                 if Tia[i,a] > thresh:
-                    print " %3d -> %3d    %13.8f    %13.8f    %13.8f    %13.8f    %13.8f" \
-                % (occ[i],virt[a], Sia[i,a], Ria[i,a], Tia[i,a], \
-                       omega[i,a]*AtomicData.hartree_to_eV, \
+                    print(" %3d -> %3d    %13.8f    %13.8f    %13.8f    %13.8f    %13.8f" ) % (occ[i],virt[a], Sia[i,a], Ria[i,a], Tia[i,a], omega[i,a]*AtomicData.hartree_to_eV, \
                        (omega[i,a]+Tia[i,a])*AtomicData.hartree_to_eV)
                 # only show lowest energy excitations
                 if omega[i,a] > (40.0/AtomicData.hartree_to_eV):
                     # stop at 40 eV
                     break
-            print ""
+            print("")
         return Tia
 

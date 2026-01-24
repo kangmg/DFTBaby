@@ -13,7 +13,6 @@ and Dill and Dehmer's *continuum multiple scattering* (CMS) method [2]_.
 .. [4] D.Loomba, S.Wallace, D.Dill, J.Dehmer, "Pictures of unbound molecular electrons, including shape-resonant states. Eigenchannel contour maps", J. Chem. Phys. 75, 4546 (1981)
 
 """
-from __future__ import print_function
 
 from DFTB import AtomicData
 from DFTB.AtomicData import atom_names, slater_radii
@@ -1756,7 +1755,7 @@ def minimize_golden(f, a, b, xtol=1e-16):
 
 def print_geometry(atomlist):
     """
-    print cartesian coordinates in XYZ format
+    print(cartesian coordinates in XYZ format)
     """
     print( "  Cartesian geometry (in Angstrom)" )
     print( " %d " % len(atomlist))

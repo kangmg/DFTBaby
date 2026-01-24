@@ -10,9 +10,9 @@ from matplotlib.pyplot import *
 from numpy import *
 
 if len(sys.argv) < 2: 
-    print "Usage: %s reppot-file1 reppot-file2 ..." % sys.argv[0]
-    print "Plot and compare repulsive potentials."
-    print "reppot-files with the following extensions can be read: .par and .py"
+    print("Usage: %s reppot-file1 reppot-file2 ..." % sys.argv[0])
+    print("Plot and compare repulsive potentials.")
+    print("reppot-files with the following extensions can be read: .par and .py")
     exit(-1)
 
 files = sys.argv[1:]

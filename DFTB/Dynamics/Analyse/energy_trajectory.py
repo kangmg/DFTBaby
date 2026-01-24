@@ -12,7 +12,7 @@ if __name__ == "__main__":
     usage += " show adiabatic energies along a trajectory and highlight current state\n"
 
     if len(sys.argv) < 3:
-        print usage
+        print(usage)
         exit(-1)
 
     st = np.loadtxt(sys.argv[1])
@@ -27,8 +27,8 @@ if __name__ == "__main__":
     energies = np.array(energies) * 27.211
 
     Nst, Nt = energies.shape
-    print "%s electronic states" % Nst
-    print "%s time steps" % Nt
+    print("%s electronic states" % Nst)
+    print("%s time steps" % Nt)
 
     # energy of active state
     en_active = np.zeros(Nt)

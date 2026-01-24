@@ -116,7 +116,7 @@ class DIIS_80(DensityMixer):
             try:
                 pflat_next, dp = self.get_DIIS_approximate()
             except LinAlgError:
-                print "DIIS failed: singular matrix!"
+                print("DIIS failed: singular matrix!")
                 pflat_next = 0.5*self.trial_vectors[-2] + 0.5*self.trial_vectors[-1]
                 raise Exception("?")
             p_next = reshape(pflat_next, shape)
@@ -216,7 +216,7 @@ class DIIS_82(FockMixer):
         b[-1] = -1.0
         # solve A*c = b
         c = solve(A,b)
-        print "best linear combination c = %s" % c
+        print("best linear combination c = %s" % c)
         assert abs(sum(c[:-1]) - 1.0) < 1.0e-5
         # v = sum_i c_i*v_i
         vDIIS = 0.0*self.trial_vectors[0]
@@ -234,16 +234,16 @@ class DIIS_82(FockMixer):
             # find the maximum relative error
             imax = argmax(self.error_norms)
             rel_err = self.error_norms[imax]/norm(self.trial_vectors[imax])
-            print "threshold for DIIS: %s   relative error: %s" % (self.start_threshold, rel_err)
+            print("threshold for DIIS: %s   relative error: %s" % (self.start_threshold, rel_err))
             if rel_err < self.start_threshold:
-                print "start DIIS"
+                print("start DIIS")
                 self.start_flag = True
 
         if self.start_flag == True:
             try:
                 vflat_next = self.get_DIIS_approximate()
             except LinAlgError:
-                print "DIIS failed: singular matrix!"
+                print("DIIS failed: singular matrix!")
                 vflat_next = 0.5*self.trial_vectors[-2] + 0.5*self.trial_vectors[-1]
                 raise Exception("?")
             H_next = reshape(vflat_next, H.shape)

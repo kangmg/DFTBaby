@@ -33,7 +33,7 @@ if __name__ == "__main__":
     usage = "python %s <geometry .xyz-file> <scaled geometries .xyz-file>\n\n" % sys.argv[0]
     usage += "generate different geometries by scaling the position vector of each atom by a constant factor."
     if len(sys.argv) < 3:
-        print usage
+        print(usage)
         exit(-1)
     SG = ScaledGeometries(sys.argv[1], sys.argv[2])
     parser = utils.OptionParserFuncWrapper(SG.generate_scaled_geometries,usage)

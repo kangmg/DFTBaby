@@ -41,12 +41,12 @@ class Thermochemistry:
         Inert = MolCo.inertial_tensor(self.masses, x0_shift)
         principle_moments, X = la.eigh(Inert)
         Iaa,Ibb,Icc = np.sort(abs(principle_moments))
-        print "principle moments of inertia (in a.u.): %s %s %s" % (Iaa,Ibb,Icc)
+        print("principle moments of inertia (in a.u.): %s %s %s" % (Iaa,Ibb,Icc))
         # In a linear triatomic molecule we have Icc = Ibb > Iaa = 0
         self.is_linear = False
         if abs(Icc-Ibb)/abs(Icc) < 1.0e-6 and abs(Iaa)/abs(Icc) < 1.0e-6:
             self.is_linear = True
-            print "Molecule is linear"
+            print("Molecule is linear")
         # Determine the type of rotor
         if self.is_linear == True:
             self.rotor_type = "linear rotor"
@@ -64,7 +64,7 @@ class Thermochemistry:
         self.rotational_constants = 1.0/(2.0 * principle_moments + 1.0e-20) # avoid division by zero error for a linear molecule, the invalid values are not actually used
         # symmetry number
         if symmetry_group == None:
-            print "Symmetry group unknown, setting rotational symmetry number to 1"
+            print("Symmetry group unknown, setting rotational symmetry number to 1")
             self.sigma_rot = 1
         else:
             self.sigma_rot = symmetry_group.rotational_symmetry_number()
@@ -76,7 +76,7 @@ class Thermochemistry:
         kBT = kB * self.T
         # total mass of the molecule
         M = np.sum(self.masses[::3])
-        print "Molecular mass = %s amu" % (M * AtomicData.aumass2amu)
+        print("Molecular mass = %s amu" % (M * AtomicData.aumass2amu))
         # translational partition function
         self.qt = pow(2.0*np.pi, -3.0/2.0) * pow(M * kBT,3.0/2.0) * kBT / self.P
         self.thermal_wavelength = 2.0*np.pi/np.sqrt(2.0*np.pi * M * kBT)  # in atomic units, hbar is set to 1, so h has to be set to 2pi
@@ -100,7 +100,7 @@ class Thermochemistry:
         kBT = kB * self.T
         if self.is_linear == True:
             C = self.rotational_constants[2]
-            print "rotational constant:  %10.6f cm^-1" % (C*AtomicData.hartree_to_wavenumbers)
+            print("rotational constant:  %10.6f cm^-1" % (C*AtomicData.hartree_to_wavenumbers))
             # rotational partition function (integral approximation)
             self.qr = kBT / (self.sigma_rot * C)  #
             # compute partition function exactly by summing over J
@@ -123,7 +123,7 @@ class Thermochemistry:
             # asymmetric top
             A,B,C = self.rotational_constants/kB
             f = AtomicData.hartree_to_wavenumbers * kB
-            print "rotational constants:  %10.6f  %10.6f  %10.6f  cm^-1" % (A*f,B*f,C*f)
+            print("rotational constants:  %10.6f  %10.6f  %10.6f  cm^-1" % (A*f,B*f,C*f))
             self.qr = np.sqrt(np.pi)/self.sigma_rot * pow(self.T,3.0/2.0) / np.sqrt(A*B*C)
             self.qr_sum = -1.0 # How dow I calculate the partition function for general A,B and C?
             #
@@ -177,10 +177,10 @@ class Thermochemistry:
         self.Se = kB * np.log(self.qe)
         self.Ce = 0.0
     def calculate(self):
-        print "**********************************"
-        print "* Thermochemistry (not tested)   *"
-        print "**********************************"
-        print ""
+        print("**********************************")
+        print("* Thermochemistry (not tested)   *")
+        print("**********************************")
+        print("")
         self.translational()
         self.rotational()
         self.vibrational()
@@ -192,34 +192,34 @@ class Thermochemistry:
 
         f = AtomicData.hartree_to_kcalmol
         if self.symmetry_group != None:
-            print "point group: %s" % self.symmetry_group.name()
+            print("point group: %s" % self.symmetry_group.name())
         else:
-            print "point group: unknown"
-        print "rotational symmetry number: %s (check this, it's probably wrong!)" % self.sigma_rot
-        print "Molecule is a %s"  % self.rotor_type
-        print "Temperature: %s K       Pressure: %s atm" % (self.T, self.P / AtomicData.atm_pressure)
-        print "thermal wavelength:  %10.6f bohr" % self.thermal_wavelength
-        print "volume per particle:   %.2e bohr^3" % self.volume
-        print "                  Partition Function Q"
-        print "                   integral approx.            summation"
-        print "translational qt:  %e                    - " % (self.qt)
-        print "rotational qr:     %e                %e    " % (self.qr, self.qr_sum)
-        print "vibrational qv:    %e" % (self.qv)
-        print "total qt*qr*qv:    %e" % (self.qt*self.qr*self.qv)
-        print "                  Thermal Energy E              Heat Capacity Cv              Entropy S"
-        print "                    kcal/mol                      kcal/(mol K)                 kcal/(mol K)"
-        print "translational:  %10.6f                    %10.6f                    %10.6f" % (self.Et*f, self.Ct*f, self.St*f)
-        print "rotational:     %10.6f                    %10.6f                    %10.6f" % (self.Er*f, self.Cr*f, self.Sr*f)
-        print "vibrational:    %10.6f (incl. Evib0)      %10.6f                    %10.6f" % ((self.Ev+self.Evib0)*f, self.Cv*f, self.Sv*f)
-        print "electronic:     %10.6f                    %10.6f                    %10.6f" % (self.Ee*f, self.Ce*f, self.Se*f)
-        print "total:          %10.6f                    %10.6f                    %10.6f" % (self.E*f, self.C*f, self.S*f)
-        print ""
-        print "electronic energy E0 (full DFTB energy):     %10.6f kcal/mol" % (self.E0*f)
-        print "vibrational zero-point energy Evib0:         %10.6f kcal/mol" % (self.Evib0*f)
-        print "electronic and zero-point energy E0+Evib0:   %10.6f kcal/mol" % ((self.E0+self.Evib0)*f)
+            print("point group: unknown")
+        print("rotational symmetry number: %s (check this, it's probably wrong!)" % self.sigma_rot)
+        print("Molecule is a %s"  % self.rotor_type)
+        print("Temperature: %s K       Pressure: %s atm" % (self.T, self.P / AtomicData.atm_pressure))
+        print("thermal wavelength:  %10.6f bohr" % self.thermal_wavelength)
+        print("volume per particle:   %.2e bohr^3" % self.volume)
+        print("                  Partition Function Q")
+        print("                   integral approx.            summation")
+        print("translational qt:  %e                    - " % (self.qt))
+        print("rotational qr:     %e                %e    " % (self.qr, self.qr_sum))
+        print("vibrational qv:    %e" % (self.qv))
+        print("total qt*qr*qv:    %e" % (self.qt*self.qr*self.qv))
+        print("                  Thermal Energy E              Heat Capacity Cv              Entropy S")
+        print("                    kcal/mol                      kcal/(mol K)                 kcal/(mol K)")
+        print("translational:  %10.6f                    %10.6f                    %10.6f" % (self.Et*f, self.Ct*f, self.St*f))
+        print("rotational:     %10.6f                    %10.6f                    %10.6f" % (self.Er*f, self.Cr*f, self.Sr*f))
+        print("vibrational:    %10.6f (incl. Evib0)      %10.6f                    %10.6f" % ((self.Ev+self.Evib0)*f, self.Cv*f, self.Sv*f))
+        print("electronic:     %10.6f                    %10.6f                    %10.6f" % (self.Ee*f, self.Ce*f, self.Se*f))
+        print("total:          %10.6f                    %10.6f                    %10.6f" % (self.E*f, self.C*f, self.S*f))
+        print("")
+        print("electronic energy E0 (full DFTB energy):     %10.6f kcal/mol" % (self.E0*f))
+        print("vibrational zero-point energy Evib0:         %10.6f kcal/mol" % (self.Evib0*f))
+        print("electronic and zero-point energy E0+Evib0:   %10.6f kcal/mol" % ((self.E0+self.Evib0)*f))
         H = self.E0+self.Evib0+self.E
-        print "enthalpy/heat H=E0+Evib0+E:                  %10.6f kcal/mol" % (H*f)
+        print("enthalpy/heat H=E0+Evib0+E:                  %10.6f kcal/mol" % (H*f))
         G = H - self.T*self.S
-        print "Gibbs free energy G=H-TS:                    %10.6f kcal/mol" % (G*f)
-        print ""
+        print("Gibbs free energy G=H-TS:                    %10.6f kcal/mol" % (G*f))
+        print("")
         

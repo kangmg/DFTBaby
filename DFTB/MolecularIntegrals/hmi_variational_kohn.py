@@ -46,7 +46,7 @@ def hmi_variational_kohn():
 
     rho = None
     xc = None
-    print "effective potential..."
+    print("effective potential...")
     V = effective_potential_func(atomlist, rho, xc, nelec=0)
 
     # basis functions
@@ -104,14 +104,14 @@ def hmi_variational_kohn():
     for i in range(0, nb):
         ui = basis[i]
         for j in range(0, nb):
-            print "i= %d  j= %d" % (i,j)
+            print("i= %d  j= %d" % (i,j))
             uj = basis[j]
             Vj = basis_potentials[j]
             def integrand(x,y,z):
                 return ui(x,y,z) * (V(x,y,z) - Vj(x,y,z)) * uj(x,y,z)
             Lbb[i,j] = integral(atomlist, integrand)
 
-    print Lbb
+    print(Lbb)
 
     # matrix elements between unbound functions
     Lff = np.zeros((2,2))
@@ -119,11 +119,11 @@ def hmi_variational_kohn():
     for i in range(0, 2):
         fi = free[i]
         for j in range(0, 2):
-            print "i= %d  j= %d" % (i,j)
+            print("i= %d  j= %d" % (i,j))
             fj = free[j]
             Lff[i,j] = kinetic(atomlist, fi,fj) + nuclear(atomlist, fi,fj) - E * overlap(atomlist, fi,fj)
 
-    print Lff
+    print(Lff)
 
     # matrix elements between bound and unbound functions
     Lbf = np.zeros((nb,2))
@@ -133,20 +133,20 @@ def hmi_variational_kohn():
         ui = basis[i]
         for j in range(0, 2):
             fj = free[j]
-            print "i= %d  j= %d" % (i,j)
+            print("i= %d  j= %d" % (i,j))
             Lbf[i,j] = kinetic(atomlist, ui,fj) + nuclear(atomlist, ui,fj) - E * overlap(atomlist, ui,fj)
             Lfb[j,i] = kinetic(atomlist, fj,ui) + nuclear(atomlist, fj,ui) - E * overlap(atomlist, fj,ui)
 
-    print Lbf
-    print Lfb
+    print(Lbf)
+    print(Lfb)
 
     #
     coeffs = -np.dot(la.inv(Lbb), Lbf)
     
     M = Lff - np.dot(Lfb, np.dot(la.inv(Lbb), Lbf))
 
-    print "M"
-    print M
+    print("M")
+    print(M)
 
     # The equation
     #    
@@ -166,7 +166,7 @@ def hmi_variational_kohn():
     while eta < 0.0:
         eta += np.pi
 
-    print "eta= %s" % eta
+    print("eta= %s" % eta)
 
     bc0 = linear_combination(atomlist, basis, coeffs[:,0])
     bc1 = linear_combination(atomlist, basis, coeffs[:,1])

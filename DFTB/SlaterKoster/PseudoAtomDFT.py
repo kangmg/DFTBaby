@@ -125,8 +125,8 @@ class AtomicKohnSham(Coulomb):
         dr = self.getVolumeElement()*ediff1d(r, to_end=r[-1]-r[-2])
         # check that density is normalized
         charge = sum(self.n*dr)
-        print "integrated charge = %s" % charge
-        print "expected charge = %s" % self.Nelec
+        print("integrated charge = %s" % charge)
+        print("expected charge = %s" % self.Nelec)
         # coulombic electron-electron energy
         if self.Nelec > 1:
             self.Ecoul = 0.5*sum(self.Vh*self.n*dr)
@@ -147,12 +147,12 @@ class AtomicKohnSham(Coulomb):
         self.Ekin = self.Ebs - (self.Eenuc + 2.0*self.Ecoul + Evxc)
         # total energy
         self.Etot = self.Ekin + self.Eenuc + self.Ecoul + self.Exc
-        print "Eenuc = %s" % self.Eenuc
-        print "Ecoul = %s" % self.Ecoul
-        print "Exc   = %s" % self.Exc
-        print "Ebs   = %s" % self.Ebs
-        print "Ekin  = %s" % self.Ekin
-        print "Etot  = %s" % self.Etot
+        print("Eenuc = %s" % self.Eenuc)
+        print("Ecoul = %s" % self.Ecoul)
+        print("Exc   = %s" % self.Exc)
+        print("Ebs   = %s" % self.Ebs)
+        print("Ekin  = %s" % self.Ekin)
+        print("Etot  = %s" % self.Etot)
         return self.Eenuc, self.Ecoul, self.Exc, self.Ebs, self.Ekin, self.Etot
 
 class AtomicKohnShamExpGrid(AtomicKohnSham, CoulombExpGrid):
@@ -177,11 +177,11 @@ def hartree_potential(n, r, eps=1.0e-8, check_charge=None):
     """
     dr = ediff1d(r, to_end=r[-1]-r[-2])
     charge = 4.0*pi*sum(pow(r,2)*n*dr)
-    print "hartree potential"
-    print "max(n) = %s" % n.max()
-    print "integrated charge = %s" % charge
+    print("hartree potential")
+    print("max(n) = %s" % n.max())
+    print("integrated charge = %s" % charge)
     if check_charge:
-        print "expected charge = %s" % check_charge
+        print("expected charge = %s" % check_charge)
         """check that the integrated charge does not differ to much from the expected charge"""
         assert abs((check_charge - charge))/(abs(check_charge)+1.0) < 0.01
     Riemann = zeros(r.shape)
@@ -219,7 +219,7 @@ def radial_density(radial_wavefuncs, occupation, r, eps=1.0e-8):
     """
     n = zeros(r.shape)
     for o,nelec in enumerate(occupation):
-        print "o= %s wavefunction.max() = %s" % (o, radial_wavefuncs[o].max())
+        print("o= %s wavefunction.max() = %s" % (o, radial_wavefuncs[o].max()))
         n += nelec * pow(radial_wavefuncs[o], 2)
     n /= 4.0*pi*pow(r+eps,2)
     # At the origin the radial density should be exactly 0
@@ -314,7 +314,7 @@ class PseudoAtomDFT:
         self.occupation = [occ for occ in occupation_numbers(self.Nelec)] # by default fill orbitals in standard order
         self.nmax = max([n for (nelec,n,l) in self.occupation])
         self.lmax = max([l for (nelec,n,l) in self.occupation])
-        print "nmax = %s, lmax = %s" % (self.nmax, self.lmax)
+        print("nmax = %s, lmax = %s" % (self.nmax, self.lmax))
         self.valence_qnumbers_nl = valence_qnumbers_nl(self.occupation)
     def setOccupation(self, occupation):
         """
@@ -329,7 +329,7 @@ class PseudoAtomDFT:
         # the orbital with the highest l does not have necessarily the highest energy
         self.nmax = max([n for (nelec,n,l) in self.occupation])
         self.lmax = max([l for (nelec,n,l) in self.occupation])
-        print "nmax = %s, lmax = %s" % (self.nmax, self.lmax)
+        print("nmax = %s, lmax = %s" % (self.nmax, self.lmax))
     def setValenceOrbitals(self, valence_qnumbers_nl, format=None):
         """
         specify which orbitals should be included in the minimal basis set.
@@ -357,7 +357,7 @@ class PseudoAtomDFT:
                 self.nmax = n
             if l > self.lmax:
                 self.lmax = l
-        print "nmax = %s, lmax = %s" % (self.nmax, self.lmax)
+        print("nmax = %s, lmax = %s" % (self.nmax, self.lmax))
     def getValenceOrbitals(self):
         return self.valence_qnumbers_nl
     def setRadialGrid(self, rmin, rmax, Npts):
@@ -400,22 +400,22 @@ class PseudoAtomDFT:
         """
         r = self.getRadialGrid()
         if guess != None:
-            print "Start with density from previous calculation"
+            print("Start with density from previous calculation")
             rg, ng = guess
             tck = interpolate.splrep(rg, ng, s=0)
             n0 = abs(interpolate.splev(r,tck,der=0,ext=1))
             self.have_n0 = True
-        elif density_exponents.has_key((self.Z, self.Nelec)):
-            print "Start with parametrized density n0(r) ~ exp(-a*r)"
+        elif (self.Z, self.Nelec in density_exponents):
+            print("Start with parametrized density n0(r) ~ exp(-a*r)")
             a = density_exponents[(self.Z, self.Nelec)]
-            print "Got initial density with exponent a = %s" % a
+            print("Got initial density with exponent a = %s" % a)
             n0 = self.Nelec * pow(a,3.0)/(8.0*pi) * exp(-a*r)
             #print self.KS_pot.getRadialGrid()
             #print n0
             # n0 satisfies  4pi integrate(0->infinity, r^2 n(r) dr) = Nelec
             self.have_n0 = True
         else:
-            print "Start with 0 density"
+            print("Start with 0 density")
             # initially use 0 density
             n0 = 0.0*r
         self.KS_pot.setDensity(n0)
@@ -428,8 +428,8 @@ class PseudoAtomDFT:
 
         i = 0
         while True:
-            print "ITERATION: %s" % i
-            print "**************"
+            print("ITERATION: %s" % i)
+            print("**************")
             if not self.have_n0:
                 if i == 0 :
                     # In the first iteration step the electron density is
@@ -452,23 +452,23 @@ class PseudoAtomDFT:
                                      + "\nTry changing the radial grid and the energy range or increase numerov_conv."\
                                      + "\nspectrum = %s" % self.spectrum)
             # average change in orbital energies between current and last step
-            print "new energies = %s" % self.energies
-            print "old energies = %s" % self.old_energies
-            print "spectrum = %s" % self.spectrum
+            print("new energies = %s" % self.energies)
+            print("old energies = %s" % self.old_energies)
+            print("spectrum = %s" % self.spectrum)
             if i > 2:
                 en_change = sum(abs(self.energies - self.old_energies))/float(len(self.energies))
-                print "Energy Change (tolerance) = %s (%s)" % (en_change, self.en_conv)
+                print("Energy Change (tolerance) = %s (%s)" % (en_change, self.en_conv))
                 if en_change < self.en_conv:
-                    print "orbital energies converged"
+                    print("orbital energies converged")
                     self.converged = True
                     self.getTotalEnergy()
-                    print "total energy = %s" % self.Etot
+                    print("total energy = %s" % self.Etot)
                     break
             self.old_energies = self.energies
             """
             # switch off damping
             if i > 10:
-                print "Damping is switched off"
+                print("Damping is switched off")
                 damping = 0.0
             else:
                 damping = self.damping
@@ -528,7 +528,7 @@ class PseudoAtomDFT:
         qlast = q0
         n_last = n0
         for i in range(0, len(dqplus)):
-            print "NEGATIVE CHARGE ON ATOM: %s e" % dqplus[i]
+            print("NEGATIVE CHARGE ON ATOM: %s e" % dqplus[i])
             q = q0+dqplus[i]
             self.converged = False
             self.KS_pot.Nelec = q
@@ -544,7 +544,7 @@ class PseudoAtomDFT:
         qlast = q0
         n_last = n0
         for i in reversed(range(0, len(dqminus))):
-            print "POSITIVE CHARGE ON ATOM: %s e" % dqminus[i]
+            print("POSITIVE CHARGE ON ATOM: %s e" % dqminus[i])
             q = q0+dqminus[i]
             self.converged = False
             self.KS_pot.Nelec = q
@@ -555,7 +555,7 @@ class PseudoAtomDFT:
             Eqminus[i] = self.Etot
             qlast = q
             n_last = self.KS_pot.getDensity()
-        print "NEUTRAL ATOM:"
+        print("NEUTRAL ATOM:")
         # compute total energy of neutral atom, UGLY: neutral atom is calculated twice
         self.converged = False
         self.KS_pot.Nelec = q0
@@ -570,8 +570,8 @@ class PseudoAtomDFT:
         else:
             Eq = hstack((Eqminus, Eqplus))
 
-        print "charge = %s" % dq
-        print "dE = %s" % (Eq-E0)
+        print("charge = %s" % dq)
+        print("dE = %s" % (Eq-E0))
         # spline dE(q) as function of q and find 1st and 2nd derivatives in q=0
         tck = interpolate.splrep(dq, Eq-E0, s=0)
         dEdq = interpolate.splev(0,tck,der=1)
@@ -580,8 +580,8 @@ class PseudoAtomDFT:
         # see Koskinen/Maekinen (2009)
         self.hardness_chi = -dEdq
         self.Hubbard_U = d2Edq2
-        print "hardness chi = %s" % self.hardness_chi
-        print "Hubbard U = %s" % self.Hubbard_U
+        print("hardness chi = %s" % self.hardness_chi)
+        print("Hubbard U = %s" % self.Hubbard_U)
         self.partial_charge = dq
         self.charging_energy = Eq-E0
         return self.hardness_chi, self.Hubbard_U
@@ -620,7 +620,7 @@ class PseudoAtomDFT:
         if "+" in sides:
             Eqplus = zeros(dq.shape)
             for i in range(1, Nq):
-                print "NEGATIVE CHARGE ON ATOM: %s e" % dq[i]
+                print("NEGATIVE CHARGE ON ATOM: %s e" % dq[i])
                 q = q0+dq[i]
                 self.converged = False
                 self.KS_pot.Nelec = q
@@ -632,17 +632,17 @@ class PseudoAtomDFT:
         if "-" in sides:
             Eqminus= zeros(dq.shape)
             for i in range(1, Nq):
-                print "POSITIVE CHARGE ON ATOM: -%s e" % dq[i]
+                print("POSITIVE CHARGE ON ATOM: -%s e" % dq[i])
                 q = q0-dq[i]
                 self.converged = False
                 self.KS_pot.Nelec = q
                 self.initialDensityGuess((r,q/q0*n0))
                 self.setOccupation([occ for occ in occupation_numbers(q)])
-                print "q0 = %s" % q0
+                print("q0 = %s" % q0)
                 self.solveKohnSham()
                 assert self.converged
                 Eqminus[i] = self.Etot
-        print "NEUTRAL ATOM:"
+        print("NEUTRAL ATOM:")
         # compute total energy of neutral atom, UGLY: neutral atom is calculated twice
         self.converged = False
         self.KS_pot.Nelec = q0
@@ -663,8 +663,8 @@ class PseudoAtomDFT:
         else:
             Eq = hstack((Eqminus[1:][::-1], Eqplus))
             charge = hstack((-dq[1:][::-1],dq))
-        print "charge = %s" % charge
-        print "dE = %s" % (Eq-E0)
+        print("charge = %s" % charge)
+        print("dE = %s" % (Eq-E0))
         # spline dE(q) as function of q and find 1st and 2nd derivatives in q=0
         tck = interpolate.splrep(charge, Eq-E0, s=0)
         dEdq = interpolate.splev(0,tck,der=1)
@@ -673,8 +673,8 @@ class PseudoAtomDFT:
         # see Koskinen/Maekinen (2009)
         self.hardness_chi = -dEdq
         self.Hubbard_U = d2Edq2
-        print "hardness chi = %s" % self.hardness_chi
-        print "Hubbard U = %s" % self.Hubbard_U
+        print("hardness chi = %s" % self.hardness_chi)
+        print("Hubbard U = %s" % self.Hubbard_U)
         self.partial_charge = charge
         self.charging_energy = Eq-E0
         return self.hardness_chi, self.Hubbard_U    
@@ -833,4 +833,4 @@ if __name__ == "__main__":
     atomdft.setEnergyRange(linspace(-2.0, -0.0001, 100))
 #    atomdft.setEnergyRange(linspace(-3.0, -0.001, 100)) # works for he
     atomdft.solveKohnSham()
-    print atomdft.getSolution()[0]
+    print(atomdft.getSolution()[0])

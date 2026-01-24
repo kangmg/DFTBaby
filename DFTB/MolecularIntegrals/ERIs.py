@@ -172,5 +172,5 @@ if __name__ == "__main__":
             for c,bfC in enumerate(basis.bfs):
                 for d,bfD in enumerate(basis.bfs):
                     eri = electron_repulsion_integral(atomlist, bfA, bfB, bfC, bfD, density, xc_functional)
-                    print "(%d,%d|{1/r12+f_xc[rho0]}|%d,%d)= %e" % (a,b,c,d,eri)
+                    print("(%d,%d|{1/r12+f_xc[rho0]}|%d,%d)= %e" % (a,b,c,d,eri))
     

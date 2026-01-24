@@ -22,5 +22,5 @@ if __name__ == "__main__":
     for a,bfA in enumerate(basis.bfs):
         for b,bfB in enumerate(basis.bfs):
             t = kinetic(atomlist, bfA, bfB)
-            print "(%d|T|%d) = %e" % (a,b, t)
+            print("(%d|T|%d) = %e" % (a,b, t))
     

@@ -52,7 +52,7 @@ def read_atomic_data_it(filename):
         try:
             nat = int(words[0])
         except ValueError as e:
-            print e
+            print(e)
             raise Exception("Probably wrong number of atoms in xyz-file '%s'" % filename)
         # extract time of current step from title line
         title = fh.readline()
@@ -61,7 +61,7 @@ def read_atomic_data_it(filename):
         time = float(words[1])
         # read numerical data from columns 5,6,..., for `nat` atoms
         data = []
-        for i in xrange(nat):
+        for i in range(nat):
             line = fh.readline()
             words = line.split()
             cols = map(float,words[4:])
@@ -76,7 +76,7 @@ if __name__ == "__main__":
     (opts,args) = parser.parse_args()
     
     if len(args) == 0:
-        print usage
+        print(usage)
         exit(-1)
 
     # extract list of xyz-files from the command line
@@ -98,7 +98,7 @@ if __name__ == "__main__":
             xyz_files.append(arg)
 
     if len(xyz_files) < 1:
-        print "At least one xyz-file should be specified!"
+        print("At least one xyz-file should be specified!")
         exit(-1)
     data_trajs = []
     for f in xyz_files:
@@ -117,10 +117,10 @@ if __name__ == "__main__":
     nfrags = len(fragments)    
     ntrajs = len(xyz_files)
     nsteps = min(map(len, data_trajs))     # find length of shorted trajectories
-    print "additional columns in xyz-file : %d" % ncols
-    print "number of fragments            : %d" % nfrags
-    print "number of trajectories         : %d" % ntrajs
-    print "time steps                     : %d" % nsteps
+    print("additional columns in xyz-file : %d" % ncols)
+    print("number of fragments            : %d" % nfrags)
+    print("number of trajectories         : %d" % ntrajs)
+    print("time steps                     : %d" % nsteps)
     #
     data = np.zeros((ntrajs,nsteps,nfrags,ncols), dtype=float)
     for i in range(0, ntrajs):
@@ -142,4 +142,4 @@ if __name__ == "__main__":
             data_avg_frag[:,0] = times[:nsteps]
             data_avg_frag[:,1:] = data_avg[:,k,:]
             np.savetxt(fh, data_avg_frag)
-            print "trajectory average for fragment %s written to file '%s'" % (fragment_label, fname)
+            print("trajectory average for fragment %s written to file '%s'" % (fragment_label, fname))

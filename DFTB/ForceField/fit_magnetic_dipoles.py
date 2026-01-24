@@ -45,11 +45,11 @@ def local_axes(R):
         I[1,2] -= y*z        # Iyz
         I[0,2] -= x*z        # Ixz
 
-    print "  center of mass (all masses = 1): %+7.5f %+7.5f %+7.5f" % tuple(cm)
-    print "  Tensor of inertia (all masses = 1)"
-    print "    %+7.5f " % I[0,0];
-    print "    %+7.5f %+7.5f " % (I[0,1], I[1,1]);
-    print "    %+7.5f %+7.5f %+7.5f " % (I[0,2], I[1,2], I[2,2]);
+    print("  center of mass (all masses = 1): %+7.5f %+7.5f %+7.5f" % tuple(cm))
+    print("  Tensor of inertia (all masses = 1)")
+    print("    %+7.5f " % I[0,0])
+    print("    %+7.5f %+7.5f " % (I[0,1], I[1,1]))
+    print("    %+7.5f %+7.5f %+7.5f " % (I[0,2], I[1,2], I[2,2]))
 
     moments, axes = la.eigh(I,UPLO='U')
 
@@ -59,24 +59,24 @@ def local_axes(R):
     for xyz in [0,1,2]:
         for i in range(0, n):
             proj[xyz] += (i+1) * np.dot(axes[:,xyz], R[:,i]-cm)
-    print "proj = %s" % proj
+    print("proj = %s" % proj)
     if proj[2] < 0.0:
         axes[:,2] *= -1
-        print "FLIP Z"
+        print("FLIP Z")
     if proj[1] < 0.0:
         axes[:,1] *= -1
-        print "FLIP Y"
+        print("FLIP Y")
     if np.dot(axes[:,2], np.cross(axes[:,0], axes[:,1])) < 0.0:
         # create right handed coordinate system
         axes[:,0] *= -1
-        print "FLIP X"
+        print("FLIP X")
 
     assert(np.dot(axes[:,2], np.cross(axes[:,0], axes[:,1])) > 0.0)
 
-    print "local molecular frame:"
-    print " x-axis: %s" % axes[:,0]
-    print " y-axis: %s" % axes[:,1]
-    print " z-axis: %s" % axes[:,2]
+    print("local molecular frame:")
+    print(" x-axis: %s" % axes[:,0])
+    print(" y-axis: %s" % axes[:,1])
+    print(" z-axis: %s" % axes[:,2])
 
     return axes
         
@@ -154,8 +154,7 @@ class MagneticDipoleFitter:  # magnetic dipoles from vector potential
                         =   /      -------------- (  (z-Z(a))     0      -(x-X(a)) ) * ( m_y(a) )
                             --a=1  c |r - R(a)|^3 ( -(y-Y(a))  (x-X(a))      0     )   ( m_z(a) )
 
-                                  \______________________  ________________________/
-                                                         \/
+                                  \______________________  ________________________/ \/
                            __n                   R^(3x3) matrix K(r,a)
                            \
                         =  /     K(r,R(a)) * m(a)
@@ -185,19 +184,19 @@ class MagneticDipoleFitter:  # magnetic dipoles from vector potential
         (3n+3) x (3n+3) has to be solved
         """
         # _d[i,j] is the distance between the i-th fit point and the j-th center, |r_i - R_j|
-        print "compute distances..."
+        print("compute distances...")
         _d = np.zeros((self.m, self.n))
         for xyz in range(0, 3):
             for j in range(0, self.n):
                 _d[:,j] += (self.r[xyz,:] - self.R[xyz,j])**2
         _d = np.sqrt(_d)
 
-        print "eliminate those fit points that are either"
-        print "  - closer than the van der Waals radius to any atom"
-        print "  - or farther away than Rmax=2.8 Angstrom from all atoms"
+        print("eliminate those fit points that are either")
+        print("  - closer than the van der Waals radius to any atom")
+        print("  - or farther away than Rmax=2.8 Angstrom from all atoms")
         Rmax = 2.8 / AtomicData.bohr_to_angs
-        print "vdW radii: %s" % self.vdw_radii
-        print "Rmax= %s bohr" % Rmax
+        print("vdW radii: %s" % self.vdw_radii)
+        print("Rmax= %s bohr" % Rmax)
         # indeces of selected fit points outside vdW radius
         # and inside volume with max distance Rmax from each atom
         indeces = []
@@ -205,7 +204,7 @@ class MagneticDipoleFitter:  # magnetic dipoles from vector potential
             if (_d[i,:] >= self.vdw_radii).all() and (_d[i,:] < Rmax).any():
                 indeces.append(i)
         m = len(indeces)                
-        print "%d of %d fit points left" % (m, self.m)
+        print("%d of %d fit points left" % (m, self.m))
         # distances of selected fit points 
         d = _d[indeces,:]
         # vector potential at the selected fit points
@@ -214,7 +213,7 @@ class MagneticDipoleFitter:  # magnetic dipoles from vector potential
         # positions of elected fit points
         r = self.r[:,indeces]
         #
-        print "build K-matrices..."
+        print("build K-matrices...")
         # 
         K = np.zeros((m, 3,3, self.n))  #   K[i,:,:,j] = K(i,j)
         for j in range(0, self.n):  # iterate over atom centers
@@ -234,7 +233,7 @@ class MagneticDipoleFitter:  # magnetic dipoles from vector potential
             K[:,2,0,j] = -K[:,0,2,j]
             K[:,2,1,j] = -K[:,1,2,j]
 
-        print "build linear equation system..."
+        print("build linear equation system...")
         # A matrix for x,y,z components
         A = np.zeros((3*(self.n+1),3*(self.n+1)))
         # right hand side of A.x = b
@@ -257,7 +256,7 @@ class MagneticDipoleFitter:  # magnetic dipoles from vector potential
             b[3*self.n+xyz] = mtot[xyz]
         A[3*self.n:3*(self.n+1), 3*self.n:3*(self.n+1)] = 0.0
         
-        print "solve A.x = b..."
+        print("solve A.x = b...")
         x = la.solve(A,b)
         # atom-centered magnetic dipoles
         mvec = x[:-3].reshape((self.n,3)).transpose()
@@ -273,26 +272,24 @@ class MagneticDipoleFitter:  # magnetic dipoles from vector potential
         mvec_proj = np.dot(self.axes.transpose(), mvec)
         
         if verbose > 0:
-            print ""
-            print "root mean square deviation ||A - A(dipoles)||: %e" % rmsd
-            print "total magnetic dipole vector: %+7.5f  %+7.5f  %+7.5f" % tuple(mtot.tolist())
-            print "sum of atom-centered vectors: %+7.5f  %+7.5f  %+7.5f" % tuple(summed_magnetic_dipole.tolist())
-            print ""
-            print "Unlike transition charges, the magnetic dipoles depend on the orientation of the molecule."
-            print "To allow copying magnetic dipoles between differently oriented monomers without having"
-            print "to rotate them, the magnetic dipoles are defined in a LOCAL MOLECULAR FRAME. "
-            print "The local axes are obtained as the eigenvectors of the tensor of inertia (with all atomic masses set to 1)."
+            print("")
+            print("root mean square deviation ||A - A(dipoles)||: %e" % rmsd)
+            print("total magnetic dipole vector: %+7.5f  %+7.5f  %+7.5f" % tuple(mtot.tolist()))
+            print("sum of atom-centered vectors: %+7.5f  %+7.5f  %+7.5f" % tuple(summed_magnetic_dipole.tolist()))
+            print("")
+            print("Unlike transition charges, the magnetic dipoles depend on the orientation of the molecule.")
+            print("To allow copying magnetic dipoles between differently oriented monomers without having")
+            print("to rotate them, the magnetic dipoles are defined in a LOCAL MOLECULAR FRAME. ")
+            print("The local axes are obtained as the eigenvectors of the tensor of inertia (with all atomic masses set to 1).")
 
-            print "                                 M  A  G  N  E  T  I  C       D  I  P  O  L  E  S                     "
-            print "                                original orientation                      local molecular frame       "
-            print "  #          Element        Mx           My           Mz              Mx           My           Mz    "
-            print "======================================================================================================"
+            print("                                 M  A  G  N  E  T  I  C       D  I  P  O  L  E  S                     ")
+            print("                                original orientation                      local molecular frame       ")
+            print("  #          Element        Mx           My           Mz              Mx           My           Mz    ")
+            print("======================================================================================================")
             for i,(Zi, posi) in enumerate(self.atomlist):
-                print "  %4.1d     %4.2s           %+7.5f     %+7.5f     %+7.5f        %+7.5f     %+7.5f     %+7.5f" % (i, AtomicData.atom_names[Zi-1].capitalize(),
-                                                                                                        mvec[0,i], mvec[1,i], mvec[2,i],
-                                                                                                        mvec_proj[0,i], mvec_proj[1,i], mvec_proj[2,i])
+                print("  %4.1d     %4.2s           %+7.5f     %+7.5f     %+7.5f        %+7.5f     %+7.5f     %+7.5f" % (i, AtomicData.atom_names[Zi-1].capitalize()) mvec[0,i], mvec[1,i], mvec[2,i], mvec_proj[0,i], mvec_proj[1,i], mvec_proj[2,i]) , end=" ")
 
-            print ""
+            print("")
             
         return mvec_proj
 
@@ -318,7 +315,7 @@ if __name__ == "__main__":
     
     (opts, args) = parser.parse_args()
     if len(args) < 7:
-        print usage
+        print(usage)
         exit(-1)
 
         
@@ -335,7 +332,7 @@ if __name__ == "__main__":
     dat_file = args[6]
 
     # load cube files components of magnetic dipole density
-    print "load magnetic dipole densities from cube files..."
+    print("load magnetic dipole densities from cube files...")
     atomlist, origin, axes, Mx = Cube.readCube(Mx_cube_file)
     atomlist, origin, axes, My = Cube.readCube(My_cube_file)
     atomlist, origin, axes, Mz = Cube.readCube(Mz_cube_file)
@@ -349,7 +346,7 @@ if __name__ == "__main__":
     mtot = np.array([ np.sum(Mx*dV), np.sum(My*dV), np.sum(Mz*dV) ])
     
     # load cube files for components of vector potential
-    print "load magnetic vector potential from cube files..."
+    print("load magnetic vector potential from cube files...")
     atomlist, origin, axes, Ax_data = Cube.readCube(Ax_cube_file)
     atomlist, origin, axes, Ay_data = Cube.readCube(Ay_cube_file)
     atomlist, origin, axes, Az_data = Cube.readCube(Az_cube_file)
@@ -363,7 +360,7 @@ if __name__ == "__main__":
     fitter.setFitPoints(points, Ax,Ay,Az)
     # fitting centers
     if opts.fit_centers != "":
-        print "loading fit centers from '%s'" % opts.fit_centers
+        print("loading fit centers from '%s'" % opts.fit_centers)
         atomlist = XYZ.read_xyz(opts.fit_centers)[0]
     fitter.setAtomicCenters(atomlist)
     
@@ -376,4 +373,4 @@ if __name__ == "__main__":
     print>>fh, "#   Mx        My        Mz"
     np.savetxt(fh, magnetic_dipoles)
     fh.close()
-    print "magnetic dipoles saved to '%s'" % dat_file
+    print("magnetic dipoles saved to '%s'" % dat_file)

@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
     (opts, args) = parser.parse_args()
     if len(args) < 4:
-        print usage
+        print(usage)
         exit(-1)
 
     atomlist_mono = XYZ.read_xyz(args[0])[0]
@@ -43,26 +43,26 @@ if __name__ == "__main__":
     monomer_pattern = args[2]
     polymer_pattern = args[3]
     
-    print "load transition densities for monomer states"
+    print("load transition densities for monomer states")
     Ptrans_mono = []  # list of transition densities matrices in AO basis, one for each state
     for tdense_file in glob.glob(monomer_pattern+"*.mat"):
-        print tdense_file
+        print(tdense_file)
         PtransI = np.loadtxt(tdense_file)
         # remove hydrogen orbitals
         nao,nao = PtransI.shape
         nhyd = count_hydrogens(atomlist_mono)
-        print "remove %d hydrogens" % nhyd
+        print("remove %d hydrogens" % nhyd)
         PtransI = PtransI[:(nao-nhyd),:][:,:(nao-nhyd)]
         Ptrans_mono.append(PtransI)
-    print "load transition densities for polymer states"
+    print("load transition densities for polymer states")
     Ptrans_poly = []  # list of transition densities matrices in AO basis, one for each state
     for tdense_file in glob.glob(polymer_pattern+"*.mat"):
-        print tdense_file
+        print(tdense_file)
         PtransI = np.loadtxt(tdense_file)
         # remove hydrogen orbitals
         nao,nao = PtransI.shape
         nhyd = count_hydrogens(atomlist_poly)
-        print "remove %d hydrogens" % nhyd
+        print("remove %d hydrogens" % nhyd)
         PtransI = PtransI[:(nao-nhyd),:][:,:(nao-nhyd)]
         Ptrans_poly.append(PtransI)
         
@@ -84,21 +84,21 @@ if __name__ == "__main__":
 
     # number of AOs in the monomer
     nAOm,nAOm = Ptrans_mono[0].shape
-    print "nAOm = %s" % nAOm
+    print("nAOm = %s" % nAOm)
     # number of AOs in polymer
     nAOp,nAOp = Ptrans_poly[0].shape
-    print "nAOp = %s" % nAOp
+    print("nAOp = %s" % nAOp)
     assert nAOp % nAOm == 0
     # number of monomeric units in polymer
     nunits = nAOp/nAOm
-    print "Linear polymer consists of %d monomeric units" % nunits
+    print("Linear polymer consists of %d monomeric units" % nunits)
 
     for I in range(0, Nst_poly):
         PI = Ptrans_poly[I]
         
 #        plt.matshow(PI)
         
-        print "Analyse state %d of polymer" % I
+        print("Analyse state %d of polymer" % I)
         MI = np.zeros((Nst_mono, nunits))
         for n in range(0, nunits):
             # extract diagonal block of the n-th subunit
@@ -111,7 +111,7 @@ if __name__ == "__main__":
             
         unit_labels = ["U-%d" % nu for nu in range(0, nunits)]
         state_labels = ["St-%d" % st for st in range(0, Nst_mono)]
-        print utils.annotated_matrix(MI, state_labels, unit_labels)
+        print(utils.annotated_matrix(MI, state_labels, unit_labels))
         plt.matshow(MI, interpolation="nearest", cmap=plt.cm.jet)
         #plt.show()
     plt.show()

@@ -57,32 +57,32 @@ def function_to_cubefile(atomlist, func, **opts):
         sys.stdout = open(filename, 'w')
     spacing = 1.0/ppb
     nx,ny,nz = int(dx*ppb),int(dy*ppb),int(dz*ppb)
-    print "CUBE FILE"
-    print "OUTER LOOP: X, MIDDLE LOOP: Y, INNER LOOP: Z"
-    print "%5i %11.6f %11.6f %11.6f" %  (len(atomlist),xmin,ymin,zmin)
-    print "%5i %11.6f %11.6f %11.6f" %  (nx,spacing,0,0)
-    print "%5i %11.6f %11.6f %11.6f" %  (ny,0,spacing,0)
-    print "%5i %11.6f %11.6f %11.6f" %  (nz,0,0,spacing)
+    print("CUBE FILE")
+    print("OUTER LOOP: X, MIDDLE LOOP: Y, INNER LOOP: Z")
+    print("%5i %11.6f %11.6f %11.6f" %  (len(atomlist),xmin,ymin,zmin))
+    print("%5i %11.6f %11.6f %11.6f" %  (nx,spacing,0,0))
+    print("%5i %11.6f %11.6f %11.6f" %  (ny,0,spacing,0))
+    print("%5i %11.6f %11.6f %11.6f" %  (nz,0,0,spacing))
 
     # The second record here is the nuclear charge, which differs from the
     #  atomic number when a ppot is used. Since I don't have that info, I'll
     #  just echo the atno
     for (Zi, posi) in atomlist:
         x,y,z = posi
-        print "%5i %11.6f %11.6f %11.6f %11.6f" %  (Zi,Zi,x,y,z)
+        print("%5i %11.6f %11.6f %11.6f %11.6f" %  (Zi,Zi,x,y,z))
     grid = mgrid[xmin:xmax:spacing,ymin:ymax:spacing,zmin:zmax:spacing]
 
     ampGrid = func(grid, pow(spacing,3))
 
-    for i in xrange(nx):
-        for j in xrange(ny):
-            for k in xrange(nz):
+    for i in range(nx):
+        for j in range(ny):
+            for k in range(nz):
                 amp = ampGrid[i][j][k]
                 if abs(amp) < 1e-12: 
                     amp = 0.0
-                print " %11.5e" % amp.real,
+                print(" %11.5e" % amp.real, end=" ")
                 if k % 6 == 5: print "\n ",
-            print "\n ",
+            print("\n ", end=" ")
     """write grid to cube file"""
     # close file
     if (filename != ''):
@@ -124,7 +124,7 @@ def orbital_amplitude(grid, bfs,mo, threshold=0.0, cache=True):
 
     MOmax = abs(mo).max()
     MOthresh = threshold * MOmax
-    for ibf in xrange(nbf):
+    for ibf in range(nbf):
         if abs(mo[ibf]) > MOthresh:
             ampGrid += bf_grid[ibf] * mo[ibf]
     return(ampGrid)
@@ -334,21 +334,21 @@ class CubeExporter:
         cubedir = expanduser(expandvars(cubedir))
         self.setGrid(points_per_bohr=points_per_bohr, cube_threshold=cube_threshold)
         if cube_orbitals == []:
-            print "Write cube files for HOMO-1, HOMO, LUMO, LUMO+1"
+            print("Write cube files for HOMO-1, HOMO, LUMO, LUMO+1")
             self.exportOrbital("HOMO-1", orbital_cubefile=join(cubedir, "%s_HOMO-1.cube" % self.name))
             self.exportOrbital("HOMO", orbital_cubefile=join(cubedir, "%s_HOMO.cube" % self.name))
             self.exportOrbital("LUMO", orbital_cubefile=join(cubedir, "%s_LUMO.cube" % self.name))
             self.exportOrbital("LUMO+1", orbital_cubefile=join(cubedir, "%s_LUMO+1.cube" % self.name))
         else:
-            print "Write cube files for orbitals %s" % cube_orbitals
+            print("Write cube files for orbitals %s" % cube_orbitals)
             for o in cube_orbitals:
                 o = int(o)
                 self.exportOrbital(o-1, orbital_cubefile=join(cubedir, "%s_orbital_%.4d.cube" % (self.name, o)))
-        print "Write cube file for density"
+        print("Write cube file for density")
         self.exportDensity(density_cubefile=join(cubedir, "%s_density.cube" % self.name))
-        print "Write cube file for partial density"
+        print("Write cube file for partial density")
         self.exportPartialDensity(density_cubefile=join(cubedir, "%s_partial_density.cube" % self.name))
-        print "Write cube file for auxiliary density"
+        print("Write cube file for auxiliary density")
         self.exportAuxiliaryDensity(density_cubefile=join(cubedir, "%s_auxiliary_density.cube" % self.name))
         
 
@@ -380,7 +380,7 @@ class CubeExporterEx(CubeExporter):
             # transition density P_ab in AO basis
             tdense_file = tdense_cubefile[:-5] + "-AO" + ".mat"
             np.savetxt(tdense_file, Ptrans)
-            print "Transition density matrix in AO basis for state %d written to %s" % (state+1, tdense_file)
+            print("Transition density matrix in AO basis for state %d written to %s" % (state+1, tdense_file))
             # orthogonalize transition density
             # P  ->  S^(1/2). P . S^(1/2)^T
             # If the orthogonalized transition densities for states I and J are interpreted as vectors in the
@@ -390,7 +390,7 @@ class CubeExporterEx(CubeExporter):
             Ptrans_ortho = np.dot(self.Ssq, np.dot(Ptrans, self.Ssq.transpose()))
             tdense_file_ortho = tdense_cubefile[:-5] + ".mat"
             np.savetxt(tdense_file_ortho, Ptrans_ortho)
-            print "Orthogonalized transition density matrix in AO basis for state %d written to %s" % (state+1, tdense_file_ortho)
+            print("Orthogonalized transition density matrix in AO basis for state %d written to %s" % (state+1, tdense_file_ortho))
         density2grid(self.dftb.atomlist, self.bs.bfs, Ptrans, \
                          filename=tdense_cubefile, ppb=self.ppb, \
                          threshold=self.cube_threshold)
@@ -451,7 +451,7 @@ class CubeExporterEx(CubeExporter):
         """
         if cubedir == None:
             return
-        print "Export cube files for excited states %s" % cube_states
+        print("Export cube files for excited states %s" % cube_states)
         from os.path import join, expandvars, expanduser
         cubedir = expanduser(expandvars(cubedir))
         self.setGrid(points_per_bohr=points_per_bohr, cube_threshold=cube_threshold)
@@ -462,12 +462,9 @@ class CubeExporterEx(CubeExporter):
             self.Ssq = sla.sqrtm(S)
         for st in cube_states:
             if density_type == "transition":
-                self.exportTransitionDensity(st-1, \
-                                         tdense_cubefile=join(cubedir, "%s_tdense_%.4d%s.cube" % (self.name, st, self.tddftb.Irreps[st-1])), \
-                                         save_transition_density=save_transition_density)
+                self.exportTransitionDensity(st-1, \ tdense_cubefile=join(cubedir, "%s_tdense_%.4d%s.cube" % (self.name, st, self.tddftb.Irreps[st-1])), \ save_transition_density=save_transition_density)
             elif density_type == "difference":
-                self.exportDifferenceDensity(st-1, \
-                                         difdense_cubefile=join(cubedir, "%s_difdense_%.4d%s.cube" % (self.name, st, self.tddftb.Irreps[st-1])))
+                self.exportDifferenceDensity(st-1, \ difdense_cubefile=join(cubedir, "%s_difdense_%.4d%s.cube" % (self.name, st, self.tddftb.Irreps[st-1])))
             else:
                 raise ValueError("option 'density_type' can be 'difference' or 'transition' but not %s" % density_type)
 ###### READING AND WRITING GRID DATA TO CUBE FILES ###########
@@ -535,9 +532,9 @@ def get_points_and_values(origin, axes, data):
     c = 0
     points = np.zeros((3,Nx*Ny*Nz))
     values = np.zeros(Nx*Ny*Nz)
-    for i in xrange(Nx):
-        for j in xrange(Ny):
-            for k in xrange(Nz):
+    for i in range(Nx):
+        for j in range(Ny):
+            for k in range(Nz):
                 points[:,c] = origin + i*axes[0] + j*axes[1] + k*axes[2]
                 values[c] = data[i,j,k]
                 c += 1
@@ -570,9 +567,9 @@ def writeCube(cubefile, atomlist, origin, axes, data):
         x,y,z = posi
         print>>fh, "%5i %11.6f %11.6f %11.6f %11.6f" %  (Zi,Zi,x,y,z)
 
-    for i in xrange(nx):
-        for j in xrange(ny):
-            for k in xrange(nz):
+    for i in range(nx):
+        for j in range(ny):
+            for k in range(nz):
                 print>>fh, " %11.5e" % data[i,j,k],
                 if k % 6 == 5: print>>fh, "\n ",
             print>>fh, "\n ",

@@ -81,12 +81,12 @@ def vector_potential_Poisson(atomlist, origin, axes, Mx, My, Mz,
         try:
             from DFTB.Poisson.poisson_pspfft import poisson3d
         except ImportError as e:
-            print e
-            print "To be able to use the PSPFFT solver you have to "
-            print "  - install the PSPFFT package from the Computer Physics Communications library"
-            print "  - edit 'DFTB/Poisson/src/Makefile'"
-            print "  - run 'make' inside the folder DFTB/Poisson/src"
-            print ""
+            print(e)
+            print("To be able to use the PSPFFT solver you have to ")
+            print("  - install the PSPFFT package from the Computer Physics Communications library")
+            print("  - edit 'DFTB/Poisson/src/Makefile'")
+            print("  - run 'make' inside the folder DFTB/Poisson/src")
+            print("")
             exit(-1)
     else:
         from DFTB.Poisson.poisson_iterative import poisson3d
@@ -110,14 +110,14 @@ def vector_potential_Poisson(atomlist, origin, axes, Mx, My, Mz,
         
     # total magnetic dipole
     magnetic_dipole = np.array([ np.sum(Mx*dV), np.sum(My*dV), np.sum(Mz*dV) ])
-    print "integrated magnetic dipole (in au)    : %+7.5f  %+7.5f  %+7.5f" % tuple(magnetic_dipole)
+    print("integrated magnetic dipole (in au)    : %+7.5f  %+7.5f  %+7.5f" % tuple(magnetic_dipole))
     #                                                       __
     # compute current density J(r) as the curl of M(r), J = \/ x M
-    print "compute current density J(r) = rot M(r) ..."
+    print("compute current density J(r) = rot M(r) ...")
     Jx,Jy,Jz = curl_finite_differences(Mx,My,Mz, dx,dy,dz)
     
     # solve Poisson equation for each component
-    print "solve Poisson equation for each component..."
+    print("solve Poisson equation for each component...")
     A = [None,None,None]
     for i,Ji in enumerate([Jx,Jy,Jz]):
         c = AtomicData.speed_of_light
@@ -160,7 +160,7 @@ if __name__ == "__main__":
     
     (opts, args) = parser.parse_args()
     if len(args) < 6:
-        print usage
+        print(usage)
         exit(-1)
 
     # input cube files
@@ -174,11 +174,11 @@ if __name__ == "__main__":
 
 
     # load cube files with magnetic dipole density
-    print "load magnetic dipole density from cube files..."
+    print("load magnetic dipole density from cube files...")
     atomlist, origin, axes, Mx = Cube.readCube(Mx_cube_file)
     atomlist, origin, axes, My = Cube.readCube(My_cube_file)
     atomlist, origin, axes, Mz = Cube.readCube(Mz_cube_file)
-    print "compute vector potential..."
+    print("compute vector potential...")
     Ax,Ay,Az = vector_potential_Poisson(atomlist, origin, axes, Mx, My, Mz,
                                         poisson_solver=opts.solver,
                                         conv_eps=opts.conv_eps, maxiter=opts.maxiter)
@@ -186,5 +186,5 @@ if __name__ == "__main__":
     Cube.writeCube(Ax_cube_file, atomlist, origin, axes, Ax)
     Cube.writeCube(Ay_cube_file, atomlist, origin, axes, Ay)
     Cube.writeCube(Az_cube_file, atomlist, origin, axes, Az)
-    print "x-,y- and z-components of vector potential saved to '%s', '%s' and '%s'" % (Ax_cube_file, Ay_cube_file, Az_cube_file)
+    print("x-,y- and z-components of vector potential saved to '%s', '%s' and '%s'" % (Ax_cube_file, Ay_cube_file, Az_cube_file))
 

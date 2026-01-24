@@ -312,20 +312,20 @@ class Flake:
         orbe, orbs = sla.eigh(H0, S)
         # fill the orbitals of lowest energy with 2 electrons each according to the Aufbau principle
         HOMO = nelec/2-1
-        print "number of porphyrin monomers N = %d" % N
-        print "number of electron pairs = %d" % (nelec/2)
-        print "index of HOMO = %d" % HOMO
+        print("number of porphyrin monomers N = %d" % N)
+        print("number of electron pairs = %d" % (nelec/2))
+        print("index of HOMO = %d" % HOMO)
         LUMO = HOMO+1
         en_tot = 2.0 * np.sum(orbe[:HOMO+1]) # sum over energies of doubly occupied orbitals
         HLgap = orbe[LUMO]-orbe[HOMO]
-        print "--------------------------------------------------"
-        print self
-        print "Hueckel total energy: %8.6f eV" % (en_tot*AtomicData.hartree_to_eV)
-        print "Hueckel total energy/site: %8.6f" % ((en_tot/float(N))*AtomicData.hartree_to_eV)
-        print "Hueckel HOMO: %8.6f eV" % (orbe[HOMO]*AtomicData.hartree_to_eV)
-        print "Hueckel LUMO: %8.6f eV" % (orbe[LUMO]*AtomicData.hartree_to_eV)
-        print "Hueckel HOMO-LUMO gap: %8.6f eV" % ( HLgap*AtomicData.hartree_to_eV )
-        print "--------------------------------------------------"
+        print("--------------------------------------------------")
+        print(self)
+        print("Hueckel total energy: %8.6f eV" % (en_tot*AtomicData.hartree_to_eV))
+        print("Hueckel total energy/site: %8.6f" % ((en_tot/float(N))*AtomicData.hartree_to_eV))
+        print("Hueckel HOMO: %8.6f eV" % (orbe[HOMO]*AtomicData.hartree_to_eV))
+        print("Hueckel LUMO: %8.6f eV" % (orbe[LUMO]*AtomicData.hartree_to_eV))
+        print("Hueckel HOMO-LUMO gap: %8.6f eV" % ( HLgap*AtomicData.hartree_to_eV ))
+        print("--------------------------------------------------")
         # save additional data as member variables for later use
         # mapping from k to (i,j)
         self.chain2grid = chain2grid
@@ -353,7 +353,7 @@ class Flake:
                                 if abs(i1-i2)+abs(j1-j2) == 1:
                                     new_bonds += 3  # 3 C-C bonds per fusion
         new_bonds /= 2   # a-b and b-a are calculated twice
-        print "new conjugated C-C bonds: %d (%d x 3)" % (new_bonds, new_bonds/3)
+        print("new conjugated C-C bonds: %d (%d x 3)" % (new_bonds, new_bonds/3))
         return new_bonds
         
 def grid_to_txt(grid):
@@ -567,20 +567,20 @@ def grow_flakes(max_generations, connectivity="meso_beta", thresh=0.01):
         weight_sum = 0
         for fl in grown_flakes[gen]:
             weight_sum += fl.weight
-        print "WEIGHT SUM = %s" % weight_sum
+        print("WEIGHT SUM = %s" % weight_sum)
         assert abs(weight_sum - 1.0) < 1.0e-8
 
     # count flakes
     nr_flakes = sum([len(v) for v in grown_flakes.values()])
-    print "%s flakes were grown" % nr_flakes
+    print("%s flakes were grown" % nr_flakes)
     """
     # Show flakes
     for gen in grown_flakes.keys():
-        print "Generation %s (%s flakes)" % (gen, len(grown_flakes[gen]))
-        print "========================="
+        print("Generation %s (%s flakes)" % (gen, len(grown_flakes[gen])))
+        print("=========================")
         for fl in grown_flakes[gen]:
-            print "weight = %s" % fl.weight
-            print fl
+            print("weight = %s" % fl.weight)
+            print(fl)
     """
     return grown_flakes
 
@@ -763,7 +763,7 @@ def solve_rate_equations(grown_flakes, out_concentrations, out_weights):
     nr_monomers = np.array(nr_monomers, dtype=float)
     # Dividing the concentrations by the number of monomers gives
     # the weights each absorption spectrum should have in the average
-    print "TOTAL NUMBER OF FLAKES = %s" % len(nr_monomers)
+    print("TOTAL NUMBER OF FLAKES = %s" % len(nr_monomers))
     time_weights = np.zeros((nt,nfl+1))
     time_weights[:,1:] = cs/nr_monomers
     time_weights[:,0] = ts
@@ -906,13 +906,13 @@ def flakes_to_xyz(grown_flakes, out_xyz, cc1=2.56, substitutions=[]):
         try:
             os.remove(opts.out_xyz)
         except OSError as e:
-            print e
+            print(e)
     for gen in generations:
-        print "Generation %s (%s flakes)" % (gen, len(grown_flakes[gen]))
-        print "========================="
+        print("Generation %s (%s flakes)" % (gen, len(grown_flakes[gen])))
+        print("=========================")
         for fl in grown_flakes[gen]:
-            print "weight = %s" % fl.weight
-            print fl
+            print("weight = %s" % fl.weight)
+            print(fl)
             flake_atomlist = fl.build_xyz(a1,a2,a3,unitcell, meso, beta)
             # reorder atomlist so that all hydrogens are placed at the end of the file
             flake_atomlist = XYZ.hydrogens_to_end(flake_atomlist)
@@ -997,23 +997,23 @@ def Gouterman_matelems():
     #
     orb_names = ["a1u", "a2u", "eg", "eg"]
 
-    print "Lattice vectors"
-    print "   a1 = %s bohr" % a1
-    print "   a2 = %s bohr" % a2
-    print "orbital energies:"
+    print("Lattice vectors")
+    print("   a1 = %s bohr" % a1)
+    print("   a2 = %s bohr" % a2)
+    print("orbital energies:")
     for name,en in zip(orb_names, orbe*AtomicData.hartree_to_eV):
-        print "  energy(%3s) = %8.4f eV" % (name, en)
-    print "matrix elements with neighbouring porphyrin"
-    print "along lattice vector a1 = %s" % a1
-    print "overlap Sh"
-    print utils.annotated_matrix(Sh, orb_names, orb_names)
-    print "hamiltonian H0h"
-    print utils.annotated_matrix(H0h, orb_names, orb_names)
-    print "along lattice vector a2 = %s" % a2
-    print "overlap Sv"
-    print utils.annotated_matrix(Sv, orb_names, orb_names)
-    print "hamiltonian H0v"
-    print utils.annotated_matrix(H0v, orb_names, orb_names)
+        print("  energy(%3s) = %8.4f eV" % (name, en))
+    print("matrix elements with neighbouring porphyrin")
+    print("along lattice vector a1 = %s" % a1)
+    print("overlap Sh")
+    print(utils.annotated_matrix(Sh, orb_names, orb_names))
+    print("hamiltonian H0h")
+    print(utils.annotated_matrix(H0h, orb_names, orb_names))
+    print("along lattice vector a2 = %s" % a2)
+    print("overlap Sv")
+    print(utils.annotated_matrix(Sv, orb_names, orb_names))
+    print("hamiltonian H0v")
+    print(utils.annotated_matrix(H0v, orb_names, orb_names))
 
     return orbe, Sh,Sv, H0h,H0v
 
@@ -1057,7 +1057,7 @@ if __name__ == "__main__":
         # extent of largest polyomino
         width = 1
         height = 1
-        for gen,flake_generation in grown_flakes.iteritems():
+        for gen,flake_generation in grown_flakes.items():
             for flake in flake_generation:
                 (xmin, ymin, xmax, ymax) = grid_bounding_box(flake.grid)
                 width = max(xmax-xmin, width)
@@ -1065,7 +1065,7 @@ if __name__ == "__main__":
         # plot squares
         import matplotlib.pyplot as plt
         i = 0
-        for gen,flake_generation in grown_flakes.iteritems():
+        for gen,flake_generation in grown_flakes.items():
             for flake in flake_generation:
                 #
                 ax = plt.gca()
@@ -1085,20 +1085,20 @@ if __name__ == "__main__":
     solve_rate_equations(grown_flakes, opts.out_concentrations, opts.out_weights)
 
     if opts.hueckel == 1:
-        print "HUECKEL CALCULATION with Gouterman orbitals"
+        print("HUECKEL CALCULATION with Gouterman orbitals")
         # matrix elements between Gouterman orbitals fused horizontally or vertically
         orbe, Sh,Sv, H0h,H0v = Gouterman_matelems()
         i = 0
-        for gen,flake_generation in grown_flakes.iteritems():
-            print "Generation %d" % gen
+        for gen,flake_generation in grown_flakes.items():
+            print("Generation %d" % gen)
             hueckel_out = "polyomino_hueckel_gen_%d.dat" % (gen+1)
             fh = open(hueckel_out, "w")
             print>>fh, "# ID   N    EN(TOT)    HOMO-LUMO gap    (-1)*(NR. NEW BONDS)"
             for flake in flake_generation:
-                print "Flake %d" % i
+                print("Flake %d" % i)
                 en_tot, HLgap, orbeHueckel, orbsHueckel = flake.hueckel(orbe, Sh,Sv, H0h,H0v)
                 new_bonds = flake.count_new_bonds()
                 print>>fh,"%d  %d  %10.6f %10.6f  %d" % (i,gen+1,en_tot, HLgap, -new_bonds)
                 i += 1
             fh.close()
-            print "Hueckel results for generation %d written to file %s" % (gen, hueckel_out)
+            print("Hueckel results for generation %d written to file %s" % (gen, hueckel_out))

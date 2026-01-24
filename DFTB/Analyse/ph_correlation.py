@@ -21,14 +21,14 @@ def G_matrix(atomlist, Nr):
     atomtypes = list(set([Zi for (Zi,posi) in atomlist]))
     atomtypes.sort()
 
-    print "Computing sigmas..."
+    print("Computing sigmas...")
     sigma = np.zeros(max(atomtypes)+1)
     for Zi in atomtypes:
         Ui = Parameters.hubbard_U_byZ[Zi]
         sigma[Zi] = 1.0/(np.sqrt(np.pi) * Ui)
 
     Nat = len(atomlist)
-    print "Computing distance matrix..."
+    print("Computing distance matrix...")
     Dmat = np.zeros((Nat,Nat))
     for A,(ZA,posA) in enumerate(atomlist):
         for B in range(A+1, Nat):
@@ -37,7 +37,7 @@ def G_matrix(atomlist, Nr):
             Dmat[A,B] = R_AB
             Dmat[B,A] = R_AB
     rs = np.linspace(0.0, Dmat.max(),Nr)
-    print "Computing G-matrix ..."
+    print("Computing G-matrix ...")
     # G-matrix
     G = np.zeros((Nat,Nat,Nr))
     for A,(ZA,posA) in enumerate(atomlist):
@@ -75,7 +75,7 @@ if __name__ == "__main__":
 
     (opts, args) = parser.parse_args()
     if len(args) < 2:
-        print usage
+        print(usage)
         exit(-1)
 
     xyz_file = args[0]
@@ -91,7 +91,7 @@ if __name__ == "__main__":
     plt.title("Electron hole correlation function")
 
     for ph_f in ph_charges_files:
-        print "computing p-h correlation function for %s" % ph_f
+        print("computing p-h correlation function for %s" % ph_f)
         ph_charges = np.loadtxt(ph_f)
     # particle charges
         q_elec = ph_charges[:,0]

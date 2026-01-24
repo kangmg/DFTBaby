@@ -230,9 +230,9 @@ class PotentialEnergySurfaces(object):
         #
         state_labels = [("S%d" % I) for I in range(0, self.Nst)]
         if self.tddftb.dftb2.verbose > 0:
-            print "Overlap <Psi(t)|Psi(t+dt)>"
-            print "=========================="
-            print utils.annotated_matrix(Sci, state_labels, state_labels)
+            print("Overlap <Psi(t)|Psi(t+dt)>")
+            print("==========================")
+            print(utils.annotated_matrix(Sci, state_labels, state_labels))
         # overlap between wavefunctions at different time steps
         olap = np.copy(Sci)
         coupl = Sci
@@ -245,7 +245,7 @@ class PotentialEnergySurfaces(object):
         coupl[np.diag_indices_from(coupl)] = 0.0
         err = np.sum(abs(coupl+coupl.transpose()))
         if err > 1.0e-1: 
-            print "WARNING: Scalar coupling matrix is not antisymmetric, error = %s" % err
+            print("WARNING: Scalar coupling matrix is not antisymmetric, error = %s" % err)
         # 
         # Because of the finite time-step it will not be completely antisymmetric,
         # so antisymmetrize it
@@ -254,9 +254,9 @@ class PotentialEnergySurfaces(object):
         self.last_coupl = coupl
         state_labels = [("S%d" % I) for I in range(0, self.Nst)]
         if self.tddftb.dftb2.verbose > 0:
-            print "Scalar Coupling"
-            print "==============="
-            print utils.annotated_matrix(coupl, state_labels, state_labels)
+            print("Scalar Coupling")
+            print("===============")
+            print(utils.annotated_matrix(coupl, state_labels, state_labels))
 
         # save last calculation
         self.last_calculation = (atomlist2, orbs2, C2)
@@ -300,14 +300,14 @@ class PotentialEnergySurfaces(object):
         self.tdip_old = tdip
         if self.tddftb.dftb2.verbose > 0:
             state_labels = [("S%d" % I) for I in range(0, self.Nst)]
-            print "Transition Dipoles"
-            print "=================="
-            print "X-Component"
-            print utils.annotated_matrix(tdip[:,:,0], state_labels, state_labels)
-            print "Y-Component"
-            print utils.annotated_matrix(tdip[:,:,1], state_labels, state_labels)
-            print "Z-Component"
-            print utils.annotated_matrix(tdip[:,:,2], state_labels, state_labels)
+            print("Transition Dipoles")
+            print("==================")
+            print("X-Component")
+            print(utils.annotated_matrix(tdip[:,:,0], state_labels, state_labels))
+            print("Y-Component")
+            print(utils.annotated_matrix(tdip[:,:,1], state_labels, state_labels))
+            print("Z-Component")
+            print(utils.annotated_matrix(tdip[:,:,2], state_labels, state_labels))
         #
         return tdip
 

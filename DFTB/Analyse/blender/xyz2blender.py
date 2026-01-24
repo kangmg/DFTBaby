@@ -91,63 +91,63 @@ matneg.setSpec(2.0)
 
 materials={"h":matH,"c":matC,"n":matN,"o":matO, "s": matS, "zn":matZn, "au":matAu,"stick":matstick,"positivelobe":matpos,"negativelobe":matneg}
 class xyz:
-	def __init__(self,filename):
-		self.filename=filename
-		self.coord=[]
-		self.atomtypes=[]
-	def readxyz(self,):
-		fh=open(self.filename,"r")
-		while 1:
-			line = fh.readline()
-			if not line: break
-			try:
-				nat = int(line.split()[0])
-			except ValueError as e:
-				print e
-				raise Exception("Probably wrong number of atoms in xyz-file '%s'" % filename)
-			title = fh.readline()
-			atoms = []
-			for i in xrange(nat):
-				line = fh.readline()
-				words = line.split()
-				# leave coordinates in bohr
-				x,y,z = map(float,words[1:])
-				atname = words[0].lower()
-				self.atomtypes.append(atname)
-				self.coord.append([x,y,z])
-		fh.close()
+    def __init__(self,filename):
+        self.filename=filename
+        self.coord=[]
+        self.atomtypes=[]
+    def readxyz(self,):
+        fh=open(self.filename,"r")
+        while 1:
+            line = fh.readline()
+            if not line: break
+            try:
+                nat = int(line.split()[0])
+            except ValueError as e:
+                print(e)
+                raise Exception("Probably wrong number of atoms in xyz-file '%s'" % filename)
+            title = fh.readline()
+            atoms = []
+            for i in range(nat):
+                line = fh.readline()
+                words = line.split()
+                # leave coordinates in bohr
+                x,y,z = map(float,words[1:])
+                atname = words[0].lower()
+                self.atomtypes.append(atname)
+                self.coord.append([x,y,z])
+        fh.close()
 
 
 class cube2blender:
-	def __init__(self,xyz):
-		self.xyz=xyz
-		self.scene=Scene.GetCurrent()
+    def __init__(self,xyz):
+        self.xyz=xyz
+        self.scene=Scene.GetCurrent()
 
-	def blenderstructure(self,):
-	        for i in range(len(self.xyz.atomtypes)):
-	                me = Mesh.Primitives.Icosphere(spheresubdivisions,atomicradii[self.xyz.atomtypes[i]])
-			me.materials=[materials[self.xyz.atomtypes[i]]]
-		        for face in me.faces:
-				face.smooth=True
-	                obj=self.scene.objects.new(me,'Mesh')
-	                obj.setLocation(self.xyz.coord[i][0],self.xyz.coord[i][1],self.xyz.coord[i][2])
-	        for i in range(len(self.xyz.atomtypes)):
-	                for j in range(i+1,len(self.xyz.atomtypes)):
-	                        vec1=Mathutils.Vector(self.xyz.coord[i])
-	                        vec2=Mathutils.Vector(self.xyz.coord[j])
-	                        vec=vec2-vec1
-	                        distcovalent=covalentradii[self.xyz.atomtypes[i]]+covalentradii[self.xyz.atomtypes[j]]
-	                        if (vec.length-distcovalent)<=0.10*distcovalent:
-	                                me=Mesh.Primitives.Tube(32,stickradius,vec.length)
-		        		for face in me.faces:
-						face.smooth=True
-	                                obj=self.scene.objects.new(me,'Cylinder')
-	                                axis=Mathutils.CrossVecs(Vector([0,0,1]),vec)
-	                                angle=Mathutils.AngleBetweenVecs(Vector([0,0,1]),vec)
-	                                rotmat=Mathutils.RotationMatrix(angle,4,"R",axis)
-	                                obj.setMatrix(obj.matrix*rotmat)
-	                                obj.setLocation((vec1+vec2)*0.5)
-		
+    def blenderstructure(self,):
+            for i in range(len(self.xyz.atomtypes)):
+                    me = Mesh.Primitives.Icosphere(spheresubdivisions,atomicradii[self.xyz.atomtypes[i]])
+            me.materials=[materials[self.xyz.atomtypes[i]]]
+                for face in me.faces:
+                face.smooth=True
+                    obj=self.scene.objects.new(me,'Mesh')
+                    obj.setLocation(self.xyz.coord[i][0],self.xyz.coord[i][1],self.xyz.coord[i][2])
+            for i in range(len(self.xyz.atomtypes)):
+                    for j in range(i+1,len(self.xyz.atomtypes)):
+                            vec1=Mathutils.Vector(self.xyz.coord[i])
+                            vec2=Mathutils.Vector(self.xyz.coord[j])
+                            vec=vec2-vec1
+                            distcovalent=covalentradii[self.xyz.atomtypes[i]]+covalentradii[self.xyz.atomtypes[j]]
+                            if (vec.length-distcovalent)<=0.10*distcovalent:
+                                    me=Mesh.Primitives.Tube(32,stickradius,vec.length)
+                        for face in me.faces:
+                        face.smooth=True
+                                    obj=self.scene.objects.new(me,'Cylinder')
+                                    axis=Mathutils.CrossVecs(Vector([0,0,1]),vec)
+                                    angle=Mathutils.AngleBetweenVecs(Vector([0,0,1]),vec)
+                                    rotmat=Mathutils.RotationMatrix(angle,4,"R",axis)
+                                    obj.setMatrix(obj.matrix*rotmat)
+                                    obj.setLocation((vec1+vec2)*0.5)
+        
 
 
 EVENT_none=0
@@ -157,58 +157,58 @@ EVENT_Button_Browse=3
 inputfile=Create("/tmp/test.xyz")
 
 class GUI:
-	def __init__(self,):
-		pass		
-	
-	def getFilename_callback(self,filename):
-		inputfile.val=filename
-	
+    def __init__(self,):
+        pass        
+    
+    def getFilename_callback(self,filename):
+        inputfile.val=filename
+    
 
-	def gui_draw(self):
-		global EVENT_Button_Import
-		global EVENT_Button_Cancel
-		global EVENT_Button_Browse
-		global EVENT_Button_Browse2
-		global isovalue
-		global sliderMax
-		global sliderMin
+    def gui_draw(self):
+        global EVENT_Button_Import
+        global EVENT_Button_Cancel
+        global EVENT_Button_Browse
+        global EVENT_Button_Browse2
+        global isovalue
+        global sliderMax
+        global sliderMin
 
-		glClearColor(0.5, 0.5, 0.5, 0.0)
-		glClear(BGL.GL_COLOR_BUFFER_BIT)
-		glColor3f(0.0, 0.0, 0.0)
+        glClearColor(0.5, 0.5, 0.5, 0.0)
+        glClear(BGL.GL_COLOR_BUFFER_BIT)
+        glColor3f(0.0, 0.0, 0.0)
 
-		glColor3f(1.0, 1.0, 1.0)
-		glRasterPos2i(180, 340)
-		Text("XYZ File Importer", "large")
+        glColor3f(1.0, 1.0, 1.0)
+        glRasterPos2i(180, 340)
+        Text("XYZ File Importer", "large")
 
 
-		String("File path: ", EVENT_none,40, 300, 360, 20,inputfile.val,399, "xyz file path")
+        String("File path: ", EVENT_none,40, 300, 360, 20,inputfile.val,399, "xyz file path")
 
-		Button("Import", EVENT_Button_Import, 110, 260, 70, 24, "")
-		Button("Cancel", EVENT_Button_Cancel, 320, 260, 70, 24, "")
-		Button("Browse", EVENT_Button_Browse, 400, 300, 70, 20, "")
-	
-	def event(self,event, value):
-		if (event == ESCKEY or event == QKEY) and not value:
-			Exit()
+        Button("Import", EVENT_Button_Import, 110, 260, 70, 24, "")
+        Button("Cancel", EVENT_Button_Cancel, 320, 260, 70, 24, "")
+        Button("Browse", EVENT_Button_Browse, 400, 300, 70, 20, "")
+    
+    def event(self,event, value):
+        if (event == ESCKEY or event == QKEY) and not value:
+            Exit()
 
-	def b_event(self,event):
-		global EVENT_Button_Import
-		global EVENT_Button_Cancel
-		global EVENT_Button_Browse
-		if event == 0: pass
+    def b_event(self,event):
+        global EVENT_Button_Import
+        global EVENT_Button_Cancel
+        global EVENT_Button_Browse
+        if event == 0: pass
 
-		elif event == EVENT_Button_Import:
-			self.xyzobject=xyz(inputfile.val)
-			self.xyzobject.readxyz()
-			self.cube2blenderobject=cube2blender(self.xyzobject)
-			self.cube2blenderobject.blenderstructure()
-		elif event == EVENT_Button_Cancel:
-			Exit()
-		elif event == EVENT_Button_Browse:
-			Window.FileSelector(self.getFilename_callback, "Select xyz file")
-		Draw()
-		
-		
+        elif event == EVENT_Button_Import:
+            self.xyzobject=xyz(inputfile.val)
+            self.xyzobject.readxyz()
+            self.cube2blenderobject=cube2blender(self.xyzobject)
+            self.cube2blenderobject.blenderstructure()
+        elif event == EVENT_Button_Cancel:
+            Exit()
+        elif event == EVENT_Button_Browse:
+            Window.FileSelector(self.getFilename_callback, "Select xyz file")
+        Draw()
+        
+        
 guiobject=GUI()
 Register(guiobject.gui_draw, guiobject.event, guiobject.b_event)

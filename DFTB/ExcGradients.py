@@ -49,9 +49,9 @@ def gradients_H0andS(atomlist, valorbs, SKT, Mproximity):
     errH0 = (abs(gradH0_py-gradH0_f90)).max()
     assert errH0 < 1.0e-3, "python and Fortran implementations disagree for grad H0, error = %s" % errH0
 
-    print "Timing:"
-    print "Fortran: %s seconds" % time_f90
-    print "Python : %s seconds" % time_py
+    print("Timing:")
+    print("Fortran: %s seconds" % time_f90)
+    print("Python : %s seconds" % time_py)
     exit(-1)
     """
     # 
@@ -261,8 +261,8 @@ class Gradients:
         # END OF HACK ############################
 #        assert self.tddftb.ct_correction == 0, "Gradients for CT correction not implemented yet!"
         if self.tddftb.ct_correction != 0:
-            print "WARNING: Gradient of CT correction not implemented yet!"
-            print "         The contribution from the CT correction is neglected!"
+            print("WARNING: Gradient of CT correction not implemented yet!")
+            print("         The contribution from the CT correction is neglected!")
         #
         if self.dftb.long_range_correction == 0:
             # use special formula
@@ -306,13 +306,13 @@ class Gradients:
         The total gradient is the sum of the 3 contributions
         """
         if self.dftb.verbose > 0:
-            print "Compute gradient for state %d" % I
+            print("Compute gradient for state %d" % I)
         # Gamma matrices
         atomlist = self.dftb.getGeometry()
         valorbs = self.dftb.valorbs
         distances, directions = self.dftb.distances, self.dftb.directions
         if self.dftb.verbose > 0:
-            print "  gradients of gamma matrices"
+            print("  gradients of gamma matrices")
         g0, g1, g0_AO, g1_AO = \
             self.dftb.gm.gamma_AOwise(atomlist, valorbs, distances, directions)
         g0lr, g1lr, g0lr_AO, g1lr_AO = \
@@ -338,7 +338,7 @@ class Gradients:
         Nat, Nat = g0.shape
 
         if self.dftb.verbose > 0:
-            print "  gradients of S and H0 from Slater-Koster rules"
+            print("  gradients of S and H0 from Slater-Koster rules")
         gradS, gradH0 = gradients_H0andS(atomlist, valorbs,
                                          self.dftb.SKT, self.dftb.Mproximity)
         S = self.dftb.S
@@ -440,11 +440,11 @@ class Gradients:
             ta = time.time()
             Fv_py = _F(v)
             tb = time.time()
-            print "Time for F(v) with python:  %s seconds" % (tb-ta)
+            print("Time for F(v) with python:  %s seconds" % (tb-ta))
             ta = time.time()
             Fv_f90 = _F_f90(v)
             tb = time.time()
-            print "Time for F(v) with Fortran: %s seconds" % (tb-ta)
+            print("Time for F(v) with Fortran: %s seconds" % (tb-ta))
             err = np.sum(abs(Fv_py-Fv_f90))
             assert err < 1.0e-10, "err = %s" % err
             ###
@@ -461,11 +461,11 @@ class Gradients:
             ta = time.time()
             Flrv_py = _Flr(dD)
             tb = time.time()
-            print "Time for Flr(v) with python:  %s seconds" % (tb-ta)
+            print("Time for Flr(v) with python:  %s seconds" % (tb-ta))
             ta = time.time()
             Flrv_f90 = _Flr_f90(dD)
             tb = time.time()
-            print "Time for Flr(v) with Fortran: %s seconds" % (tb-ta)
+            print("Time for Flr(v) with Fortran: %s seconds" % (tb-ta))
             err = np.sum(abs(Flrv_py-Flrv_f90))
             assert err < 1.0e-10, "err = %s" % err
             ###
@@ -477,7 +477,7 @@ class Gradients:
             return f
         
         if self.dftb.verbose > 0:
-            print "  compute F(D-D0)"
+            print("  compute F(D-D0)")
         # density matrix
         D = 2*np.dot(orbs_occ, orbs_occ.transpose())
         # reference density matrix
@@ -486,7 +486,7 @@ class Gradients:
         dD = D-D0
         FDmD0 = F(dD)
         if self.dftb.verbose > 0:
-            print "  compute Flr(D-D0)"
+            print("  compute Flr(D-D0)")
         if self.dftb.lc_implementation == "old":
             # In JCP 143, 134120 (2015) the lc correction is applied to the full density matrix
             FlrDmD0 = Flr(D)
@@ -495,7 +495,7 @@ class Gradients:
             
         # GRADIENT OF GROUND STATE ENERGY
         if self.dftb.verbose > 0:
-            print "  gradient of ground state energy"
+            print("  gradient of ground state energy")
         # energy weighted density matrix
         Den = 2*np.dot(orbs_occ, np.dot(ei,orbs_occ.transpose()))
 
@@ -509,12 +509,12 @@ class Gradients:
         #
         # GRADIENT OF REPULSIVE POTENTIAL
         if self.dftb.verbose > 0:
-            print "  gradient of repulsive potential"
+            print("  gradient of repulsive potential")
         gradVrep = gradient_Vrep(self.dftb.getGeometry(), \
                                  distances, directions, self.dftb.VREP)
         # GRADIENT FROM DISPERSION CORRECTION
         if self.dftb.verbose > 0:
-            print "  gradient of dispersion correction"
+            print("  gradient of dispersion correction")
         if hasattr(self.dftb, "dispersion"):
             gradVrep += self.dftb.dispersion.getGradient(self.dftb.getGeometry(), \
                     distances, directions)
@@ -535,7 +535,7 @@ class Gradients:
             return gradVrep, gradE0, gradExc
         # GRADIENT OF EXCITATION ENERGY
         if self.dftb.verbose > 0:
-            print "  gradient of excitation energy"
+            print("  gradient of excitation energy")
 
         XmY, XpY = self.tddftb.getXY()
         Omega = self.tddftb.getExcEnergies()
@@ -682,7 +682,7 @@ class Gradients:
         # ASSEMBLE GRADIENTS
         ##############################
         if self.dftb.verbose > 0:
-            print "  assemble total gradient from the individual parts"
+            print("  assemble total gradient from the individual parts")
 
         # dH/dR
         gradH = gradH0 + FDmD0 - 0.5 * FlrDmD0
@@ -733,12 +733,12 @@ class Gradients:
         The total gradient is the sum of the 3 contributions
         """
         if self.dftb.verbose > 0:
-            print "Compute gradient for state %d" % I
+            print("Compute gradient for state %d" % I)
         # Gamma matrices
         atomlist = self.dftb.getGeometry()
         valorbs = self.dftb.valorbs
         if self.dftb.verbose > 0:
-            print "  gradient of gamma matrix"
+            print("  gradient of gamma matrix")
         distances, directions = self.dftb.distances, self.dftb.directions
         g0, g1, g0_AO, g1_AO = \
             self.dftb.gm.gamma_AOwise(atomlist, valorbs, distances, directions)
@@ -749,7 +749,7 @@ class Gradients:
 
         Nat, Nat = g0.shape
         if self.dftb.verbose > 0:
-            print "  gradients of H0 and S from Slater-Koster tables"
+            print("  gradients of H0 and S from Slater-Koster tables")
         gradS, gradH0 = gradients_H0andS(atomlist, valorbs,
                                          self.dftb.SKT, self.dftb.Mproximity)
         S = self.dftb.S
@@ -787,11 +787,11 @@ class Gradients:
             ta = time.time()
             Fv_py = _F(v)
             tb = time.time()
-            print "Time for F(v) with python:  %s seconds" % (tb-ta)
+            print("Time for F(v) with python:  %s seconds" % (tb-ta))
             ta = time.time()
             Fv_f90 = _F_f90(v)
             tb = time.time()
-            print "Time for F(v) with Fortran: %s seconds" % (tb-ta)
+            print("Time for F(v) with Fortran: %s seconds" % (tb-ta))
             err = np.sum(abs(Fv_py-Fv_f90))
             assert err < 1.0e-10, "err = %s" % err
             ###
@@ -808,12 +808,12 @@ class Gradients:
         # 
         dD = D-D0
         if self.dftb.verbose > 0:
-            print "  computing F(D-D0)"
+            print("  computing F(D-D0)")
         FDmD0 = F(dD)
 
         # GRADIENT OF GROUND STATE ENERGY
         if self.dftb.verbose > 0:
-            print "  gradient of ground state energy"
+            print("  gradient of ground state energy")
 
         # energy weighted density matrix
         Den = 2*np.dot(orbs_occ, np.dot(ei,orbs_occ.transpose()))
@@ -845,7 +845,7 @@ class Gradients:
             return gradVrep, gradE0, gradExc
         # GRADIENT OF EXCITATION ENERGY
         if self.dftb.verbose > 0:
-            print "  gradient of excitation energy"
+            print("  gradient of excitation energy")
         XmY, XpY = self.tddftb.getXY()
         Omega = self.tddftb.getExcEnergies()
 
@@ -1011,44 +1011,44 @@ class Gradients:
         if gradient_check == 1:
             # repulsive potential
             gradVrepNum = utils.numerical_gradient(lambda x: self.dftb._energy_func(x, self.dftb.atomlist, "Enuc"), x0)
-            print "REPULSIVE POTENTIAL"
-            print "ANALYTICAL GRADIENT"
-            print gradVrep
-            print "NUMERICAL GRADIENT"
-            print gradVrepNum
+            print("REPULSIVE POTENTIAL")
+            print("ANALYTICAL GRADIENT")
+            print(gradVrep)
+            print("NUMERICAL GRADIENT")
+            print(gradVrepNum)
             err_vrep = la.norm(gradVrep - gradVrepNum)
 
 
             # ground state
             gradE0Num = utils.numerical_gradient(lambda x: self.dftb._energy_func(x, self.dftb.atomlist, "Eelec"), x0)
-            print "GROUND STATE"
-            print "ANALYTICAL GRADIENT"
-            print gradE0
+            print("GROUND STATE")
+            print("ANALYTICAL GRADIENT")
+            print(gradE0)
 
-            print "NUMERICAL GRADIENT"
-            print gradE0Num
+            print("NUMERICAL GRADIENT")
+            print(gradE0Num)
             err_e0 = la.norm(gradE0 - gradE0Num)
 
 
             # excited states
             if gradient_state > 0:
                 gradExcNum = utils.numerical_gradient(lambda x: self.tddftb.energy_func(x, self.dftb.atomlist, gradient_state-1), x0)
-                print "STATE %d" % gradient_state
-                print "ANALYTICAL GRADIENT"
-                print gradExc
+                print("STATE %d" % gradient_state)
+                print("ANALYTICAL GRADIENT")
+                print(gradExc)
 
-                print "NUMERICAL GRADIENT"
-                print gradExcNum
+                print("NUMERICAL GRADIENT")
+                print(gradExcNum)
 
                 err_exc = la.norm(gradExc - gradExcNum)
             else:
                 err_exc = 0.0
 
-            print "ERROR REPULSIVE: %s" % err_vrep
-            print "ERROR E0: %s" % err_e0
-            print "ERROR EXCITATION: %s" % err_exc
+            print("ERROR REPULSIVE: %s" % err_vrep)
+            print("ERROR E0: %s" % err_e0)
+            print("ERROR EXCITATION: %s" % err_exc)
             
-            print "NOTE: To check the gradients you should tighten the SCF convergence setting (using --scf_conv=1.0e-14) and disable the density mixer (using --density_mixer=None). You also have to turn off QM/MM. If the space of excitations has been restricted to those between active occupied and virtual orbitals, the gradients will be wrong unless the state of interest is contained fully in the active space."
+            print("NOTE: To check the gradients you should tighten the SCF convergence setting (using --scf_conv=1.0e-14) and disable the density mixer (using --density_mixer=None). You also have to turn off QM/MM. If the space of excitations has been restricted to those between active occupied and virtual orbitals, the gradients will be wrong unless the state of interest is contained fully in the active space.")
             assert err_vrep < 1.0e-4, "err(gradient vrep) = %s" % err_vrep
             assert err_e0 < 1.0e-4, "err(E0) = %s" % err_e0
             assert err_exc < 1.0e-4, "err(E_exc) = %s" % err_exc
@@ -1071,7 +1071,7 @@ class Gradients:
         grad_atomlist = XYZ.vector2atomlist(gradEtot, atomlist)
         # save gradient to file in xyz-format
         XYZ.write_xyz(gradient_file, [grad_atomlist], title="Gradient of total energy of state %d" % gradient_state, units="au")
-        print "Gradient of state %d written to file %s" % (gradient_state, gradient_file)
+        print("Gradient of state %d written to file %s" % (gradient_state, gradient_file))
 
         return gradEtot
 

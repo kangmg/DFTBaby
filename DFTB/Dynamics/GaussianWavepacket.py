@@ -54,7 +54,7 @@ class Gaussian:
         B2 = self.B + self.B.conjugate()
         return Gaussian(A2,B2)
     def wigner_transform(self, hbar=1):
-        print "Wigner transform"
+        print("Wigner transform")
         ReA = self.A.real
         ReAinv = la.inv(ReA)
         ImA = self.A.imag
@@ -137,5 +137,5 @@ if __name__ == "__main__":
     g = Gaussian(A,B)
     w = g.wigner_transform(hbar=1.0)
     q,p = w.sample(10)
-    print "q = %s" % q
-    print "p = %s" % p
+    print("q = %s" % q)
+    print("p = %s" % p)

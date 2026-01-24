@@ -108,7 +108,7 @@ Example:
         atomlist1 = XYZ.vector2atomlist(x1, atomlist0)
         scan_geometries.append(atomlist1)
         scan_coords.append(val1)
-        print "step %d  %s = %10.6f" % (i+1, coord_name, val1)
+        print("step %d  %s = %10.6f" % (i+1, coord_name, val1))
         
     XYZ.write_xyz(xyz_out, scan_geometries, mode="w")
-    print "displaced geometries were saved to '%s'" % xyz_out
+    print("displaced geometries were saved to '%s'" % xyz_out)

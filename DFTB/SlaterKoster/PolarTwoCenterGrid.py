@@ -31,7 +31,7 @@ def ptcgrid(hs,rs,angles):
     assert rs[0] > 0.0 # cannot cover the very center
     Xs,Ys,Areas = [], [], []
     for h in hs:
-        print "constructing grid for h=%s" % h
+        print("constructing grid for h=%s" % h)
         p = PolarTwoCenterGrid(h)
         p.setGrid(rs,angles)
         p.tessellate(halfplanes="+")
@@ -194,8 +194,8 @@ class PolarTwoCenterGrid:
         I2 = _total_grid_area(self.h, self.r[-1], self.r[-1]-self.r[-2])
         if halfplanes != "+-":
             I2 *= 0.5
-        print "numerical area  = %s" % I1
-        print "total grid area = %s" % I2
+        print("numerical area  = %s" % I1)
+        print("total grid area = %s" % I2)
         #assert abs(I1 - I2) < 1.0e-10
     def quads_it(self):
         """gives iterator to centers and areas"""
@@ -246,7 +246,7 @@ def test_ptcgrid():
     plot(Xs[-1],Ys[-1], "o")
     show()
     I = [sum(f(Xs[i],Ys[i],h)*Areas[i]) for i,h in enumerate(hs)]
-    print I
+    print(I)
     cla()
     plot(hs,I)
     show()

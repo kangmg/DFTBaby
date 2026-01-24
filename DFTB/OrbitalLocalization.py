@@ -96,20 +96,20 @@ def localize_pipek_mezey(atomlist, orbs, orbe, focc, S, valorbs):
         atom2frag[atom_indices] = ifrag
 
     # Show which atom indices belong to which fragment
-    print ""
-    print "  Fragments for Orbital Localization"
-    print "  =================================="
-    print "  For each disconnected fragment the indices (1-based) "
-    print "  of the atoms belonging to that fragment are listed."
-    print ""
+    print("")
+    print("  Fragments for Orbital Localization")
+    print("  ==================================")
+    print("  For each disconnected fragment the indices (1-based) ")
+    print("  of the atoms belonging to that fragment are listed.")
+    print("")
     for ifrag, atom_indices in enumerate(fragment_indices):
-        print "  Fragment %2.0d :   " % (ifrag+1),
+        print("  Fragment %2.0d :   " % (ifrag+1), end=" ")
         for i,iatom in enumerate(atom_indices):
-            print "%d " % (iatom+1),
+            print("%d " % (iatom+1), end=" ")
             if (i+1) % 10 == 0:
-                print ""
-                print "                   ",
-        print ""
+                print("")
+                print("                   ", end=" ")
+        print("")
 
         
     # occupied and virtual orbitals are localized separately
@@ -164,27 +164,27 @@ def localize_pipek_mezey(atomlist, orbs, orbe, focc, S, valorbs):
     Uloc[np.ix_(focc > 0   ,focc > 0)]    = Uocc
     Uloc[np.ix_(focc == 0.0,focc == 0.0)] = Uvirt
 
-    print ""
-    print " Pipek-Mezey localization of orbitals"
-    print " ------------------------------------"
-    print "     MO(F)        Fragment Charges Q_{i,i}^F          "
-    print "            i   ",
+    print("")
+    print(" Pipek-Mezey localization of orbitals")
+    print(" ------------------------------------")
+    print("     MO(F)        Fragment Charges Q_{i,i}^F          ")
+    print("            i   ", end=" ")
     for ifrag in range(0, nfrag):
-        print "      F=%2.1d    " % (ifrag+1),
-    print ""
+        print("      F=%2.1d    " % (ifrag+1), end=" ")
+    print("")
     for imo in range(0, nocc):
         ifrag = np.argmax(Q_occ_loc[imo,imo,:])
-        print " occ(%d)   %3.1d" % (ifrag+1,imo+1),
+        print(" occ(%d)   %3.1d" % (ifrag+1,imo+1), end=" ")
         for ifrag in range(0, nfrag):
-            print "        %+4.3f" % Q_occ_loc[imo,imo,ifrag],
-        print ""
+            print("        %+4.3f" % Q_occ_loc[imo,imo,ifrag], end=" ")
+        print("")
     for imo in range(0, nvirt):
         ifrag = np.argmax(Q_virt_loc[imo,imo,:])
-        print " virt(%d)  %3.1d" % (ifrag+1,nocc+imo+1),
+        print(" virt(%d)  %3.1d" % (ifrag+1,nocc+imo+1), end=" ")
         for ifrag in range(0, nfrag):
-            print "        %+4.3f" % Q_virt_loc[imo,imo,ifrag],
-        print ""
-    print ""
+            print("        %+4.3f" % Q_virt_loc[imo,imo,ifrag], end=" ")
+        print("")
+    print("")
 
     return orbs_loc, orbe_loc, Uloc, frags
     
@@ -365,9 +365,9 @@ class OrbitalLocalization:
         #i = np.where((frags == ifrag-1) & (dftb.f > 0.0))[0][-iorb-1]
         #a = np.where((frags == afrag-1) & (dftb.f == 0.0))[0][aorb]
 
-        print "excitation from HOMO-%d on fragment %d  to LUMO+%d on fragment %d" % (iorb,ifrag,aorb,afrag)
-        print "occupied orbital corresponds to MO %d" % (occ_i+1)
-        print "virtual orbital corresponds to MO %d" % (virt_a+1)
+        print("excitation from HOMO-%d on fragment %d  to LUMO+%d on fragment %d" % (iorb,ifrag,aorb,afrag))
+        print("occupied orbital corresponds to MO %d" % (occ_i+1))
+        print("virtual orbital corresponds to MO %d" % (virt_a+1))
         
         # coefficients of adiabatic eigenstates
         C = self.tddftb.Cij
@@ -435,12 +435,12 @@ class OrbitalLocalization:
                     # see eqn. (9.39) in thesis
                     proj[I] += C[I-1,j,b].conjugate() * (det_ba * det_ji + det_ja * det_bi)
 
-        print ""
-        print " Projection onto adiabatic eigenstates "
-        print " ------------------------------------- "
-        print "   adiab.state     Coefficients      "
+        print("")
+        print(" Projection onto adiabatic eigenstates ")
+        print(" ------------------------------------- ")
+        print("   adiab.state     Coefficients      ")
         for I in range(0,Nst+1):
-            print "      %3.1d           %+5.4f" % (I, proj[I].real)
-        print "   Norm          %e" % sla.norm(proj)
+            print("      %3.1d           %+5.4f" % (I, proj[I].real))
+        print("   Norm          %e" % sla.norm(proj))
         
         return proj

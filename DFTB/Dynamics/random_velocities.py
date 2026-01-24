@@ -19,7 +19,7 @@ if __name__ == "__main__":
     parser.add_option("--temperature", dest="temperature", default=0.0, type=float, help="Set the temperature T (in Kelvin) of the molecule such that Ekin = 1/2 * nvib * kB * T  [default: %default]")
     (opts, args) = parser.parse_args()
     if len(args) < 2:
-        print usage
+        print(usage)
         exit(-1)
     xyz_file = args[0]
     in_file = args[1]
@@ -39,8 +39,8 @@ if __name__ == "__main__":
         nvib = 1
     elif nat > 2:
         nvib = 3*nat-6
-    print "number of atoms: %s" % nat
-    print "number of vibrational modes: %s" % nvib
+    print("number of atoms: %s" % nat)
+    print("number of vibrational modes: %s" % nvib)
     ekin0 = np.sum( p**2 / (2.0 * masses) )
     T0 = ekin0 / (0.5 * nvib * AtomicData.kBoltzmann)
     # scale momenta
@@ -48,11 +48,11 @@ if __name__ == "__main__":
     # check 
     ekin = np.sum( p**2 / (2.0 * masses) )
     Tnew = ekin / (0.5 * nvib * AtomicData.kBoltzmann)
-    print "temperature: %.5f K" % Tnew
+    print("temperature: %.5f K" % Tnew)
     
     txt = dynamics_in_format(atomlist, q, p, "")
     fh = open(in_file, "w")
     fh.write(txt)
     fh.close()
-    print "Wrote initial conditions to %s" % in_file
+    print("Wrote initial conditions to %s" % in_file)
 

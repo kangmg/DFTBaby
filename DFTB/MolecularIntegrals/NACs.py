@@ -89,8 +89,8 @@ def non_adiabatic_coupling_integral_rho(atomlist, rhoAB):
 
             # print progress
             xyz2str = ["X","Y","Z"]
-            print "  %d of %d    atom %s-%d  %s component" % (3*i+xyz+1, 3*Nat,
-                                                                 AtomicData.atom_names[Zat-1], i, xyz2str[xyz])
+            print("  %d of %d    atom %s-%d  %s component" % (3*i+xyz+1, 3*Nat,
+                                                                 AtomicData.atom_names[Zat-1], i, xyz2str[xyz]), end=" ")
 
             # define integrand
             def Inac_xyz_integrand(x,y,z):
@@ -196,7 +196,7 @@ if __name__ == "__main__":
     """ % os.path.basename(sys.argv[0])
     
     if len(sys.argv) < 4:
-        print usage
+        print(usage)
         exit(-1)
     args = sys.argv[1:]
 
@@ -229,4 +229,4 @@ if __name__ == "__main__":
     Nat = len(atomlist)
     np.savetxt(fh_nac, nac.transpose(), fmt="%+e")
 
-    print "Non-adiabatic coupling vector written to %s" % nac_file
+    print("Non-adiabatic coupling vector written to %s" % nac_file)

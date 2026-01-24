@@ -9,7 +9,8 @@ except ImportError:
     pass
 
 
-def get_new_charges_dftb((i, symbols, coords)):
+def get_new_charges_dftb(params_tuple):
+    i, symbols, coords = params_tuple
     elements={"H": 1, "C": 6, "N": 7, "O": 8, "Cl": 17, "Br": 35, "Ru": 44}
     atomlist = [(elements[sym.capitalize()], tuple(coord)) for sym, coord in zip(symbols, coords)]
     parser = utils.OptionParserFuncWrapper([DFTB2.DFTB2.__init__], "")

@@ -16,12 +16,12 @@ if __name__ == "__main__":
     import os.path
     
     if len(sys.argv) < 4:
-        print "Usage: %s <xyz-file> <nr. states> <dat-file with energies>" % os.path.basename(sys.argv[0])
-        print "  scans the excitation energies along the geometries in the xyz-file"
-        print "  and writes a column with the energy (in eV) for each state"
-        print "  (including ground state) to the dat-file"
-        print "  type --help to see all options"
-        print "  to reduce the amount of output add the option --verbose=0"
+        print("Usage: %s <xyz-file> <nr. states> <dat-file with energies>" % os.path.basename(sys.argv[0]))
+        print("  scans the excitation energies along the geometries in the xyz-file")
+        print("  and writes a column with the energy (in eV) for each state")
+        print("  (including ground state) to the dat-file")
+        print("  type --help to see all options")
+        print("  to reduce the amount of output add the option --verbose=0")
         exit(-1)
     
     #
@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     fh = open(dat_file, "w")
     for i,atomlist in enumerate(atomlists):
-        print "SCAN geometry %d of %d" % (i+1, len(atomlists))
+        print("SCAN geometry %d of %d" % (i+1, len(atomlists)))
         # convert geometry to a vector
         x = XYZ.atomlist2vector(atomlist)
         try:
@@ -47,8 +47,8 @@ if __name__ == "__main__":
             else:
                 ens = pes.getEnergies(x)
         except ExcitedStatesError as e:
-            print "WARNING: %s" % e
-            print "%d-th point is skipped" % i
+            print("WARNING: %s" % e)
+            print("%d-th point is skipped" % i)
             continue
         if i == 0:
             E0 = ens[0]
@@ -64,5 +64,5 @@ if __name__ == "__main__":
     fh.close()
 
     # timing
-    print T
+    print(T)
     

@@ -157,11 +157,11 @@ def numerical_gamma_integrals(atom_nameA, atom_nameB, distances, confined=True):
     gamma_dic = {}
     for la,Fa in zip(lsA,FsA):
         for lb,Fb in zip(lsB,FsB):
-            print "  integral between %s-shell and %s-shell" % (l2spec[la], l2spec[lb])
+            print("  integral between %s-shell and %s-shell" % (l2spec[la], l2spec[lb]))
             gamma_ab = np.zeros(len(distances))
             for i,r_ab in enumerate(distances):
 
-                print "   %3.d of %d   interatomic distance : %4.7f bohr" % (i+1,len(distances), r_ab)
+                print("   %3.d of %d   interatomic distance : %4.7f bohr" % (i+1,len(distances), r_ab))
                 # atoms A and B are placed symmetrically on the z-axis,
                 # separated by a distance of r_ab
                 atomlist = [(Za,(0,0,-0.5*r_ab)),
@@ -219,7 +219,7 @@ def tabulate_gamma_integrals(atom_names, filename, confined=True):
     n = len(atom_names)
     for a in range(0, n):
         for b in range(a,n):
-            print "computing gamma integrals for atom combination %s-%s" % (atom_names[a].upper(), atom_names[b].upper())
+            print("computing gamma integrals for atom combination %s-%s" % (atom_names[a].upper(), atom_names[b].upper()))
             gamma_dic = numerical_gamma_integrals(atom_names[a], atom_names[b], distances, confined=confined)
 
             Za = atomic_number(atom_names[a])
@@ -252,7 +252,7 @@ def tabulate_gamma_integrals(atom_names, filename, confined=True):
     print>>fh, "#                                   (Za,Zb) (lA,lB)"
     print>>fh, "gamma_integrals = \\\n%s" % pp.pformat(gamma_integrals_dic)
 
-    print "gamma integrals for atoms %s written to '%s'" % (" ".join(atom_names), filename)
+    print("gamma integrals for atoms %s written to '%s'" % (" ".join(atom_names), filename))
     fh.close()
 
 #############################################################
@@ -311,10 +311,10 @@ def plot_numerical_gamma_integrals(atom_names, confined=True):
     n = len(atom_names)
     for a in range(0, n):
         for b in range(a,n):
-            print "computing gamma integrals for atom combination %s-%s" % (atom_names[a].upper(), atom_names[b].upper())
+            print("computing gamma integrals for atom combination %s-%s" % (atom_names[a].upper(), atom_names[b].upper()))
             gamma_dic = numerical_gamma_integrals(atom_names[a], atom_names[b], distances, confined=confined)
 
-            for (la,lb),gamma_ab in gamma_dic.iteritems():
+            for (la,lb),gamma_ab in gamma_dic.items():
                 plt.plot(distances, gamma_ab, lw=2, label=r"$\gamma_{%s%s,%s%s}(r)$" % (atom_names[a].upper(), l2spec[la], atom_names[b].upper(), l2spec[lb]))
 
     # asymptotic limit  1/r

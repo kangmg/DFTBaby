@@ -54,7 +54,7 @@ def partition_kinetic_energy(atomlists, dt):
     ekin_tot = np.zeros((Nt,Nfrag))
     for f in range(0, Nfrag):
         masses = AtomicData.atomlist2masses(fragment_atomlists[f][0])
-        print fragment_atomlists[f][0]
+        print(fragment_atomlists[f][0])
         # total mass
         M = np.sum(masses)/3.0
         positions, velocities = velocities_finite_diff(fragment_atomlists[f], dt)
@@ -76,8 +76,8 @@ if __name__ == "__main__":
     atomlists = XYZ.read_xyz(traj_file)
     ekin_com, ekin_tot = partition_kinetic_energy(atomlists, 3.0)
 
-    print ekin_com[:100,0]
-    print ekin_com[:100,1]
+    print(ekin_com[:100,0])
+    print(ekin_com[:100,1])
     import matplotlib.pyplot as plt
 
     for f in range(0,2):

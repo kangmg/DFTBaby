@@ -28,16 +28,16 @@ if __name__ == "__main__":
             del sys.argv[i]
             
     if len(args) < 3:
-        print usage
+        print(usage)
         exit(-1)
         
     geom_file = args[0]
     energy_file = args[1]
     force_file = args[2]
 
-    print "Compute forces with DFTB"
-    print "========================"
-    print ""
+    print("Compute forces with DFTB")
+    print("========================")
+    print("")
     fh_en = open(energy_file, "w")
     print>>fh_en, "# ELECTRONIC ENERGY / HARTREE"
     
@@ -58,7 +58,7 @@ if __name__ == "__main__":
         en = pes.getEnergy_S0(x)
         # total ground state energy including repulsive potential
         en_tot = en[0]
-        print "Structure %d   enTot= %s Hartree" % (i, en_tot)
+        print("Structure %d   enTot= %s Hartree" % (i, en_tot))
         # electronic energy without repulsive potential
         en_elec = pes.tddftb.dftb2.getEnergies()[2]
         gradVrep, gradE0, gradExc = pes.grads.gradient(I=0)

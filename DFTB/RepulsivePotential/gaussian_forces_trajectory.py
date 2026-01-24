@@ -16,7 +16,7 @@ if __name__ == "__main__":
     usage += "and write them to <energies file> and to <forces file>, respectively.\n"
     usage += "Before using this program, load the Gaussian environment: 'module load g09'"
     if len(sys.argv) < 4:
-        print usage
+        print(usage)
         exit(-1)
     parser = OptionParser(usage=usage)
     parser.add_option("--method", dest="method", help="quantum chemical method [default: %default]", default="LC-PBEPBE")
@@ -31,18 +31,18 @@ if __name__ == "__main__":
     tmp_dir = "./g09_temp/"
     os.system("mkdir -p %s" % tmp_dir)
     mode = 'w'
-    print "Compute forces with GAUSSIAN"
-    print "============================"
-    print "Method:     %s" % options.method
-    print "Basis set:  %s" % options.basis_set
-    print ""
+    print("Compute forces with GAUSSIAN")
+    print("============================")
+    print("Method:     %s" % options.method)
+    print("Basis set:  %s" % options.basis_set)
+    print("")
     
     fh_en = open(energy_file, "w")
     print>>fh_en, "# TOTAL ENERGY / HARTREE     %s/%s" % (options.method, options.basis_set)
 
     
     kwds = XYZ.extract_keywords_xyz(geom_file)
-    if kwds.has_key("charge"):
+    if "charge" in kwds:
         # charge keyword in file overrides command line option --charge
         options.charge = int(kwds["charge"])
     
@@ -64,7 +64,7 @@ if __name__ == "__main__":
         os.system("g09 < %s > %s" % (tmp_com, tmp_out))
 
         en_tot = Gaussian.read_total_energy(tmp_out)
-        print "Structure %d   enTot= %s Hartree" % (i, en_tot)
+        print("Structure %d   enTot= %s Hartree" % (i, en_tot))
         forces_dic = Gaussian.read_forces(tmp_out)
         forces = []
         for center in forces_dic.keys():

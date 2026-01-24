@@ -105,11 +105,11 @@ def read_xyz_rotation_it(filename, units="Angstrom"):
         try:
             nat = int(line.split()[0])
         except ValueError as e:
-            print e
+            print(e)
             raise Exception("Probably wrong number of atoms in xyz-file '%s'" % filename)
         title = fh.readline()
         fragments = []
-        for i in xrange(nat):
+        for i in range(nat):
             line = fh.readline()
             words = line.split()
             fragname = words[0]
@@ -151,7 +151,7 @@ def dupliverts(xyz_file, frag_links_file, out_xyz_file):
     fragnames = fragments.keys()
     # copy keywords like charge, etc.
     kwds = XYZ.extract_keywords_xyz(xyz_file)
-    title=reduce(lambda a,b: a+" "+b, ["%s=%s " % (k,v) for (k,v) in kwds.iteritems()], "")
+    title=reduce(lambda a,b: a+" "+b, ["%s=%s " % (k,v) for (k,v) in kwds.items()], "")
     # 
     for i,fraglist in enumerate(read_xyz_rotation_it(xyz_file)):
         if i == 0:
@@ -164,6 +164,6 @@ def dupliverts(xyz_file, frag_links_file, out_xyz_file):
 if __name__ == "__main__":
     import sys
     if len(sys.argv) < 4:
-        print "Usage: python %s <xyz-file with fragment arrangement> <file with links to fragment xyz-files> <xyz output file>" % sys.argv[0]
+        print("Usage: python %s <xyz-file with fragment arrangement> <file with links to fragment xyz-files> <xyz output file>" % sys.argv[0])
         exit(-1)
     dupliverts(sys.argv[1], sys.argv[2], sys.argv[3])

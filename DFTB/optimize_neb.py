@@ -35,7 +35,7 @@ class PESforNEB(PotentialEnergySurfaces):
         geometries = [XYZ.vector2atomlist(im, self.atomlist) for im in images]
         xyz_out = "neb_%s_%d.xyz" % (self.name, istep)
         XYZ.write_xyz(xyz_out, geometries)
-        print "wrote path for iteration %d to %s" % (istep, xyz_out)
+        print("wrote path for iteration %d to %s" % (istep, xyz_out))
         if energies != []:
             # first column: index of image
             # second column: energy of image
@@ -48,10 +48,10 @@ if __name__ == "__main__":
     from os.path import basename
 
     if len(sys.argv) < 2:
-        print "Usage: %s <xyz-file with educt, intermediates and product> I" % basename(sys.argv[0])
-        print "  optimize reaction path on the I-th electronic state"
-        print "  type --help to see all options"
-        print "  to reduce the amount of output add the option --verbose=0"
+        print("Usage: %s <xyz-file with educt, intermediates and product> I" % basename(sys.argv[0]))
+        print("  optimize reaction path on the I-th electronic state")
+        print("  type --help to see all options")
+        print("  to reduce the amount of output add the option --verbose=0")
         exit(-1)
     
     #
@@ -82,5 +82,5 @@ if __name__ == "__main__":
     
 
     # timing
-    print T
+    print(T)
     

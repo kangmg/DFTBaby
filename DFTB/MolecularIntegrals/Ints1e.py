@@ -266,16 +266,16 @@ def test_integrals_h2():
             T[i,j] = kinetic(atomlist, basis[i], basis[j])
             N[i,j] = nuclear(atomlist, basis[i], basis[j])
 
-    print ""
-    print "  The matrix elements for STO-3G H2 should be compared"
-    print "  with those in chapter 3.5.2 of Szabo & Ostlund."
-    print ""
-    print "overlap matrix S, compare with eqn. (3.229)"
-    print S
-    print "kinetic energy T, compare with eqn. (3.230)"
-    print T
-    print "nuclear attraction V, compare with sums of eqns. (3.231) and (3.232)"
-    print N
+    print("")
+    print("  The matrix elements for STO-3G H2 should be compared")
+    print("  with those in chapter 3.5.2 of Szabo & Ostlund.")
+    print("")
+    print("overlap matrix S, compare with eqn. (3.229)")
+    print(S)
+    print("kinetic energy T, compare with eqn. (3.230)")
+    print(T)
+    print("nuclear attraction V, compare with sums of eqns. (3.231) and (3.232)")
+    print(N)
 
 def test_dipole_integrals():
     """
@@ -316,7 +316,7 @@ def test_dipole_integrals():
             return res.basis.wavefunction(orb_i, x,y,z)
 
         for j in range(0, nbfs):
-            print "computing dipole matrix elements of AO pair %d-%d" % (i,j)
+            print("computing dipole matrix elements of AO pair %d-%d" % (i,j))
             # 
             orb_j = np.zeros(nbfs)
             orb_j[j] = 1.0
@@ -327,21 +327,21 @@ def test_dipole_integrals():
 
             dip_numeric[:,i,j] = electronic_dipole(atomlist, ao_i, ao_j)
 
-            print "  exact   = %s" % dip_exact[:,i,j]
-            print "  numeric = %s" % dip_numeric[:,i,j]
+            print("  exact   = %s" % dip_exact[:,i,j])
+            print("  numeric = %s" % dip_numeric[:,i,j])
             
     # comparison
-    print "exact dipoles"
-    print dip_exact
+    print("exact dipoles")
+    print(dip_exact)
 
-    print "numeric dipoles"
-    print dip_numeric
+    print("numeric dipoles")
+    print(dip_numeric)
 
-    print "difference exact-numeric"
-    print dip_exact-dip_numeric
+    print("difference exact-numeric")
+    print(dip_exact-dip_numeric)
 
     err = la.norm(dip_exact - dip_numeric)
-    print "|Dip(exact)-Dip(numeric)|= %e" % err
+    print("|Dip(exact)-Dip(numeric)|= %e" % err)
 
     
 if __name__ == "__main__":

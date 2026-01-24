@@ -19,7 +19,7 @@ if __name__ == "__main__":
    parser.add_option("--convert", dest="convert", help="Type of conversion: 'b2a' - from bohr to Angstrom, 'a2b' - from Angstrom to bohr [default: %default]",  default="b2a")
    (opts, args) = parser.parse_args()
    if len(args) < 2:
-      print usage
+      print(usage)
       exit(-1)
    xyz_in = args[0]
    xyz_out = args[1]

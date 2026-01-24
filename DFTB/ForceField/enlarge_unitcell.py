@@ -18,7 +18,7 @@ if __name__ == "__main__":
     (opts,args ) = parser.parse_args()
 
     if len(args) < 3:
-        print usage
+        print(usage)
         exit(-1)
 
     ff_file = args[0]

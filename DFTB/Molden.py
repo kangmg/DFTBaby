@@ -48,7 +48,7 @@ def reorder_orbitals(orbs, atomlist, valorbs):
         """
         dim = len(new_order)
         P = zeros((dim,dim))
-        for old,new in new_order.iteritems():
+        for old,new in new_order.items():
             P[new,old] = 1.0
         return P
 
@@ -163,7 +163,7 @@ class MoldenExporter:
 
         path = expandvars(expanduser(molden_file))
         self.writeFile(path)
-        print "Saved molden file to %s" % path
+        print("Saved molden file to %s" % path)
 
 # add sections (geometry. frequencies) individually
 class MoldenExporterSectioned(MoldenExporter):
@@ -213,5 +213,5 @@ class MoldenExporterSectioned(MoldenExporter):
         if hasattr(self, "freqs"):
             self.Frequencies()
         self.writeFile(molden_file)
-        print "Saved molden file to %s" % molden_file
+        print("Saved molden file to %s" % molden_file)
         return self

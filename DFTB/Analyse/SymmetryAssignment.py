@@ -196,7 +196,7 @@ class SymmetryAssignmentEx_new:
             irreps.append( irrep )
         irreps = np.array(irreps) # array of strings
         time2 = time.time()
-        print "assigning symmetries took %s seconds" % (time2-time1)
+        print("assigning symmetries took %s seconds" % (time2-time1))
         return irreps
     
     def select_irreps(self, selected_irreps):
@@ -239,9 +239,9 @@ class SymmetryAssignmentEx_new:
             irreps.append( irrep )
         irreps = np.array(irreps) # array of strings
         #
-        print "Symmetries of Molecular Orbitals"
-        print "================================"
+        print("Symmetries of Molecular Orbitals")
+        print("================================")
         for m in range(0, nmo):
-            print "%3d      %.7f         %s" % (m,self.dftb2.orbe[m], irreps[m])
+            print("%3d      %.7f         %s" % (m,self.dftb2.orbe[m], irreps[m]))
         #
         return irreps

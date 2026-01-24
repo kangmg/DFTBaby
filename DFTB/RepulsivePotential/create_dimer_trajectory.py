@@ -9,9 +9,9 @@ from numpy import linspace
 if __name__ == "__main__":
     import sys
     if len(sys.argv) < 7:
-        print "\nUsage: %s <atom 1> <atom 2> Rmin Rmax NR <dimer geometries>\n" % sys.argv[0]
-        print "create dimer geometries with NR different bond lengths in the interval [Rmin,Rmax]."
-        print "Rmin and Rmax are in Angstrom."
+        print("\nUsage: %s <atom 1> <atom 2> Rmin Rmax NR <dimer geometries>\n" % sys.argv[0])
+        print("create dimer geometries with NR different bond lengths in the interval [Rmin,Rmax].")
+        print("Rmin and Rmax are in Angstrom.")
         exit(-1)
     ZA = int(atomic_number(sys.argv[1]))
     ZB = int(atomic_number(sys.argv[2]))

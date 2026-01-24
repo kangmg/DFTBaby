@@ -105,81 +105,81 @@ arrowradius=0.1
 
 materials={"h":matH,"c":matC,"n":matN,"o":matO, "s": matS, "zn":matZn, "au":matAu,"stick":matstick,"positivelobe":matpos,"negativelobe":matneg, "arrow": matArrow}
 class xyz:
-	def __init__(self,filename):
-		self.filename=filename
-		self.coord=[]
+    def __init__(self,filename):
+        self.filename=filename
+        self.coord=[]
                 self.vectors=[]
-		self.atomtypes=[]
-	def readxyz(self,):
-		fh=open(self.filename,"r")
-		while 1:
-			line = fh.readline().strip()
-			if line == "":
+        self.atomtypes=[]
+    def readxyz(self,):
+        fh=open(self.filename,"r")
+        while 1:
+            line = fh.readline().strip()
+            if line == "":
                                 break
                         nat = int(line.strip())
-#			title = fh.readline()
-			atoms = []
+#            title = fh.readline()
+            atoms = []
                         # read coordinates
-			for i in range(0,nat):
-				line = fh.readline()
-				words = line.split()
+            for i in range(0,nat):
+                line = fh.readline()
+                words = line.split()
                                 # convert to Angstrom
-				x,y,z = map(lambda f: 0.529177249*float(f),words[1:])
-				atname = words[0].lower()
-				self.atomtypes.append(atname)
-				self.coord.append([x,y,z])
+                x,y,z = map(lambda f: 0.529177249*float(f),words[1:])
+                atname = words[0].lower()
+                self.atomtypes.append(atname)
+                self.coord.append([x,y,z])
                         # read vectors
-			for i in range(0,nat):
-				line = fh.readline()
-				words = line.split()
+            for i in range(0,nat):
+                line = fh.readline()
+                words = line.split()
                                 # convert to Angstrom
-				vx,vy,vz = map(lambda f: 0.529177249*float(f),words)
-				self.vectors.append([vx,vy,vz])
-		fh.close()
+                vx,vy,vz = map(lambda f: 0.529177249*float(f),words)
+                self.vectors.append([vx,vy,vz])
+        fh.close()
 
 
 class cube2blender:
-	def __init__(self,xyz):
-		self.xyz=xyz
-		self.scene=Scene.GetCurrent()
+    def __init__(self,xyz):
+        self.xyz=xyz
+        self.scene=Scene.GetCurrent()
 
-	def blenderstructure(self,):
+    def blenderstructure(self,):
                 nat = len(self.xyz.atomtypes)
                 # create atoms
-	        for i in range(0,nat):
+            for i in range(0,nat):
                         loc=Mathutils.Vector(self.xyz.coord[i])
-	                me = Mesh.Primitives.Icosphere(spheresubdivisions,atomicradii[self.xyz.atomtypes[i]])
-			me.materials=[materials[self.xyz.atomtypes[i]]]
-		        for face in me.faces:
-				face.smooth=True
-	                obj=self.scene.objects.new(me,'Atom')
-	                obj.setLocation(loc)
+                    me = Mesh.Primitives.Icosphere(spheresubdivisions,atomicradii[self.xyz.atomtypes[i]])
+            me.materials=[materials[self.xyz.atomtypes[i]]]
+                for face in me.faces:
+                face.smooth=True
+                    obj=self.scene.objects.new(me,'Atom')
+                    obj.setLocation(loc)
                 # form bonds between atoms
-	        for i in range(0,nat):
-	                for j in range(i+1,nat):
-	                        vec1=Mathutils.Vector(self.xyz.coord[i])
-	                        vec2=Mathutils.Vector(self.xyz.coord[j])
-	                        vec=vec2-vec1
-	                        distcovalent=covalentradii[self.xyz.atomtypes[i]]+covalentradii[self.xyz.atomtypes[j]]
-                                print "vec.length = %s  distcovalent = %s" % (vec.length, distcovalent)
-	                        if (vec.length-distcovalent)<=0.10*distcovalent:
-	                                me=Mesh.Primitives.Tube(32,stickradius,vec.length)
-		        		for face in me.faces:
-						face.smooth=True
-	                                obj=self.scene.objects.new(me,'Bond')
-	                                axis=Mathutils.CrossVecs(Vector([0,0,1]),vec)
-	                                angle=Mathutils.AngleBetweenVecs(Vector([0,0,1]),vec)
-	                                rotmat=Mathutils.RotationMatrix(angle,4,"R",axis)
-	                                obj.setMatrix(obj.matrix*rotmat)
-	                                obj.setLocation((vec1+vec2)*0.5)
-		# vectors
+            for i in range(0,nat):
+                    for j in range(i+1,nat):
+                            vec1=Mathutils.Vector(self.xyz.coord[i])
+                            vec2=Mathutils.Vector(self.xyz.coord[j])
+                            vec=vec2-vec1
+                            distcovalent=covalentradii[self.xyz.atomtypes[i]]+covalentradii[self.xyz.atomtypes[j]]
+                                print("vec.length = %s  distcovalent = %s" % (vec.length, distcovalent))
+                            if (vec.length-distcovalent)<=0.10*distcovalent:
+                                    me=Mesh.Primitives.Tube(32,stickradius,vec.length)
+                        for face in me.faces:
+                        face.smooth=True
+                                    obj=self.scene.objects.new(me,'Bond')
+                                    axis=Mathutils.CrossVecs(Vector([0,0,1]),vec)
+                                    angle=Mathutils.AngleBetweenVecs(Vector([0,0,1]),vec)
+                                    rotmat=Mathutils.RotationMatrix(angle,4,"R",axis)
+                                    obj.setMatrix(obj.matrix*rotmat)
+                                    obj.setLocation((vec1+vec2)*0.5)
+        # vectors
                 scale = 1.0 #1000.0 #1.0 #1000.0
                 for i in range(0, nat):
                         loc=Mathutils.Vector(self.xyz.coord[i])
                         vec=Mathutils.Vector(self.xyz.vectors[i])*scale
                         # arrow tail
                         me=Mesh.Primitives.Tube(32,arrowradius,vec.length)
-			me.materials=[materials["arrow"]]
+            me.materials=[materials["arrow"]]
                         for face in me.faces:
                                 face.smooth=True
                         obj=self.scene.objects.new(me,"Arrow-Tail")
@@ -190,7 +190,7 @@ class cube2blender:
                         obj.setLocation(loc+0.5*vec)
                         # arrow head
                         me=Mesh.Primitives.Cone(32,2*arrowradius,0.5)
-			me.materials=[materials["arrow"]]
+            me.materials=[materials["arrow"]]
                         for face in me.faces:
                                 face.smooth=True
                         obj=self.scene.objects.new(me,"Arrow-Head")
@@ -208,58 +208,58 @@ EVENT_Button_Browse=3
 inputfile=Create("/tmp/mulliken_dipoles.dat")
 
 class GUI:
-	def __init__(self,):
-		pass		
-	
-	def getFilename_callback(self,filename):
-		inputfile.val=filename
-	
+    def __init__(self,):
+        pass        
+    
+    def getFilename_callback(self,filename):
+        inputfile.val=filename
+    
 
-	def gui_draw(self):
-		global EVENT_Button_Import
-		global EVENT_Button_Cancel
-		global EVENT_Button_Browse
-		global EVENT_Button_Browse2
-		global isovalue
-		global sliderMax
-		global sliderMin
+    def gui_draw(self):
+        global EVENT_Button_Import
+        global EVENT_Button_Cancel
+        global EVENT_Button_Browse
+        global EVENT_Button_Browse2
+        global isovalue
+        global sliderMax
+        global sliderMin
 
-		glClearColor(0.5, 0.5, 0.5, 0.0)
-		glClear(BGL.GL_COLOR_BUFFER_BIT)
-		glColor3f(0.0, 0.0, 0.0)
+        glClearColor(0.5, 0.5, 0.5, 0.0)
+        glClear(BGL.GL_COLOR_BUFFER_BIT)
+        glColor3f(0.0, 0.0, 0.0)
 
-		glColor3f(1.0, 1.0, 1.0)
-		glRasterPos2i(180, 340)
-		Text(".IN File Importer", "large")
+        glColor3f(1.0, 1.0, 1.0)
+        glRasterPos2i(180, 340)
+        Text(".IN File Importer", "large")
 
 
-		String("File path: ", EVENT_none,40, 300, 360, 20,inputfile.val,399, ".in file path")
+        String("File path: ", EVENT_none,40, 300, 360, 20,inputfile.val,399, ".in file path")
 
-		Button("Import", EVENT_Button_Import, 110, 260, 70, 24, "")
-		Button("Cancel", EVENT_Button_Cancel, 320, 260, 70, 24, "")
-		Button("Browse", EVENT_Button_Browse, 400, 300, 70, 20, "")
-	
-	def event(self,event, value):
-		if (event == ESCKEY or event == QKEY) and not value:
-			Exit()
+        Button("Import", EVENT_Button_Import, 110, 260, 70, 24, "")
+        Button("Cancel", EVENT_Button_Cancel, 320, 260, 70, 24, "")
+        Button("Browse", EVENT_Button_Browse, 400, 300, 70, 20, "")
+    
+    def event(self,event, value):
+        if (event == ESCKEY or event == QKEY) and not value:
+            Exit()
 
-	def b_event(self,event):
-		global EVENT_Button_Import
-		global EVENT_Button_Cancel
-		global EVENT_Button_Browse
-		if event == 0: 
+    def b_event(self,event):
+        global EVENT_Button_Import
+        global EVENT_Button_Cancel
+        global EVENT_Button_Browse
+        if event == 0: 
                         pass
-		elif event == EVENT_Button_Import:
-			self.xyzobject=xyz(inputfile.val)
-			self.xyzobject.readxyz()
-			self.cube2blenderobject=cube2blender(self.xyzobject)
-			self.cube2blenderobject.blenderstructure()
-		elif event == EVENT_Button_Cancel:
-			Exit()
-		elif event == EVENT_Button_Browse:
-			Window.FileSelector(self.getFilename_callback, "Select xyz file")
-		Draw()
-		
-		
+        elif event == EVENT_Button_Import:
+            self.xyzobject=xyz(inputfile.val)
+            self.xyzobject.readxyz()
+            self.cube2blenderobject=cube2blender(self.xyzobject)
+            self.cube2blenderobject.blenderstructure()
+        elif event == EVENT_Button_Cancel:
+            Exit()
+        elif event == EVENT_Button_Browse:
+            Window.FileSelector(self.getFilename_callback, "Select xyz file")
+        Draw()
+        
+        
 guiobject=GUI()
 Register(guiobject.gui_draw, guiobject.event, guiobject.b_event)

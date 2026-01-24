@@ -124,14 +124,14 @@ class SymGroup(object):
             atomlist_e = e.transform(atomlist)
             if symmetry_related(atomlist, atomlist_e) == False:
                 issym *= 0
-                print "%s changes the geometry from" % e.name()
-                print write_atomlist(atomlist)
-                print "to"
-                print write_atomlist(atomlist_e)
+                print("%s changes the geometry from" % e.name())
+                print(write_atomlist(atomlist))
+                print("to")
+                print(write_atomlist(atomlist_e))
         if issym == 1:
-            print ">>> Molecule HAS %s symmetry <<<" % self.name()
+            print(">>> Molecule HAS %s symmetry <<<" % self.name())
         else:
-            print ">>> Molecule DOES NOT HAVE %s symmetry <<<" % self.name()
+            print(">>> Molecule DOES NOT HAVE %s symmetry <<<" % self.name())
 
         return issym
     # 
@@ -423,7 +423,7 @@ def detect_symmetry_brute_force(atomlist):
     # use the most complex symmetry group
     isym = np.where(hassym == 1)[0][-1]
     g = point_groups[isym]
-    print " => use the most complex of the detected symmetry groups, %s" % g.name()
+    print(" => use the most complex of the detected symmetry groups, %s" % g.name())
     return g
 
 def axes_ordering(atomlist_std):
@@ -457,7 +457,7 @@ def axes_ordering(atomlist_std):
             atomlist_e = SR.transform(atomlist_std)
             if symmetry_related(atomlist_std, atomlist_e) == True:
                 order_improp[iax] = n        
-    print "Rotation orders of x,y and z-axes: %s" % order
+    print("Rotation orders of x,y and z-axes: %s" % order)
     if len(np.unique(order)) == 1:
         # all axes have same proper rotation order
         # use order of improper rotations
@@ -473,12 +473,12 @@ def axes_ordering(atomlist_std):
                 if abs(abs(c)-1.0) < 1.0e-8:
                     # position vector is parallel to axis
                     atoms_on_axis[iax] += 1
-        print "Number of atoms on x,y and z-axes: %s" % atoms_on_axis
+        print("Number of atoms on x,y and z-axes: %s" % atoms_on_axis)
         # increase order of axis with many atoms
         order += atoms_on_axis
     # index of principle axis comes last
     o = np.argsort(order)
-    print "Axis ordering: %s" % o
+    print("Axis ordering: %s" % o)
     return o
 
 

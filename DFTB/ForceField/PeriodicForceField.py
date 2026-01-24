@@ -160,13 +160,13 @@ class PeriodicForceField:
         M = np.dot(magn_tdip, C)
 
         if verbose > 0:
-            print elec_tdip
-            print magn_tdip
-            print C
-            print "transition dipoles"
-            print T
-            print "magnetic transition dipoles"
-            print M
+            print(elec_tdip)
+            print(magn_tdip)
+            print(C)
+            print("transition dipoles")
+            print(T)
+            print("magnetic transition dipoles")
+            print(M)
 
         return en, T, M
     
@@ -216,11 +216,11 @@ def save_exciton_spectrum(spec_file, en, T, M):
                f[i], R[i], angleEM[i]*180.0/np.pi)
     txt += "\n"
 
-    print txt
+    print(txt)
     fh = open(spec_file, "w")
     print>>fh, txt
     fh.close()
-    print "exciton spectrum written to '%s'" % spec_file
+    print("exciton spectrum written to '%s'" % spec_file)
 
 def plot_exciton_spectrum(en, T, M, broadening=0.005, units="nm"):
     """
@@ -301,7 +301,7 @@ def read_force_field(ff_file, units="Angstrom", fragment_id=AtomicData.atomic_nu
     atomtypes = []
     partial_charges = []
     lattice_vectors = []
-    for i in xrange(nat+3):
+    for i in range(nat+3):
         # read nat atoms and at most 3 lattice vectors
         line = fh.readline()
         if not line:
@@ -324,7 +324,7 @@ def read_force_field(ff_file, units="Angstrom", fragment_id=AtomicData.atomic_nu
             partial_charges.append( 0.0 )    
     fh.close()
     if lattice_vectors == []:
-        print "No lattice vectors found"
+        print("No lattice vectors found")
         # no lattice vectors were provided
         # HACK: By setting a lattice vectors to 0, we tell
         #       the function 'build_force_field' that we do not want
@@ -371,7 +371,7 @@ def write_force_field(ff_file, atomlist, atomtypes, partial_charges, lattice_vec
         for i in range(0, 3):
             print>>fh, "Tv    %10.7f   %10.7f   %10.7f" % tuple(lattice_vectors[i])
     fh.close()
-    print "geometry, atomtypes and partial charges written to '%s'" % ff_file
+    print("geometry, atomtypes and partial charges written to '%s'" % ff_file)
 
 def read_transition_charges(chromo_file, units="Angstrom"):
     """
@@ -412,7 +412,7 @@ def read_transition_charges(chromo_file, units="Angstrom"):
         Nst = len(excitation_energies)
         indeces = []
         transition_charges = []
-        for i in xrange(Nat):
+        for i in range(Nat):
             line = fh.readline()
             if not line:
                 # end of file reached
@@ -505,7 +505,7 @@ def enlarged_unitcell(atomlist, lattice_vectors, nmax=1):
         else:
             # replicate unit cell along translation vector nmax times
             ns[dim] = range(-nmax,nmax+1)
-    print "replica cells: %s" % map(len, ns)
+    print("replica cells: %s" % map(len, ns))
             
     atomlist_enlarged = []
     for n1 in ns[0]:
@@ -538,7 +538,7 @@ if __name__ == "__main__":
     
     (opts,args) = parser.parse_args()
     if len(args) < 1:
-        print usage
+        print(usage)
         exit(-1)
 
     ff_file = args[0]  #"h2.ff" #"ethene.ff" #"pyrene_crystal_expanded.ff" #
@@ -561,31 +561,31 @@ if __name__ == "__main__":
     energy, grad_analytic = pff.getEnergyAndGradient(coords, state=opts.state)
 
     Nat = len(atomlist)
-    print "numerical gradient"
+    print("numerical gradient")
     for i in range(0, Nat):
-        print grad_num[3*i:3*(i+1)];
-    print "analytical gradient"
+        print(grad_num[3*i:3*(i+1)])
+    print("analytical gradient")
     for i in range(0, Nat):
-        print grad_analytic[3*i:3*(i+1)]
+        print(grad_analytic[3*i:3*(i+1)])
 
     grad_dif = grad_num - grad_analytic
-    print "difference"
+    print("difference")
     for i in range(0, Nat):
-        print grad_dif[3*i:3*(i+1)]
+        print(grad_dif[3*i:3*(i+1)])
 
-    print "error: %s" % np.sum(abs(grad_dif))
+    print("error: %s" % np.sum(abs(grad_dif)))
 
     # check the exciton states are orthogonal
     exc_energies, coefs = pff.getExcitonStates()
-    print "excitation energies"
-    print exc_energies
-    print "coefficients of selected exciton wavefunction"
-    print coefs[:,opts.state-1]
-    print "Check that exciton wavefunctions are orthogonal"
-    print "overlap"
+    print("excitation energies")
+    print(exc_energies)
+    print("coefficients of selected exciton wavefunction")
+    print(coefs[:,opts.state-1])
+    print("Check that exciton wavefunctions are orthogonal")
+    print("overlap")
     S = np.dot(coefs.transpose(), coefs)
-    print S
+    print(S)
     err = la.norm(S - np.eye(S.shape[0]))
-    print "|S - Id|= %e" % err
+    print("|S - Id|= %e" % err)
     
     

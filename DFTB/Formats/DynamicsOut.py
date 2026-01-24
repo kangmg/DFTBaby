@@ -122,6 +122,6 @@ if __name__ == "__main__":
     for b in parse_dynamics_out(sys.argv[1]):
         if b.__class__ == time_Block:
             t,atomlist,velocities = b.getData()
-            print t
+            print(t)
 
 

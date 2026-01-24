@@ -260,10 +260,10 @@ class HelpFormatter:
         self.level -= 1
 
     def format_usage(self, usage):
-        raise NotImplementedError, "subclasses must implement"
+        raise NotImplementedError("subclasses must implement")
 
     def format_heading(self, heading):
-        raise NotImplementedError, "subclasses must implement"
+        raise NotImplementedError("subclasses must implement")
 
     def _format_text(self, text):
         """
@@ -426,8 +426,9 @@ def _parse_num(val, type):
 def _parse_int(val):
     return _parse_num(val, int)
 
+# Python 3: long is replaced by int
 def _parse_long(val):
-    return _parse_num(val, long)
+    return _parse_num(val, int)
 
 _builtin_cvt = { "int" : (_parse_int, _("integer")),
                  "long" : (_parse_long, _("long integer")),
@@ -837,14 +838,9 @@ class Option:
 SUPPRESS_HELP = "SUPPRESS"+"HELP"
 SUPPRESS_USAGE = "SUPPRESS"+"USAGE"
 
-try:
-    basestring
-except NameError:
-    def isbasestring(x):
-        return isinstance(x, (types.StringType, types.UnicodeType))
-else:
-    def isbasestring(x):
-        return isinstance(x, basestring)
+# Python 3: basestring is replaced by str
+def isbasestring(x):
+    return isinstance(x, str)
 
 class Values:
 
@@ -893,7 +889,7 @@ class Values:
         elif mode == "loose":
             self._update_loose(dict)
         else:
-            raise ValueError, "invalid update mode: %r" % mode
+            raise ValueError("invalid update mode: %r" % mode)
 
     def read_module(self, modname, mode="careful"):
         __import__(modname)
@@ -902,7 +898,7 @@ class Values:
 
     def read_file(self, filename, mode="careful"):
         vars = {}
-        execfile(filename, vars)
+        exec(open(filename).read(), vars)
         self._update(vars, mode)
 
     def ensure_value(self, attr, value):
@@ -913,7 +909,7 @@ class Values:
     def __str__(self):
         txt  = 23*" " + "Options  :  Values \n"
         txt += 23*" " + "------------------ \n"
-        for k,v in self.__dict__.iteritems():
+        for k,v in self.__dict__.items():
             txt += 10*" " + ("%20.20s  :  %s \n" % (k,v))
         txt += "\n"
         return txt
@@ -979,7 +975,7 @@ class OptionContainer:
 
     def set_conflict_handler(self, handler):
         if handler not in ("error", "resolve", "override"):
-            raise ValueError, "invalid conflict_resolution value %r" % handler
+            raise ValueError("invalid conflict_resolution value %r" % handler)
         self.conflict_handler = handler
 
     def set_description(self, description):
@@ -1039,9 +1035,9 @@ class OptionContainer:
         elif len(args) == 1 and not kwargs:
             option = args[0]
             if not isinstance(option, Option):
-                raise TypeError, "not an Option instance: %r" % option
+                raise TypeError("not an Option instance: %r" % option)
         else:
-            raise TypeError, "invalid arguments"
+            raise TypeError("invalid arguments")
 
         option = self._check_conflict(option)
         if option is None:
@@ -1369,11 +1365,11 @@ class OptionParser (OptionContainer):
         elif len(args) == 1 and not kwargs:
             group = args[0]
             if not isinstance(group, OptionGroup):
-                raise TypeError, "not an OptionGroup instance: %r" % group
+                raise TypeError("not an OptionGroup instance: %r" % group)
             if group.parser is not self:
-                raise ValueError, "invalid OptionGroup (wrong parser)"
+                raise ValueError("invalid OptionGroup (wrong parser)")
         else:
-            raise TypeError, "invalid arguments"
+            raise TypeError("invalid arguments")
 
         self.option_groups.append(group)
         return group
@@ -1427,7 +1423,7 @@ class OptionParser (OptionContainer):
 
         try:
             stop = self._process_args(largs, rargs, values)
-        except (BadOptionError, OptionValueError), err:
+        except (BadOptionError, OptionValueError) as err:
             self.error(str(err))
 
         args = largs + rargs
@@ -1481,8 +1477,8 @@ class OptionParser (OptionContainer):
                     self._process_short_opts(rargs, values)
                 except BadOptionError as err:
                     if self.unknown_options == "ignore":
-                        print err
-                        print "CONTINUE ANYWAY"
+                        print(err)
+                        print("CONTINUE ANYWAY")
                         continue
                     else:
                         raise err                    
@@ -1644,7 +1640,7 @@ class OptionParser (OptionContainer):
         or not defined.
         """
         if self.usage:
-            print >>file, self.get_usage()
+            print >>file, self.get_usage()  # TODO: Convert print >> to file.write()
 
     def get_version(self):
         if self.version:
@@ -1661,7 +1657,7 @@ class OptionParser (OptionContainer):
         name.  Does nothing if self.version is empty or undefined.
         """
         if self.version:
-            print >>file, self.get_version()
+            print >>file, self.get_version()  # TODO: Convert print >> to file.write()
 
     def format_option_help(self, formatter=None):
         if formatter is None:
@@ -1764,8 +1760,8 @@ Usage example:
         verbose: print additional output
         \"""
         if verbose > 0:
-            print "f called with x=%s" % x
-        print x**2
+            print("f called with x=%s" % x)
+        print(x**2)
 
         usage = "call function f()"
         # expose optional arguments of f() the command line
@@ -1844,11 +1840,11 @@ class OptionParserFuncWrapper:
                         if found == 1:
                             help_text += "%s, " % l.strip()
                 if v is None:
-                    print "Could not find help text for option '%s'!" % var
-                    print "Each function that is wrapped should have a __doc__ string"
-                    print "with an explanation for each optional parameter in the form"
-                    print "'OPTION: help text' ."
-                    print "There must be no space between the option name and the colon!"
+                    print("Could not find help text for option '%s'!" % var)
+                    print("Each function that is wrapped should have a __doc__ string")
+                    print("with an explanation for each optional parameter in the form")
+                    print("'OPTION: help text' .")
+                    print("There must be no space between the option name and the colon!")
                     exit(-1)
                 # determine into which section this option is placed
                 if "." in v:
@@ -1878,7 +1874,7 @@ class OptionParserFuncWrapper:
                     try:
                         default = config.get(section_header, option)
                         if verbose > 0:
-                            print "Option %s => %s" % (option, default)
+                            print("Option %s => %s" % (option, default))
                     except ConfigParser.NoOptionError as e:
                         continue
                     except ConfigParser.NoSectionError as e:
@@ -1896,7 +1892,7 @@ class OptionParserFuncWrapper:
          - evaluate lists 
         """
         opts = {}
-        for k,v in options.__dict__.iteritems():
+        for k,v in options.__dict__.items():
             if v == "None" or v == "none":
 #                print "found None"
                 opts[k] = None
@@ -1923,7 +1919,7 @@ class OptionParserFuncWrapper:
 
         if f != None:
             # filter those options that are valid arguments to function f
-            opts = dict([(k,v) for k,v in opts.iteritems() if k in self.func_parameters[unique_func_name(f)]])
+            opts = dict([(k,v) for k,v in opts.items() if k in self.func_parameters[unique_func_name(f)]])
         return opts, args
     
 def unique_func_name(f):

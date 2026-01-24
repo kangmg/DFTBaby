@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-print xyz-coordinates in a format that can be pasted into python scripts
+print(xyz-coordinates in a format that can be pasted into python scripts)
 """
 from DFTB import XYZ
 import pprint
@@ -10,7 +10,7 @@ if __name__ == "__main__":
    usage = "Usage: python %s <xyz input>\n" % sys.argv[0]
 
    if len(sys.argv) < 2:
-      print usage
+      print(usage)
       exit(-1)
    xyz = sys.argv[1]
    atomlist = XYZ.read_xyz(xyz)[0]

@@ -22,8 +22,8 @@ def connectivity(atomlist, Rcov_scale=1.3):
     atom_types = list(set(atom_types))
     # estimate bond lengths between all possible dimer combinations
     bond_lengths = {}
-    print "Cut-offs for bonding"
-    print "===================="
+    print("Cut-offs for bonding")
+    print("====================")
     for a,Za in enumerate(atom_types):
         name_a = AtomicData.atom_names[Za-1]
         Rcova = AtomicData.covalent_radii[name_a]
@@ -33,9 +33,9 @@ def connectivity(atomlist, Rcov_scale=1.3):
             bl = Rcov_scale * (Rcova + Rcovb)
             bond_lengths[(Za,Zb)] = bl
             bond_lengths[(Zb,Za)] = bl
-            print "r(%s - %s)   <   %2.5f bohr" % (name_a.ljust(3), name_b.ljust(3), bl)
+            print("r(%s - %s)   <   %2.5f bohr" % (name_a.ljust(3), name_b.ljust(3), bl))
 
-    print "build connectivity matrix ..."
+    print("build connectivity matrix ...")
     Nat = len(atomlist)
     Con = np.zeros((Nat, Nat), dtype=int)
     for i in range(0, Nat):
@@ -71,12 +71,12 @@ def find_connected(Con, i, sel=None):
         if Con[i,j] == 1:
             directly_connected.append(j)
     directly_connected = set(directly_connected)
-    print "directly connected = %s" % directly_connected
+    print("directly connected = %s" % directly_connected)
     connected = []
     for at in directly_connected:
         sel_at = sel - set([at])
         connected += find_connected(Con, at, sel=sel_at)
-        print "      connected = %s" % connected
+        print("      connected = %s" % connected)
     connected += directly_connected
     connected = set(connected)
     return connected
@@ -101,17 +101,17 @@ def cut_sphere(atomlist, R=20.0):
     atomlist = XYZ.vector2atomlist(pos_shifted, atomlist)
 
     Con = connectivity(atomlist)
-    print "recursively remove connected atoms..."
+    print("recursively remove connected atoms...")
     removed = [] # list of removed indeces
     for i,(Zi,posi) in enumerate(atomlist):
-        print "i = %s" % i
+        print("i = %s" % i)
         if la.norm(posi) > R:
             if not (i in removed):
-                print "remove %s%d" % (AtomicData.atom_names[Zi-1], i)
+                print("remove %s%d" % (AtomicData.atom_names[Zi-1], i))
                 removed.append(i)
                 # remove connect atoms
                 connected = find_connected(Con, i)
-                print "and connected atoms %s" % connected
+                print("and connected atoms %s" % connected)
                 removed += connected
     removed = set(removed)
     cut_atomlist = []
@@ -133,7 +133,7 @@ if __name__ == "__main__":
     usage += "  removes all atoms outside sphere of radius R and all connected atoms\n"
 
     if len(sys.argv) < 4:
-        print usage
+        print(usage)
         exit(-1)
 
     xyz_in = expandvars(expanduser(sys.argv[1]))
@@ -142,5 +142,5 @@ if __name__ == "__main__":
 
     atomlist = XYZ.read_xyz(xyz_in)[0]
     cut_atomlist = cut_sphere(atomlist, R)
-    print "Removed %d atoms" % (len(atomlist) - len(cut_atomlist))
+    print("Removed %d atoms" % (len(atomlist) - len(cut_atomlist)))
     XYZ.write_xyz(xyz_out, [cut_atomlist])

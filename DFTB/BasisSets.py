@@ -239,7 +239,7 @@ class AuxiliaryBasisSet:
     def __init__(self, atomlist, hubbard_U):
         sigmas_s = {}
         sigmas_p = {}
-        for Z,U in hubbard_U.iteritems():
+        for Z,U in hubbard_U.items():
             sigmas_s[Z] = 1.0/(np.sqrt(np.pi)*U)
             sigmas_p[Z] = 1.0/(6.0*np.sqrt(np.pi)*U**3) # sigmas_s[Z] #1.0/(6.0*np.sqrt(np.pi)*U**3)
         #
@@ -353,7 +353,7 @@ class GaussianBasisSet:
                 Z = bfi.Zi
                 l = bfi.l
                 # compute overlap
-                if olaps.has_key((Z,l)):
+                if (Z,l in olaps):
                     olap = olaps[(Z,l)]
                 else:
                     olap = np.sum( bfi.radial_wavefunction(rs) * bfj.radial_wavefunction(rs) * rs**2 * dr )
@@ -365,7 +365,7 @@ class GaussianBasisSet:
 """
 def extract_turbomole_orbitals(tm_dir):
     from DFTB.Formats import Turbomole
-    print "Reading geometry and basis from Turbomole directory %s" % tm_dir
+    print("Reading geometry and basis from Turbomole directory %s" % tm_dir)
     Data = Turbomole.parseTurbomole(tm_dir + "/coord")
     atomlist = Data["coord"]
     Data = Turbomole.parseTurbomole(tm_dir + "/basis")

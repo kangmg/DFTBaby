@@ -94,14 +94,14 @@ class LR_TDDFTB:
         
         if oszis == "Dipoles" and self.dftb2.parameter_set == "homegrown":
             if self.dftb2.verbose > 0:
-                print "compute transition dipoles from Slater-Koster tables"
+                print("compute transition dipoles from Slater-Koster tables")
             self._TransitionDipoles()
             # This is a little bit redundant. Here we compute the permanent dipoles
             # and transition dipoles and print them if verbose output is requested.
             self.getTransitionDipolesExc(len(self.Omega))
         else:
             if self.dftb2.verbose > 0:
-                print "compute transition dipoles using Mulliken approximation (ZDO)"
+                print("compute transition dipoles using Mulliken approximation (ZDO)")
             self._TransitionDipolesMulliken()
         self.getOscillatorStrengths()
         #
@@ -132,7 +132,7 @@ class LR_TDDFTB:
         orbs = self.dftb2.getKSCoefficients()
         lm_indeces = [] # indeces of atomic orbitals with quantum numbers (l,m) from the selected set
         iao = 0 # this counter runs over all atomic orbitals, iao=0,...,nao-1
-        print "The active space contains only atomic orbitals with (l,m) in %s" % str(select_lm)
+        print("The active space contains only atomic orbitals with (l,m) in %s" % str(select_lm))
         # iterate over all atomic centers
         for i,(Zi,posi) in enumerate(atomlist):
             # iterate over all atomic orbitals at center i
@@ -151,8 +151,8 @@ class LR_TDDFTB:
             lm_norm = np.sum(abs(orbs[lm_indeces,imo])**2)
             if lm_norm > 1.0e-15:
                 is_lm[imo] = True
-        print "SELECTED ORBITALS"
-        print "NMO(SELECTED) = %d   NMO(TOTAL) = %d" % (len(np.where(is_lm == True)[0]),nmo)
+        print("SELECTED ORBITALS")
+        print("NMO(SELECTED) = %d   NMO(TOTAL) = %d" % (len(np.where(is_lm == True)[0]),nmo))
         f = self.dftb2.getOccupation()
         orbe = self.dftb2.getKSEnergies()
         # occupied and unoccupied lm-orbitals
@@ -226,19 +226,19 @@ class LR_TDDFTB:
         nr_active_occ = HOMO - occ_min + 1
         nr_active_virt = virt_max - HOMO
         if self.dftb2.verbose > 0:
-            print ""
-            print "Active Space"
-            print "============"
+            print("")
+            print("Active Space")
+            print("============")
             for n in range(0, Nst):
-                print "State %3d: contains excitations from window  occ %3d - virt %3d" % (n+1,occ_mins[n], virt_maxs[n])
-            print ""
-            print "The suggested active space for describing the lowest %d states consists of" % Nst
-            print "the highest %d occupied and the lowest %d virtual orbitals." % (nr_active_occ, nr_active_virt)
-            print "This active space accounts for %2.7f of the total probability for each state." % (1.0-threshold)
-            print "You should check that the active space contains all neighbouring (almost) degenerate orbitals."
-            print "Dimension of active space: %d" % (nr_active_occ * nr_active_virt)
-            print "Dimension of  full  space: %d" % (len(self.occupied_orbs)*len(self.virtual_orbs))
-            print ""
+                print("State %3d: contains excitations from window  occ %3d - virt %3d" % (n+1,occ_mins[n], virt_maxs[n]))
+            print("")
+            print("The suggested active space for describing the lowest %d states consists of" % Nst)
+            print("the highest %d occupied and the lowest %d virtual orbitals." % (nr_active_occ, nr_active_virt))
+            print("This active space accounts for %2.7f of the total probability for each state." % (1.0-threshold))
+            print("You should check that the active space contains all neighbouring (almost) degenerate orbitals.")
+            print("Dimension of active space: %d" % (nr_active_occ * nr_active_virt))
+            print("Dimension of  full  space: %d" % (len(self.occupied_orbs)*len(self.virtual_orbs)))
+            print("")
         # return the suggested active space
         return nr_active_occ, nr_active_virt
     def hasActiveSpace(self):
@@ -405,13 +405,13 @@ class LR_TDDFTB:
         ###
         # transition charges
         if self.dftb2.verbose > 0:
-            print "compute transition charges"
+            print("compute transition charges")
         qtrans_ov, qtrans_oo, qtrans_vv = self._MullikenTransitionCharges()
         # compute Oia for Lambda diagnostics Oia = int int phi_i(r)^2 phi_a(r)^2 dr dr
         self._Lambda2_calcOia()
         # gamma matrices at short and long range
         if self.dftb2.verbose > 0:
-            print "build gamma matrices"
+            print("build gamma matrices")
         gamma = self.dftb2.getGamma()
         if self.dftb2.long_range_correction == 1:
             gamma_lr = self.dftb2.getGamma_lr()
@@ -441,7 +441,7 @@ class LR_TDDFTB:
         if response_method == "Casida":
             if nstates == None:
                 if self.dftb2.verbose > 0:
-                    print "construct and diagonalize full TD-DFTB matrix with dimension %d" % (self.nocc*self.nvirt)
+                    print("construct and diagonalize full TD-DFTB matrix with dimension %d" % (self.nocc*self.nvirt))
                 # construct the full TD-DFTB matrix in memory
                 # and diagonalize the Hermitian eigenvalue problem
                 self.Omega, self.Cij, self.XmY, self.XpY = \
@@ -453,7 +453,7 @@ class LR_TDDFTB:
                 # for the lowest nstates using an iterative
                 # approach 
                 if self.dftb2.verbose > 0:
-                    print "solve eigenvalue problem iteratively"
+                    print("solve eigenvalue problem iteratively")
                 #
                 if self.dftb2.use_symmetry > 0 and diag_selected_irreps != None:
                     selector = SymmetryAssignmentEx(self, self.dftb2.symmetry_group)
@@ -492,7 +492,7 @@ class LR_TDDFTB:
                                   verbose=self.dftb2.verbose)
                 if diag_check == 1:
                     ### DEBUG
-                    print "CHECK ITERATIVE DIAGONALIZATION"
+                    print("CHECK ITERATIVE DIAGONALIZATION")
                     # only for debugging purposes, check that Davidson-like
                     # diagonalization and full diagonalization agree
                     # check that Davidson-like diagonalization yields the same results
@@ -503,7 +503,7 @@ class LR_TDDFTB:
 
                     err = np.sum(abs(self.Omega - Omega_full[:nstates]))
                     assert err < 1.0e-10, "eigenvalues differ, err = %s\nEn(iter) = %s\nEn(full) = %s" % (err, self.Omega, Omega_full[:nstates])
-                    print "EIGENVALUES AGREE"
+                    print("EIGENVALUES AGREE")
                     err = 0
                     for n in range(0, nstates):
                         # arbitrary global sign
@@ -515,7 +515,7 @@ class LR_TDDFTB:
                                    np.sum(abs(self.Cij[n,:,:] + C_full[n,:,:])))
                         err += XmYerr + XpYerr # + Cerr
                     assert err < 1.0e-10, "Davidson-like diagonalization and full diagonalization disagree, error = %s! You might want to tighten the convergence using --diag_conv=1.0e-13. Symmetry should be disabled." % err
-                    print "EIGENVECTORS AGREE"
+                    print("EIGENVECTORS AGREE")
                     ####
 
         elif response_method == "Tamm-Dancoff":
@@ -647,8 +647,8 @@ class LR_TDDFTB:
             d0_nuc -= Zcore*np.array(pos)
         # total permanent dipole moment in ground state
         if self.dftb2.verbose > 0:
-            print "electronic dipole moment (in e*bohr): %s" % d0_elec
-            print "nuclear dipole moment (in e*bohr):    %s" % d0_nuc
+            print("electronic dipole moment (in e*bohr): %s" % d0_elec)
+            print("nuclear dipole moment (in e*bohr):    %s" % d0_nuc)
         d0 = d0_elec + d0_nuc
             
         tdip[0,0,:] = d0
@@ -692,7 +692,7 @@ class LR_TDDFTB:
                     dlen = la.norm(dvec)
                     txt += "  %4.1d       %4.1d          %+12.6e     %+12.6e    %+12.6e    %+12.6e        \n" % (i,j, dvec[0], dvec[1], dvec[2], dlen)
             txt += "\n"
-            print txt
+            print(txt)
             
         return tdip
     def getOscillatorStrengths(self):
@@ -744,7 +744,7 @@ class LR_TDDFTB:
         """
         self.Irreps = ["" for I in range(0, len(self.Omega))]
         if self.dftb2.use_symmetry > 0:
-            print "Assigning symmetries to excited states based on transformation properties of the transition densities"
+            print("Assigning symmetries to excited states based on transformation properties of the transition densities")
 
             symas = SymmetryAssignmentEx(self, self.dftb2.symmetry_group)
             # labels of irreducible representations for each state
@@ -803,7 +803,7 @@ class LR_TDDFTB:
                                string.rjust("%s" % domKS_str, 8), \
                                string.rjust("[%+2.7f %+2.7f %+2.7f]" % (self.tdipX[I], self.tdipY[I], self.tdipZ[I]), 40), \
                                string.rjust("%.4f" % self.Lambda2[I], 7))
-        print txt
+        print(txt)
     def saveAbsorptionSpectrum(self, spectrum_file="absorption_spectrum.dat"):
         """
         Write a table with absorption spectrum to a file.
@@ -942,7 +942,7 @@ class LR_TDDFTB:
             txt += "======================\n"
             for A,(ZA,posA) in enumerate(atomlist):
                 txt += "%s: %3.7f (p) \t %3.7f (h)\n" % (string.center("%s-%s" % (atom_names[ZA-1], A),12), particle_charges[A], hole_charges[A])
-            print txt
+            print(txt)
 
         return particle_charges, hole_charges
     def ParticleHoleChargesSuperposition(self, coeffs):
@@ -991,7 +991,7 @@ class LR_TDDFTB:
             txt += "======================\n"
             for A,(ZA,posA) in enumerate(atomlist):
                 txt += "%s: %3.7f (p) \t %3.7f (h)\n" % (string.center("%s-%s" % (atom_names[ZA-1], A),12), particle_charges[A], hole_charges[A])
-            print txt
+            print(txt)
 
         return particle_charges, hole_charges    
     def analyseParticleHole(self, particle_hole_states="[]", particle_hole_dir=None):
@@ -1136,7 +1136,7 @@ class LR_TDDFTB:
             np.savetxt(fh_nac, nac.transpose(), fmt="%+e")
             fh_nac.close()
 
-            print "approx. non-adiabatic coupling vector for S0-S%d transition saved to %s" % (state, nac_file)
+            print("approx. non-adiabatic coupling vector for S0-S%d transition saved to %s" % (state, nac_file))
             
     # GRAPHICAL ANALYSIS
     def graphical_analysis(self, graphical=0):
@@ -1145,7 +1145,7 @@ class LR_TDDFTB:
         """
         if graphical == 0:
             return
-        print "STARTING GRAPHICAL USER INTERFACE"
+        print("STARTING GRAPHICAL USER INTERFACE")
         from DFTB.Analyse.mayavi import GUI
         GUI.start_graphical_analysis(self)
         
@@ -1180,7 +1180,7 @@ if __name__ == "__main__":
     (options,args) = parser.parse_args(DFTB2.__init__)
 
     if len(args) < 1:
-        print usage
+        print(usage)
         exit(-1)
 
     xyz_file = args[0]
@@ -1239,10 +1239,10 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args(cube.exportCubes)
     cube.exportCubes(**options)
 
-    print T # timing
+    print(T)  # timing
 
     # start GUI
     (options, args) = parser.parse_args(tddftb.graphical_analysis)
     tddftb.graphical_analysis(**options)
 
-    print "FINISHED"
+    print("FINISHED")

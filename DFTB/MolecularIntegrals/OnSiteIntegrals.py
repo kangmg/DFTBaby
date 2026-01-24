@@ -51,8 +51,8 @@ def onsite_integrals_unique(atom_name='h', confined=True):
     ----------
     [1] http://openmopac.net/manual/1c2e.html
     """
-    print "computing unique on-site electron integrals between valence orbitals of '%s'" % atom_name
-    print "only s- and p-functions are considered"
+    print("computing unique on-site electron integrals between valence orbitals of '%s'" % atom_name)
+    print("only s- and p-functions are considered")
     Zat = atomic_number(atom_name)
     atomlist = [(Zat, (0,0,0))]
     basis = AtomicBasisSet(atomlist, confined=confined)
@@ -93,9 +93,9 @@ def onsite_integrals_unique(atom_name='h', confined=True):
                 eri_aabb = electron_repulsion_integral(atomlist, bfA, bfA, bfB, bfB, density, xc_functional)
                 assert (eri_aabb - (unique_integrals[3] - 2*unique_integrals[4])) < 1.0e-5
                 
-    print "unique 1-center integrals (in eV) for atom '%s'" % atom_name
-    print "       (ss|ss)     (sp|sp)     (ss|pp)      (pp|pp)     (pp'|pp')"
-    print "    %+.7f  %+.7f  %+.7f  %+.7f  %+.7f" % tuple(unique_integrals*hartree_to_eV)
+    print("unique 1-center integrals (in eV) for atom '%s'" % atom_name)
+    print("       (ss|ss)     (sp|sp)     (ss|pp)      (pp|pp)     (pp'|pp')")
+    print("    %+.7f  %+.7f  %+.7f  %+.7f  %+.7f" % tuple(unique_integrals*hartree_to_eV))
                 
     return unique_integrals
             
@@ -113,7 +113,7 @@ def onsite_integrals(atom_name='h', confined=True):
     confined      :   controls where confined atoms (True) or free atoms (False)
                       are used
     """
-    print "computing on-site Coulomb and exchange integrals between valence orbitals of '%s'" % atom_name
+    print("computing on-site Coulomb and exchange integrals between valence orbitals of '%s'" % atom_name)
     Zat = atomic_number(atom_name)
     atomlist = [(Zat, (0,0,0))]
     basis = AtomicBasisSet(atomlist, confined=confined)
@@ -127,11 +127,11 @@ def onsite_integrals(atom_name='h', confined=True):
             strb = "%d%s" % (bfB.n, angmom_to_xyz[(bfB.l,bfB.m)])
             # Coulomb integral    (aa|(1/r12 + fxc[rho0])|bb)
             eri_aabb = electron_repulsion_integral(atomlist, bfA, bfA, bfB, bfB, density, xc_functional)
-            print "Coulomb  (%s,%s|{1/r12+f_xc[rho0]}|%s,%s)= %e" % (stra,stra,strb,strb,eri_aabb)
+            print("Coulomb  (%s,%s|{1/r12+f_xc[rho0]}|%s,%s)= %e" % (stra,stra,strb,strb,eri_aabb))
             if a != b:
                 # exchange integral    (ab|(1/r12 + fxc[rho0])|ab)
                 eri_abab = electron_repulsion_integral(atomlist, bfA, bfB, bfA, bfB, density, xc_functional)
-                print "exchange (%s,%s|{1/r12+f_xc[rho0]}|%s,%s)= %e" % (stra,strb,stra,strb,eri_abab)
+                print("exchange (%s,%s|{1/r12+f_xc[rho0]}|%s,%s)= %e" % (stra,strb,stra,strb,eri_abab))
             
 
 def tabulate_onsite_integrals(atom_names, filename, confined=True):
@@ -170,7 +170,7 @@ def tabulate_onsite_integrals(atom_names, filename, confined=True):
     print>>fh, "# in the order   (ss|ss)     (sp|sp)     (ss|pp)      (pp|pp)     (pp'|pp')"
     print>>fh, "onsite_integrals = \\\n%s" % pp.pformat(onsite_integrals_dic)
 
-    print "unique on-site integrals for atoms %s written to '%s'" % (" ".join(atom_names), filename)
+    print("unique on-site integrals for atoms %s written to '%s'" % (" ".join(atom_names), filename))
     fh.close()
     
     

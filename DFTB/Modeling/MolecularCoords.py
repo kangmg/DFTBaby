@@ -29,7 +29,7 @@ def shift_to_com(pos,masses):
     """
     com = center_of_mass(masses, pos)
     pos_shifted = np.zeros(pos.shape)
-    for i in xrange(0, len(pos)/3):
+    for i in range(0, len(pos)/3):
         pos_shifted[3*i:3*i+3] = pos[3*i:3*i+3] - com
     return pos_shifted
     
@@ -41,7 +41,7 @@ def inertial_tensor(masses, pos):
     I = zeros((3,3))
     Nat = len(pos)/3
     assert len(masses) == len(pos)
-    for i in xrange(0, Nat):
+    for i in range(0, Nat):
         xi,yi,zi = pos[3*i:3*i+3]
         ri2 = xi*xi+yi*yi+zi*zi
         mi = masses[3*i]
@@ -209,7 +209,7 @@ def tripod2EulerAngles(xaxis,yaxis,zaxis):
 #    assert abs(norm(zaxis) - 1.0) < 1.0e-10
 
     """
-    print "Zaxis = %s" % zaxis[2]
+    print("Zaxis = %s" % zaxis[2])
     b = arccos(zaxis[2])
     # nodal line
     N = cross(array([0,0,1]), zaxis)
@@ -367,14 +367,14 @@ def cartesian2Zmatrix(atomlist):
     """
     zmat = []
     Nat = len(atomlist)
-    print "Internal Coordinates"
-    print "===================="
+    print("Internal Coordinates")
+    print("====================")
     if Nat >= 1:
-        print "%s" % atomlist[0][0]
+        print("%s" % atomlist[0][0])
     if Nat >= 2:
         r = distance(atomlist[0], atomlist[1])
         zmat += [r]
-        print "%s   %.7f" % (atomlist[1][0], r)
+        print("%s   %.7f" % (atomlist[1][0], r))
     if Nat == 3:
         # for 3 atoms it is more intuitive to define the bond angle
         # as ang(rBA,rBC) instead of ang(rAB,rAC)
@@ -382,19 +382,19 @@ def cartesian2Zmatrix(atomlist):
         # r = distance(atomlist[1], atomlist[2])
         ang = angle(atomlist[0], atomlist[1], atomlist[2])
         zmat += [r, ang]
-        print "%s   %.7f   %.3f deg" % (atomlist[2][0], r, ang*180.0/pi)            
+        print("%s   %.7f   %.3f deg" % (atomlist[2][0], r, ang*180.0/pi)            )
     elif Nat > 3:
         r = distance(atomlist[1], atomlist[2])
         ang = angle(atomlist[1], atomlist[0], atomlist[2])
         zmat += [r, ang]
-        print "%s   %.7f   %.3f deg" % (atomlist[2][0], r, ang*180.0/pi)
+        print("%s   %.7f   %.3f deg" % (atomlist[2][0], r, ang*180.0/pi))
     if Nat >= 4:
         for i in range(3,len(atomlist)):
             r = distance(atomlist[i-1], atomlist[i])
             ang = angle(atomlist[i-1], atomlist[i-2], atomlist[i])
             dihedral = dihedral_angle(atomlist[i-3], atomlist[i-2], atomlist[i-1], atomlist[i])
             zmat += [r,ang,dihedral]
-            print "%s   %.7f   %.3f deg   %.3f deg" % (atomlist[i][0], r, ang*180.0/pi, dihedral*180.0/pi)
+            print("%s   %.7f   %.3f deg   %.3f deg" % (atomlist[i][0], r, ang*180.0/pi, dihedral*180.0/pi))
     return zmat
 
 def Zmatrix_labels(atomlist):
@@ -539,7 +539,7 @@ def euler_angles_inertia(masses, pos):
     I = inertial_tensor(masses, pos)
     if abs(det(I)) < 1.0e-10:
         # detect linear molecule
-        print "LINEAR MOLECULE"
+        print("LINEAR MOLECULE")
         zaxis = pos[3:6] - pos[0:3]
         zaxis /= norm(zaxis)
         # projection on xaxis
@@ -626,25 +626,25 @@ def molpro_standard_orientation(masses, pos):
         pos_std[3*i:3*i+3] = pos[3*i:3*i+3] - cm
     (a,b,g) = euler_angles_inertia(masses, pos_std)
     R = EulerAngles2Rotation(a,b,g)
-    for i in xrange(0, Nat):
+    for i in range(0, Nat):
         pos_std[3*i:3*i+3] = dot(R, pos_std[3*i:3*i+3])
     #
-    print "\nMolecule in standard orientation"
-    print "================================\n"
-    print "The origin is shifted to the center of mass"
-    print "and the axes are rotated to coincide with the"
-    print "principal axes of inertia.\n"
-    print "                in bohr:"
-    print     "Atom          X           Y           Z"
+    print("\nMolecule in standard orientation")
+    print("================================\n")
+    print("The origin is shifted to the center of mass")
+    print("and the axes are rotated to coincide with the")
+    print("principal axes of inertia.\n")
+    print("                in bohr:")
+    print(    "Atom          X           Y           Z")
     for i in range(0, Nat):
-        print "  %s  " % str(i).ljust(3),
-        print "%+4.7f  %+4.7f  %+4.7f" % tuple(pos_std[3*i:3*(i+1)])
-    print "                in Angstrom:"
-    print     "Atom          X           Y           Z"
+        print("  %s  " % str(i).ljust(3), end=" ")
+        print("%+4.7f  %+4.7f  %+4.7f" % tuple(pos_std[3*i:3*(i+1)]))
+    print("                in Angstrom:")
+    print(    "Atom          X           Y           Z")
     for i in range(0, Nat):
-        print "  %s  " % str(i).ljust(3),
-        print "%+4.7f  %+4.7f  %+4.7f" % tuple(pos_std[3*i:3*(i+1)]*AtomicData.bohr_to_angs)
-    print ""
+        print("  %s  " % str(i).ljust(3), end=" ")
+        print("%+4.7f  %+4.7f  %+4.7f" % tuple(pos_std[3*i:3*(i+1)]*AtomicData.bohr_to_angs))
+    print("")
     #
     I = inertial_tensor(masses, pos_std)
 #    print "Inertial tensor in standard orientation"
@@ -681,7 +681,7 @@ def molecular_frame_transformation(atomlist):
         pos_std[3*i:3*i+3] = pos[3*i:3*i+3] - cm
     (a,b,g) = euler_angles_inertia(masses, pos_std)
     R = EulerAngles2Rotation(a,b,g)
-    for i in xrange(0, Nat):
+    for i in range(0, Nat):
         pos_std[3*i:3*i+3] = np.dot(R, pos_std[3*i:3*i+3])
     atomlist_std = XYZ.vector2atomlist(pos_std, atomlist)
     # The MolecularCoord module uses a strange convention for Euler angles.
@@ -757,11 +757,11 @@ def cartesian2internal(masses, pos, ref_atomlist, debug=0):
     atomlist = XYZ.vector2atomlist(pos, ref_atomlist)
     Nat = len(atomlist)
 
-    print "Original positions"
-    print "=================="
+    print("Original positions")
+    print("==================")
     for i in range(0, Nat):
-        print "%s   " % i,
-        print "%.4f %.4f %.4f" % tuple(pos[3*i:3*i+3])
+        print("%s   " % i, end=" ")
+        print("%.4f %.4f %.4f" % tuple(pos[3*i:3*i+3]))
 #    print "Euler angles for rotating original geometry into standard orientation"
     cm2 = center_of_mass(masses, pos)
 #    print "Center of mass of original positions"
@@ -839,27 +839,27 @@ def jacobian_cartesian2internal(masses, pos, ref_atomlist, h=1.0e-8):
     Ncartesian = 3*Nat
     Ninternal = len(chi0)
     Jacobian = zeros((Ncartesian,Ninternal))
-    print "Internal Coordinates"
-    print chi0
+    print("Internal Coordinates")
+    print(chi0)
     for i in range(0, Ncartesian):
         # forward difference quotient
         xplus = copy(pos)
         xplus[i] += h
         # 
         chiplus  = cartesian2internal(masses, xplus, ref_atomlist)
-        print "Displaced Internal Coordinates"
-        print chiplus
-        print "i = %s" % i
-        print "********"
-        print "xplus"
-        print xplus
-        print "chiplus"
-        print chiplus
-        print "Center of mass"
-        print chiplus[-6:-3]
-        print "Euler angles"
-        print chiplus[-3:]
-        print "chi[x+h*%d] - chi[x]" % i
+        print("Displaced Internal Coordinates")
+        print(chiplus)
+        print("i = %s" % i)
+        print("********")
+        print("xplus")
+        print(xplus)
+        print("chiplus")
+        print(chiplus)
+        print("Center of mass")
+        print(chiplus[-6:-3])
+        print("Euler angles")
+        print(chiplus[-3:])
+        print("chi[x+h*%d] - chi[x]" % i)
         print (chiplus - chi0) 
         Jacobian[i,:] = (chiplus - chi0) / h
     # inverse of jacobian
@@ -888,9 +888,9 @@ class MolecularCoords:
     def getCenterOfMass(self):
         pos = XYZ.atomlist2vector(self.atomlist)
         com = center_of_mass(self.masses, pos)
-        print "Center of Mass"
-        print "=============="
-        print com
+        print("Center of Mass")
+        print("==============")
+        print(com)
         return com
     def getInertialTensor(self):
         pos = XYZ.atomlist2vector(self.atomlist)
@@ -910,14 +910,14 @@ class MolecularCoords:
         pos = XYZ.atomlist2vector(self.atomlist)
 #        pos = self.standard_orientation()
         jac, jac_inv = jacobian_cartesian2internal(self.masses, pos, self.atomlist)
-        print "Jacobian  J_ij = d( q_j )/d( x_i )"
-        print "====================================="
-        print utils.annotated_matrix(jac,["x_%s" % i for i in range(0, len(jac[:,0]))], ["q_%s" % j for j in range(0, len(jac[0,:]))])
+        print("Jacobian  J_ij = d( q_j )/d( x_i )")
+        print("=====================================")
+        print(utils.annotated_matrix(jac,["x_%s" % i for i in range(0, len(jac[:,0]))], ["q_%s" % j for j in range(0, len(jac[0,:]))]))
 
-        print "Jacobian  J^(-1)_ij = d( x_j )/d( q_i )"
-        print "====================================="
+        print("Jacobian  J^(-1)_ij = d( x_j )/d( q_i )")
+        print("=====================================")
 #        jac_inv = inv(jac)
-        print utils.annotated_matrix(jac_inv,["q_%s" % i for i in range(0, len(jac_inv[:,0]))], ["x_%s" % j for j in range(0, len(jac_inv[0,:]))])
+        print(utils.annotated_matrix(jac_inv,["q_%s" % i for i in range(0, len(jac_inv[:,0]))], ["x_%s" % j for j in range(0, len(jac_inv[0,:]))]))
 
 
 #        print "Jacobian  J^(-1)_ij = d( x_j )/d( q_i )"
@@ -942,25 +942,25 @@ def standard_orientation(atomlist):
 def nact_cartesian2internal(atomlist, nact):
     mol = MolecularCoords(atomlist)
     jac, jac_inv = mol.getJacobian()
-    for (I,J),nactIJ in nact.iteritems():
+    for (I,J),nactIJ in nact.items():
         #
         RxGrad = zeros(3)
         Grad = zeros(3)
         for i,(Zi, posi) in enumerate(atomlist):
             RxGrad += cross(array(posi), array(nactIJ[i][1]))
             Grad += array(nactIJ[i][1])
-        print "Grad"
-        print Grad
-        print "RxGrad"
-        print RxGrad
+        print("Grad")
+        print(Grad)
+        print("RxGrad")
+        print(RxGrad)
         #
         nactIJvec = XYZ.atomlist2vector(nactIJ)
         nactIJinternal = dot(jac_inv, nactIJvec)
-        print "Non-adiabatic coupling vectors between state %s and %s" % (I,J)
-        print "in cartesian coordinates"
-        print nactIJvec
-        print "in internal coordinates"
-        print nactIJinternal
+        print("Non-adiabatic coupling vectors between state %s and %s" % (I,J))
+        print("in cartesian coordinates")
+        print(nactIJvec)
+        print("in internal coordinates")
+        print(nactIJinternal)
 
 def grad_cartesian2internal(atomlist, gradients):
     mol = MolecularCoords(atomlist)
@@ -968,10 +968,10 @@ def grad_cartesian2internal(atomlist, gradients):
     for I,gradI in enumerate(gradients):
         gradIvec = XYZ.atomlist2vector(gradI)
         gradIinternal = dot(jac_inv, gradIvec)
-        print "Gradient on state %s" % I
-        print "in cartesian coordinates"
-        print gradIvec
-        print "in internal coordinates"
-        print gradIinternal
+        print("Gradient on state %s" % I)
+        print("in cartesian coordinates")
+        print(gradIvec)
+        print("in internal coordinates")
+        print(gradIinternal)
 
 

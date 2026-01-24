@@ -72,5 +72,5 @@ if __name__ == "__main__":
         raise ValueError("Coordinate system '%s' not understood, valid options are 'internal' and 'cartesian'" % opts.coord_system)
             
     XYZ.write_xyz(xyz_interp, geometries_interp)
-    print "Interpolated geometries written to %s" % xyz_interp
+    print("Interpolated geometries written to %s" % xyz_interp)
 

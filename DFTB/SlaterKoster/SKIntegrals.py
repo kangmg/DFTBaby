@@ -83,15 +83,15 @@ def integrands_tau(x, h,     e1, l1,m1,R1_spl, Veff1_spl,r1_0,  e2, l2,m2,R2_spl
         from matplotlib.pyplot import figure, show
         fig = figure()
         ax = fig.gca(projection='3d')
-        print "l1 = %s m1 = %s" % (l1,m1)
-        print "max(R1) = %s at rho=%s, z = %s" % (max(abs(R1_spl(r1))), rho[(abs(R1_spl(r1))).argmax()], z[abs(R1_spl(r1)).argmax()])
-        print "max(r1) = %s at rho=%s, z = %s" % (max(r1), rho[r1.argmax()], z[r1.argmax()])
-        print "max(rho) = %s at rho=%s, z = %s" % (max(rho), rho[rho.argmax()], z[rho.argmax()])
+        print("l1 = %s m1 = %s" % (l1,m1))
+        print("max(R1) = %s at rho=%s, z = %s" % (max(abs(R1_spl(r1))), rho[(abs(R1_spl(r1))).argmax()], z[abs(R1_spl(r1)).argmax()]))
+        print("max(r1) = %s at rho=%s, z = %s" % (max(r1), rho[r1.argmax()], z[r1.argmax()]))
+        print("max(rho) = %s at rho=%s, z = %s" % (max(rho), rho[rho.argmax()], z[rho.argmax()]))
         ax.plot(rho, z, s)
         try:
             show()
         except AttributeError as e:
-            print e
+            print(e)
     """
     return s,h, p1,p2
 
@@ -348,7 +348,7 @@ class AtomPair:
         # overlaps and hamiltonian matrix elements
         for i in T.index2tau.keys():
             l1,m1,l2,m2 = T.index2tau[i]
-            if not (R_valence1.has_key(l1) and R_valence2.has_key(l2)):
+            if not (l1 in R_valence1 and l2 in R_valence2):
                 continue
             en1, R1_spl = R_valence1[l1]
             en2, R2_spl = R_valence2[l2]
@@ -396,7 +396,7 @@ class AtomPair:
 
         for i in Tdip.index2tau.keys():
             l1,m1,lM,mM,l2,m2 = Tdip.index2tau[i]
-            if not (R_valence1.has_key(l1) and R_valence2.has_key(l2)):
+            if not (l1 in R_valence1 and l2 in R_valence2):
                 continue
             en1, R1_spl = R_valence1[l1]
             en2, R2_spl = R_valence2[l2]
@@ -433,7 +433,7 @@ class AtomPair:
         xlabel("distance $d$ between centers / bohr")
         ylabel("overlap")
         title("Overlaps between $Z_1=%s$ and $Z_2=%s$" % (self.A1.atom.Z,self.A2.atom.Z))
-        for (l1,l2,i),olap in self.S.iteritems():
+        for (l1,l2,i),olap in self.S.items():
             plot(self.d, olap, label="$S_{%s,%s}(%s)(d)$" % \
                      (l1,l2,T.tau2symbol[T.index2tau[i]]), lw=2)
         legend()
@@ -444,7 +444,7 @@ class AtomPair:
         xlabel("distance $d$ between centers / bohr")
         ylabel("H integrals")
         title("Hamiltonian integrals between $Z_1=%s$ and $Z_2=%s$" % (self.A1.atom.Z,self.A2.atom.Z))
-        for (l1,l2,i),H in self.H.iteritems():
+        for (l1,l2,i),H in self.H.items():
             plot(self.d, H, label="$H_{%s,%s}(%s)(d)$" % \
                      (l1,l2,T.tau2symbol[T.index2tau[i]]), lw=2)
         legend()
@@ -456,7 +456,7 @@ class AtomPair:
         ylabel("Dipole integrals")
         title("Dipole integrals between $Z_1=%s$ and $Z_2=%s$" % (self.A1.atom.Z,self.A2.atom.Z))
         angmom_to_xyz = {(0,0): "s", (1,-1): "px", (1,1): "py", (1,0): "pz"}
-        for (l1,l2,i),D in self.Dipole.iteritems():
+        for (l1,l2,i),D in self.Dipole.items():
             lo1,mo1,lM,mM,lo2,mo2 = Tdip.index2tau[i]
             plot(self.d, D, label="$Dipole_{%s,%s}(%s)(d)$" % \
                      (angmom_to_xyz[(lo1,mo1)],angmom_to_xyz[(lo2,mo2)],angmom_to_xyz[(lM,mM)]), lw=2)
@@ -718,7 +718,7 @@ def read_slakoformat(filename):
             # file file A_B.par does not exist, look for file B_A.par
             at1, at2 = basename(filename).replace(".par", "").split("_")
             filename_BA = join(dirname(filename), "%s_%s.par" % (at2,at1))
-            print "parameter file %s does not exist -> try to load %s" % (filename, filename_BA)
+            print("parameter file %s does not exist -> try to load %s" % (filename, filename_BA))
             filename = filename_BA
             atom_order = "BA"
             assert exists(filename)
@@ -727,7 +727,7 @@ def read_slakoformat(filename):
     elif ".py" in filename:
         # access dictionary by .-notation
         mod = utils.dotdic()
-        execfile(filename, mod)
+        exec(open(filename).read(), mod)
 #        mod = weird_sign_change(mod)
         return mod
 
@@ -739,9 +739,9 @@ def read_slakoformat(filename):
 #    """
 #    if slako_mod.Z1 == 1 and slako_mod.Z2 != 1:
 #        print "WEIRD SIGN CHANGE"
-#        for k,v in slako_mod.S.iteritems():
+#        for k,v in slako_mod.S.items():
 #            slako_mod.S[k] = -v
-#        for k,v in slako_mod.H.iteritems():
+#        for k,v in slako_mod.H.items():
 #            slako_mod.H[k] = -v
 #    return slako_mod
         
@@ -760,8 +760,8 @@ def test_hh():
 
     area = (zs[0,1,0]-zs[0,0,0])*(rhos[0,0,1]-rhos[0,0,0])
     S_12 = sum(sum(I*area, axis=2), axis=1)
-    print len(d[:,0,0])
-    print len(S_12)
+    print(len(d[:,0,0]))
+    print(len(S_12))
     
     plot(d[:,0,0],R1_spl(d[:,0,0]))
     plot(d[:,0,0],S_12)
@@ -809,7 +809,7 @@ def spline_slako_integrals(dg, SorHg):
     """
     dmax = max(dg)
     splines_tck = {}
-    for (l1,l2,i),Ig in SorHg.iteritems():
+    for (l1,l2,i),Ig in SorHg.items():
         splines_tck[i] = interpolate.splrep(dg,Ig, s=None) #s=None)
         # Without smoothing (s=0) numerical and analytical gradients can deviate
         # for molecules such as formonitrile because of kinks in the curves
@@ -1131,7 +1131,7 @@ def combine_slako_tables_f90(SKT):
     Npts=None
     # degree of B-splines
     spline_deg = None
-    for (Zi,Zj),sktab in SKT.iteritems():
+    for (Zi,Zj),sktab in SKT.items():
         # S and H0
         tab_indeces = sktab.S_tck.keys()
         Nsk=max(Nsk, max(tab_indeces))+1
@@ -1162,7 +1162,7 @@ def combine_slako_tables_f90(SKT):
     D_coefs = np.zeros(shD)
     tab_filled_SH0 = np.zeros((Npair,Nsk),dtype=int)
     tab_filled_D = np.zeros((Npair,NskD),dtype=int)
-    for (Zi,Zj),sktab in SKT.iteritems():
+    for (Zi,Zj),sktab in SKT.items():
         i,j = atom_type_dic[Zi], atom_type_dic[Zj]
         ipair = (j*(j+1))/2+i
         # mark filled tables
@@ -1172,16 +1172,16 @@ def combine_slako_tables_f90(SKT):
             tab_indeces = sktab.Dipole_tck.keys()
             tab_filled_D[ipair,tab_indeces] = 1
         # overlap S
-        for isk,(knots,coefs,deg) in sktab.S_tck.iteritems():
+        for isk,(knots,coefs,deg) in sktab.S_tck.items():
             S_knots[ipair,isk,:] = knots
             S_coefs[ipair,isk,:] = coefs
         # hamiltonian H0
-        for isk,(knots,coefs,deg) in sktab.H_tck.iteritems():
+        for isk,(knots,coefs,deg) in sktab.H_tck.items():
             H_knots[ipair,isk,:] = knots
             H_coefs[ipair,isk,:] = coefs
         # dipoles
         if sktab.haveDipoles():
-            for isk,(knots,coefs,deg) in sktab.Dipole_tck.iteritems():
+            for isk,(knots,coefs,deg) in sktab.Dipole_tck.items():
                 D_knots[ipair,isk,:] = knots
                 D_coefs[ipair,isk,:] = coefs
             
@@ -1197,11 +1197,11 @@ def test_slako_transformations():
     y = linspace(0.0, 10.0, 100)
     z = linspace(0.0, 10.0, 100)
     r = sqrt(x*x+y*y+z*z)
-    print SK.getOverlap(1,-1,(0,0,0),0,0,(x[10],y[10],z[10]))
-    print SK.getOverlap(1,0,(0,0,0),0,0,(1,0,0),deriv=1)
-    print SK.getOverlap(1,0,(0,0,0),0,0,(1,0,0),deriv=2)
-    print SK.getHamiltonian0(1,0,(0,0,0),0,0,(1,0,0),deriv=1)
-    print SK.getHamiltonian0(1,0,(0,0,0),0,0,(1,0,0),deriv=2)
+    print(SK.getOverlap(1,-1,(0,0,0),0,0,(x[10],y[10],z[10])))
+    print(SK.getOverlap(1,0,(0,0,0),0,0,(1,0,0),deriv=1))
+    print(SK.getOverlap(1,0,(0,0,0),0,0,(1,0,0),deriv=2))
+    print(SK.getHamiltonian0(1,0,(0,0,0),0,0,(1,0,0),deriv=1))
+    print(SK.getHamiltonian0(1,0,(0,0,0),0,0,(1,0,0),deriv=2))
 
     show()
 

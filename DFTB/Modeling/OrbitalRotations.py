@@ -89,8 +89,8 @@ if __name__ == "__main__":
     a,b,g = 0.345345, 1.234, 0.56
     orb_rot = orbital_rotation_matrices(a,b,g)
     R = MolCo.EulerAngles2Rotation(a,b,g, convention="z-y-z")
-    print "R"
-    print R
+    print("R")
+    print(R)
 #    print np.dot(R, R.transpose())
 #    print "Rorb"
 #    print orb_rot[1]
@@ -99,17 +99,17 @@ if __name__ == "__main__":
     for i in range(0, 3):
         for j in range(0, 3):
             Rmapped[mapping[i],mapping[j]] = orb_rot[1][i,j]
-    print "Rmapped"
-    print Rmapped
-    print R-Rmapped
+    print("Rmapped")
+    print(Rmapped)
+    print(R-Rmapped)
 #    print np.dot(orb_rot[1], orb_rot[1].transpose())
 
     for l in range(0, 2+1):
-        print "*** l=%d ***" % l
+        print("*** l=%d ***" % l)
         Rorb = orb_rot[l]
-        print "Rorb"
-        print Rorb
-        print np.dot(Rorb, Rorb.transpose())
-        print np.round(np.dot(Rorb.transpose(), Rorb), 8)
+        print("Rorb")
+        print(Rorb)
+        print(np.dot(Rorb, Rorb.transpose()))
+        print(np.round(np.dot(Rorb.transpose(), Rorb), 8))
 
         

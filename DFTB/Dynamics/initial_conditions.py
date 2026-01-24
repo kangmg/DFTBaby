@@ -28,7 +28,7 @@ if __name__ == "__main__":
     
     (opts, args) = parser.parse_args()
     if len(args) < 2:
-        print usage
+        print(usage)
         exit(-1)
 
     xyz_file = args[0]
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     hess = np.loadtxt(hess_file)
 
     # convert threshold for zero modes from cm^-1 to Hartree
-    print "Frequencies below %s cm^-1 are ignored to avoid unrealistically large displacements." % opts.zero_threshold
+    print("Frequencies below %s cm^-1 are ignored to avoid unrealistically large displacements." % opts.zero_threshold)
     # Frequencies with omega^2 < zero_threshold are ignored
     zero_threshold = (opts.zero_threshold / AtomicData.hartree_to_wavenumbers)**2
     
@@ -67,18 +67,18 @@ if __name__ == "__main__":
     # temperature  (3*N-6)/2 k T = Ekin
     f = len(masses)-6 # degrees of freedom minus rotation and translation
     T = Ekin * 2.0/(f*AtomicData.kBoltzmann)
-    print "Initial Condition Statistics"
-    print "============================"
-    print "averages are over %d trajectories" % opts.Nsample
-    print "kinetic energy = (%2.7f +- %2.7f) Hartree" % (np.mean(Ekin), np.std(Ekin))
-    print "temperature    = (%2.7f +- %2.7f) Kelvin" % (np.mean(T), np.std(T))
-    print ""
+    print("Initial Condition Statistics")
+    print("============================")
+    print("averages are over %d trajectories" % opts.Nsample)
+    print("kinetic energy = (%2.7f +- %2.7f) Hartree" % (np.mean(Ekin), np.std(Ekin)))
+    print("temperature    = (%2.7f +- %2.7f) Kelvin" % (np.mean(T), np.std(T)))
+    print("")
 
     # geometries only
     wigner_xyz = join(opts.outdir, "wigner.xyz")
     geometries = [XYZ.vector2atomlist(qs[:,i], atomlist) for i in range(0, opts.Nsample)]
     XYZ.write_xyz(wigner_xyz, geometries)
-    print "Wigner ensemble written to file %s" % wigner_xyz
+    print("Wigner ensemble written to file %s" % wigner_xyz)
 
     # initial conditions
     HarmonicApproximation.save_initial_conditions(atomlist, qs, ps, opts.outdir, "dynamics")

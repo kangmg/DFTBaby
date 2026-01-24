@@ -23,7 +23,7 @@ def read_float_block(fh, N):
             try:
                 row.append( float(p) )
             except ValueError as e:
-                print e
+                print(e)
                 # If the number cannot be read because of some formatting
                 # error, it is assumed to be 0.
                 row.append( 0.0 )
@@ -265,7 +265,7 @@ def parseCheckpointFile(filename, convert=True):
     PyData = {}
     if convert == True:
         """convert blocks into format suitable for PyQuante"""
-        for (block_type, block) in Data.iteritems():
+        for (block_type, block) in Data.items():
             PyData[block_type] = block.getPy()
         return(PyData)
     else:
@@ -276,9 +276,9 @@ if __name__ == "__main__":
 
     usage = "python %s <Gaussian checkpoint file>" % sys.argv[0]
     if len(sys.argv) < 2:
-        print usage
+        print(usage)
         exit(-1)
 
     chk_file = sys.argv[1]
     Data = parseCheckpointFile(chk_file)
-    print Data.keys()
+    print(Data.keys())

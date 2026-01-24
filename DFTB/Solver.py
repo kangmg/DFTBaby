@@ -33,8 +33,7 @@ class ExcitedStatesError(Exception):
     pass
 
 @T.timer
-def buildAB(gamma, gamma_lr,\
-                qtrans_oo, qtrans_vv, qtrans_ov, \
+def buildAB(gamma, gamma_lr, qtrans_oo, qtrans_vv, qtrans_ov, \
                 omega, omega_shift, df, nocc, nvirt, multiplicity="S"):
     """
     build the matrices A and B. These are the same as for TDHF, but the 2e-integrals are approximated
@@ -96,8 +95,7 @@ def buildAB(gamma, gamma_lr,\
     return A, B
 
 @T.timer
-def Casida(gamma, gamma_lr,\
-               qtrans_oo, qtrans_vv, qtrans_ov, \
+def Casida(gamma, gamma_lr, qtrans_oo, qtrans_vv, qtrans_ov, \
                omega, omega_shift, df, nocc, nvirt, multiplicity="S"):
     """
     solves the non-Hermitian eigenvalue problem for the general case
@@ -120,8 +118,7 @@ def Casida(gamma, gamma_lr,\
         Cs[I, i,j] is the coefficient for the excitation from orbital i to orbital j
         in state I.
     """
-    A, B = buildAB(gamma, gamma_lr,\
-                qtrans_oo, qtrans_vv, qtrans_ov, \
+    A, B = buildAB(gamma, gamma_lr, qtrans_oo, qtrans_vv, qtrans_ov, \
                 omega, omega_shift, df, nocc, nvirt, multiplicity=multiplicity)
     
     # check whether A-B is diagonal
@@ -181,8 +178,7 @@ def Casida(gamma, gamma_lr,\
     return Omega, C, XmY, XpY
 
 @T.timer
-def TDA(gamma, gamma_lr,\
-            qtrans_oo, qtrans_vv, qtrans_ov, \
+def TDA(gamma, gamma_lr, qtrans_oo, qtrans_vv, qtrans_ov, \
             omega, df, nocc, nvirt):
     """
     perform the Tamm-Dancoff approximation and solve
@@ -317,9 +313,9 @@ def gram_schmidt_2d(W):
     S = olap(W)
     detS = la.det(S)
     if abs(detS) == 0.0:
-        print "Trying to remove linear dependent expansion vectors ...",
+        print("Trying to remove linear dependent expansion vectors ...", end=" ")
         indx = linear_independent_cols(S, 1.0e-18)
-        print "done"
+        print("done")
         W = W[:,:,indx]
         S = olap(W)
 #    assert la.det(S) > 0.0, "Gram-Schmidt orthogonalizer got vectors which are not linearly independent!" 
@@ -342,7 +338,7 @@ def gram_schmidt_2d(W):
     err = np.sum(abs(S - np.eye(dim)))
 #    assert err < 1.0e-10, "Gram-Schmidt orthogonalization failed, error = %s" % err
     if err > 1.0e-10:
-        print "WARNING: Gram-Schmidt orthogonalization failed, error = %s" % err
+        print("WARNING: Gram-Schmidt orthogonalization failed, error = %s" % err)
     return V
 
 def reorder_vectors_Lambda2(Oia, w2, T, L2_thresh=0.4):
@@ -402,14 +398,10 @@ def _reorder_vectors(w2, T, good, bad, labels, nstates):
     return w2new[...,:nst], Tnew[...,:nst], labels_reordered[:nst]
 
 @T.timer
-def HermitianDavidson(g0, q_ov, \
-                omega, omega_shift, nocc, nvirt, \
-                XmYguess, XpYguess, \
-                Oia, \
-                selector=None, \
-                multiplicity="S", \
-                nstates=4, ifact=1, conv=1.0e-14, \
-                maxiter=10, \
+def HermitianDavidson(g0, q_ov, omega, omega_shift, nocc, nvirt, \
+                XmYguess, XpYguess, Oia, \
+                selector=None, multiplicity="S", \
+                nstates=4, ifact=1, conv=1.0e-14, maxiter=10, \
                 L2_thresh=0.5, verbose=1):
     """
     If A-B is diagonal the TD-DFT equations can be made hermitian
@@ -419,7 +411,7 @@ def HermitianDavidson(g0, q_ov, \
 
     """
     if verbose > 0:
-        print "dimension of full vector space: %d" % (nocc*nvirt)
+        print("dimension of full vector space: %d" % (nocc*nvirt))
     omega2 = omega**2
     omega_sq = np.sqrt(omega)
     omega_sq_inv = 1.0/omega_sq
@@ -445,13 +437,13 @@ def HermitianDavidson(g0, q_ov, \
 
     def writeIteration(it, norms, labels, w, l):
         dt = time2-time1
-        print "Iteration %d: ( %d expansion vectors )   time: %2.6f s" % (it, l, dt)
+        print("Iteration %d: ( %d expansion vectors )   time: %2.6f s" % (it, l, dt))
         nst = len(norms)
         for n in range(0, nst):
             conv_str =     "not converged"
             if norms[n] < conv:
                 conv_str = "converged    "
-            print "  Eigenvalue %3d      %2.7f    %s   res. norm = %e     %s" % (n+1, w[n], conv_str, norms[n], labels[n])
+            print("  Eigenvalue %3d      %2.7f    %s   res. norm = %e     %s" % (n+1, w[n], conv_str, norms[n], labels[n]))
 
 
     # initial number of expansion vectors
@@ -467,7 +459,7 @@ def HermitianDavidson(g0, q_ov, \
         bs = initial_expansion_vectors(omega_guess, lmax)
     else:
         if verbose > 0:
-            print "start with vectors from previous calculation"
+            print("start with vectors from previous calculation")
         # initialize expansion vectors from guess vectors
         # If there are degenerate states, the algorithm still converges
         # slowly although the start vectors are very close the
@@ -512,8 +504,7 @@ def HermitianDavidson(g0, q_ov, \
         # check for convergence
         if (norms < conv).all():
             if verbose > 0:
-                print "All %d roots CONVERGED (residual norms < %s) after %d iterations" \
-                    % (k, conv, it+1)
+                print("All %d roots CONVERGED (residual norms < %s) after %d iterations" ) % (k, conv, it+1)
             break
         # enlarge dimension of subspace by dk vectors
         # At most k new expansion vectors are added
@@ -542,7 +533,7 @@ def HermitianDavidson(g0, q_ov, \
         bs_new[:,:,l:] = Qs
         # orthonormalize all expansion vectors among themselves
         if verbose > 0:
-            print "orthogonalize new expansion vectors",
+            print("orthogonalize new expansion vectors", end=" ")
         #bs = gram_schmidt_2d(bs_new)
         # Orthogonalize using QR decomposition, which effectively performs a Gram-Schmidt orthogonalization
         nvec = l+dk
@@ -550,7 +541,7 @@ def HermitianDavidson(g0, q_ov, \
         Q,R = sla.qr(bs_flat, mode='economic')
         bs = np.reshape(Q, (nocc,nvirt,nvec))
         if verbose > 0:
-            print "... done"
+            print("... done")
         #
         l = bs.shape[-1]   # l+dk unless linear dependent expansion vectors were removed
     else:
@@ -606,7 +597,7 @@ def _ApBv(g0, g0_lr, q_oo, q_ov, q_vv, omega, vs, lc):
         time2 = time.time()
         dtime=time2-time1
         if dtime > 2.5:  # print if it takes more than 2.5 seconds per expansion vector
-            print "(A+B).v for expansion vectors nr. %4d   time = %10.5f seconds" % (l, dtime)
+            print("(A+B).v for expansion vectors nr. %4d   time = %10.5f seconds" % (l, dtime))
     return us
 
 def _AmBv(g0, g0_lr, q_oo, q_ov, q_vv, omega, vs, lc):
@@ -631,18 +622,14 @@ def _AmBv(g0, g0_lr, q_oo, q_ov, q_vv, omega, vs, lc):
         time2 = time.time()
         dtime=time2-time1
         if dtime > 2.5:  # print if it takes more than 2.5 seconds per expansion vector
-            print "(A-B).v for expansion vectors nr. %4d   time = %10.5f seconds" % (l, dtime)
+            print("(A-B).v for expansion vectors nr. %4d   time = %10.5f seconds" % (l, dtime))
     return us
 
 @T.timer
-def nonHermitianDavidson(g0, g0_lr,\
-                q_oo, q_vv, q_ov, \
-                omega, nocc, nvirt, \
-                XmYguess, XpYguess, w_guess, \
-                selector=None, \
-                multiplicity="S", \
-                nstates=4, ifact=1, conv=1.0e-14, \
-                maxiter=10, verbose=1, lc=1):
+def nonHermitianDavidson(g0, g0_lr, q_oo, q_vv, q_ov, \
+                omega, nocc, nvirt, XmYguess, XpYguess, w_guess, \
+                selector=None, multiplicity="S", \
+                nstates=4, ifact=1, conv=1.0e-14, maxiter=10, verbose=1, lc=1):
     """
     Parameters:
     ===========
@@ -650,7 +637,7 @@ def nonHermitianDavidson(g0, g0_lr,\
        if g0_lr is zero, this flag saves computation time
     """
     if verbose > 0:
-        print "dimension of full vector space: %d" % (nocc*nvirt)
+        print("dimension of full vector space: %d" % (nocc*nvirt))
     assert multiplicity == "S"
     # matrix products
     def ApBv(vs):
@@ -661,12 +648,12 @@ def nonHermitianDavidson(g0, g0_lr,\
         ta = time.time()
         bp_f90 = tddftb.tddftb.apbv(g0, g0_lr, q_oo, q_ov, q_vv, omega, vs)
         tb = time.time()
-        print "(A+B).v with Fortran took %s seconds" % (tb-ta)
+        print("(A+B).v with Fortran took %s seconds" % (tb-ta))
         # with python
         ta = time.time()
         bp_py = _ApBv(g0, g0_lr, q_oo, q_ov, q_vv, omega, vs, lc)
         tb = time.time()
-        print "(A+B).v with python  took %s seconds" % (tb-ta)
+        print("(A+B).v with python  took %s seconds" % (tb-ta))
         err = np.sum(abs(bp_f90-bp_py))
         assert err < 1.0e-10, "err = %s" % err
         """
@@ -693,13 +680,13 @@ def nonHermitianDavidson(g0, g0_lr,\
         return bm
     def writeIteration(it, norms, labels, w, l):
         dt = time2-time1
-        print "Iteration %d: ( %d expansion vectors )   time: %2.6f s" % (it, l, dt)
+        print("Iteration %d: ( %d expansion vectors )   time: %2.6f s" % (it, l, dt))
         nst = len(norms)
         for n in range(0, nst):
             conv_str =     "not converged"
             if norms[n] < conv:
                 conv_str = "converged    "
-            print "  Eigenvalue %3d      %2.7f    %s   res. norm = %e     %s" % (n+1, w[n], conv_str, norms[n], labels[n])
+            print("  Eigenvalue %3d      %2.7f    %s   res. norm = %e     %s" % (n+1, w[n], conv_str, norms[n], labels[n]))
 
     kmax = nocc*nvirt  # at most there are nocc*nvirt excited states
     # To achieve fast convergence the solution vectors from a nearby geometry
@@ -710,7 +697,7 @@ def nonHermitianDavidson(g0, g0_lr,\
         bs = initial_expansion_vectors(omega, lmax)
     else:
         if verbose > 0:
-            print "start with vectors from previous calculation"
+            print("start with vectors from previous calculation")
         """
         # use solution vectors from previous iteration
         lmax = nstates
@@ -836,8 +823,7 @@ def nonHermitianDavidson(g0, g0_lr,\
         # check for convergence
         if (norms < conv).all() and it > 0:
             if verbose > 0:
-                print "All %d roots CONVERGED (residual norms < %s) after %d iterations" \
-                    % (k, conv, it+1)
+                print("All %d roots CONVERGED (residual norms < %s) after %d iterations" ) % (k, conv, it+1)
             break
         # enlarge dimension of subspace by dk vectors
         # At most 2*k new expansion vectors are added
@@ -888,7 +874,7 @@ def nonHermitianDavidson(g0, g0_lr,\
         bs_new[:,:,l:] = Qs
         # orthonormalize all expansion vectors among themselves
         if verbose > 0:
-            print "orthogonalize new expansion vectors",
+            print("orthogonalize new expansion vectors", end=" ")
         #bs = gram_schmidt_2d(bs_new)
         # Orthogonalize using QR decomposition, which effectively performs a Gram-Schmidt orthogonalization
         nvec = l+dk
@@ -896,7 +882,7 @@ def nonHermitianDavidson(g0, g0_lr,\
         Q,R = sla.qr(bs_flat, mode='economic')
         bs = np.reshape(Q, (nocc,nvirt,nvec))
         if verbose > 0:
-            print "... done"
+            print("... done")
         #
         l = bs.shape[-1]   # l+dk unless linear dependent expansion vectors were removed
     else:
@@ -932,15 +918,15 @@ def Krylov_solver_Zvector(A, Adiag, B, X0, maxiter=1000, conv=1.0e-14, verbose=1
     """
     def writeIteration(it, norms, l):
         dt = time2-time1
-        print "Iteration %d: ( %d expansion vectors )   time: %2.6f s" % (it, l, dt)
+        print("Iteration %d: ( %d expansion vectors )   time: %2.6f s" % (it, l, dt))
         k = len(norms)
         for n in range(0, k):
             conv_str =     "not converged"
             if norms[n] < conv:
                 conv_str = "converged    "
-            print "  Solution vector  %3d      %s   res. norm = %e" % (n, conv_str, norms[n])
+            print("  Solution vector  %3d      %s   res. norm = %e" % (n, conv_str, norms[n]))
     if verbose > 0:
-        print "Solve Z-vector equation iteratively"
+        print("Solve Z-vector equation iteratively")
     # number of vectors
     nocc,nvirt,k = B.shape
     kmax = nocc*nvirt
@@ -956,7 +942,7 @@ def Krylov_solver_Zvector(A, Adiag, B, X0, maxiter=1000, conv=1.0e-14, verbose=1
     else:
         # start from solution of previous calculation
         if verbose > 0:
-            print "start with solution from previous calculation"
+            print("start with solution from previous calculation")
         bs = X0
     #
     for it in range(0, maxiter):
@@ -980,8 +966,7 @@ def Krylov_solver_Zvector(A, Adiag, B, X0, maxiter=1000, conv=1.0e-14, verbose=1
         # check for convergence
         if (norms < conv).all():
             if verbose > 0:
-                print "Z-vector equations CONVERGED (residual norms < %s) after %d iterations" \
-                    % (conv, it+1)
+                print("Z-vector equations CONVERGED (residual norms < %s) after %d iterations" ) % (conv, it+1)
             break
         # enlarge dimension of subspace by dk vectors
         # At most k new expansion vectors are added
@@ -1049,9 +1034,9 @@ def gram_schmidt_1d(W):
     S = olap(W)
     detS = la.det(S)
     if abs(detS) == 0.0:
-        print "Trying to remove linear dependent expansion vectors ...",
+        print("Trying to remove linear dependent expansion vectors ...", end=" ")
         indx = linear_independent_cols(S, 1.0e-18)
-        print "done"
+        print("done")
         W = W[:,indx]
         S = olap(W)
 #    assert la.det(S) > 0.0, "Gram-Schmidt orthogonalizer got vectors which are not linearly independent!" 
@@ -1074,7 +1059,7 @@ def gram_schmidt_1d(W):
     err = np.sum(abs(S - np.eye(dim)))
 #    assert err < 1.0e-10, "Gram-Schmidt orthogonalization failed, error = %s" % err
     if err > 1.0e-10:
-        print "WARNING: Gram-Schmidt orthogonalization failed, error = %s" % err
+        print("WARNING: Gram-Schmidt orthogonalization failed, error = %s" % err)
     return V
 
 
@@ -1092,15 +1077,15 @@ def Krylov_solver_CPKS(A, Adiag, B, X0, maxiter=1000, conv=1.0e-12, verbose=1):
     """
     def writeIteration(it, norms, l):
         dt = time2-time1
-        print "Iteration %d: ( %d expansion vectors )   time: %2.6f s" % (it, l, dt)
+        print("Iteration %d: ( %d expansion vectors )   time: %2.6f s" % (it, l, dt))
         k = len(norms)
         for n in range(0, k):
             conv_str =     "not converged"
             if norms[n] < conv:
                 conv_str = "converged    "
-            print "  Solution vector  %3d      %s   res. norm = %e" % (n, conv_str, norms[n])
+            print("  Solution vector  %3d      %s   res. norm = %e" % (n, conv_str, norms[n]))
     if verbose > 0:
-        print "Solve CPKS equations iteratively"
+        print("Solve CPKS equations iteratively")
     # number of vectors
     dim,k = B.shape
     kmax = dim
@@ -1116,7 +1101,7 @@ def Krylov_solver_CPKS(A, Adiag, B, X0, maxiter=1000, conv=1.0e-12, verbose=1):
     else:
         # start from solution of previous calculation
         if verbose > 0:
-            print "start with solution from previous calculation"
+            print("start with solution from previous calculation")
         bs = X0
     #
     for it in range(0, maxiter):
@@ -1140,8 +1125,7 @@ def Krylov_solver_CPKS(A, Adiag, B, X0, maxiter=1000, conv=1.0e-12, verbose=1):
         # check for convergence
         if (norms < conv).all():
             if verbose > 0:
-                print "CPKS equations CONVERGED (residual norms < %s) after %d iterations" \
-                    % (conv, it+1)
+                print("CPKS equations CONVERGED (residual norms < %s) after %d iterations" ) % (conv, it+1)
             break
         # enlarge dimension of subspace by dk vectors
         # At most k new expansion vectors are added

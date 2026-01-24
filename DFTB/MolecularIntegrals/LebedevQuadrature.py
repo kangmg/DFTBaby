@@ -26,25 +26,24 @@ def check_lebedev_quadrature(order, tolerance=1e-9):
             if l2 > Lebedev_L2max[order]:
                 break
             I = 4.0*pi*sum(w*Ylm1*Ylm2.conjugate())
-            print "<%s %s|%s %s> = %s" % (l1,m1,l2,m2,I)
+            print("<%s %s|%s %s> = %s" % (l1,m1,l2,m2,I))
             if l1 == l2 and m1 == m2:
-                print "|I-1.0| = %s" % abs(I-1.0)
+                print("|I-1.0| = %s" % abs(I-1.0))
                 assert abs(I-1.0) < tolerance
             else:
                 assert abs(I) < tolerance
 
 def test_lebedev_quadrature():
     for order in range(0, len(Lebedev_Npts)):
-        print "Test Lebedev grid number %s with %s points" % (order, Lebedev_Npts[order])
-        print "============================================"
+        print("Test Lebedev grid number %s with %s points" % (order, Lebedev_Npts[order]))
+        print("============================================")
         check_lebedev_quadrature(order)
 
 def get_lebedev_grid(order):
     """find grid closest to requested order"""
     n = abs(array(Lebedev_L2max) - order).argmin()
     if order != Lebedev_L2max[n]:
-        print "No grid for order %s, using grid which integrates up to L2max = %s exactly instead." \
-            % (order, Lebedev_L2max[n])
+        print("No grid for order %s, using grid which integrates up to L2max = %s exactly instead." ) % (order, Lebedev_L2max[n])
     th,phi,w = array(LebedevGridPoints[Lebedev_Npts[n]]).transpose()
     return th,phi,w
 
@@ -52,8 +51,7 @@ def spherical_wave_expansion_it(f, r, order):
     """find grid closest to requested order"""
     n = abs(array(Lebedev_L2max) - order).argmin()
     if order != Lebedev_L2max[n]:
-        print "No grid for order %s, using grid which integrates up to L2max = %s exactly instead." \
-            % (order, Lebedev_L2max[n])
+        print("No grid for order %s, using grid which integrates up to L2max = %s exactly instead." ) % (order, Lebedev_L2max[n])
     th,phi,w = array(LebedevGridPoints[Lebedev_Npts[n]]).transpose()
     x = outerN(r, sin(th)*cos(phi))
     y = outerN(r, sin(th)*sin(phi))

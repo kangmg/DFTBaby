@@ -45,7 +45,7 @@ def run_atomdft(Z=1,Nelec=1, energy_range=[-2,-1,-0.001]):
     except KeyError:
         # use density of other atom with lower Z as initial guess
         for Z_o in range(Z-1,0-1,-1):
-            if pseudo_atoms_list.has_key(Z_o-1):
+            if Z_o-1 in pseudo_atoms_list:
                 at = pseudo_atoms_list[Z_o-1]
                 atomdft.initialDensityGuess((at.r, at.radial_density))
                 break
@@ -863,7 +863,7 @@ def hydrogen_charged():
         atomdft.initialDensityGuess()
     atomdft.setEnergyRange(energy_range)
     atomdft.solveKohnSham()
-    print atomdft.Etot
+    print(atomdft.Etot)
     # removing partial charge from H does not have any effect on the energy
     # as there is no electron-electron interaction in as partially positively charged 1e atom.
     dq = linspace(0.0,0.1,30) # add negative charge => Strange jump at 0.0 because e-e energy
@@ -888,7 +888,7 @@ def helium_charged():
         atomdft.initialDensityGuess()
     atomdft.setEnergyRange(energy_range)
     atomdft.solveKohnSham()
-    print atomdft.Etot
+    print(atomdft.Etot)
     dq = linspace(0.0, 0.25, 7)
     atomdft.charge_fluctuations(dq)
     fh = open(orbdir + "he.py", "w")

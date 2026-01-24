@@ -104,7 +104,8 @@ class UncontractedBasisSet:
             wfn += orb[i] * wavefunction(self.exponents[i], self.powers[:,i], self.centers[:,i], x,y,z)
         return wfn
 
-def wavefunction(alpha, (l,m,n), A, x,y,z):
+def wavefunction(alpha, params_tuple, A, x,y,z):
+    l,m,n = params_tuple
     """evaluate a cartesian Gaussian basis function on a grid"""
     nrm = norm(alpha,(l,m,n))
     r2 = (x-A[0])**2 + (y-A[1])**2 + (z-A[2])**2
@@ -114,6 +115,6 @@ def wavefunction(alpha, (l,m,n), A, x,y,z):
 if __name__ == "__main__":
     # print ordering of basis functions in each shell
     for LType in [0,1,2,3,4,5,6,7]:
-        print "Shell Type: %s" % LType
-        print list(cartesian_shell_ordering(LType))
+        print("Shell Type: %s" % LType)
+        print(list(cartesian_shell_ordering(LType)))
 

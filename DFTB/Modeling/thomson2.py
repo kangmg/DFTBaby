@@ -42,9 +42,9 @@ class ThomsonProblem:
         nC = Ahemi / Aunit * 2
         # number of Thomson points
         nT = int((nC + 4)/2.0)  # formula (3) of Robinson (2013)
-        print "Expected number of Thomson points nT = %s" % nT
-        print "If the caps have holes or very close atoms, you should try increasing"
-        print "or reducing the number of Thomson points (by changing the options NcapN or NcapS)"
+        print("Expected number of Thomson points nT = %s" % nT)
+        print("If the caps have holes or very close atoms, you should try increasing")
+        print("or reducing the number of Thomson points (by changing the options NcapN or NcapS)")
         if self.Ncap == 0:
             self.Ncap = nT
 
@@ -455,16 +455,16 @@ def thomson_energy(x,s,o, R=1.0, Z0=0):
                 continue
             coul += 0.5*pow(r2[i,j], -0.5)
             if r2[i,j] == 0.0:
-                print "i = %s  j = %s" % (i,j)
+                print("i = %s  j = %s" % (i,j))
             # gradient
             for a in range(0, n):
                 if o[a] == 0:
                     continue
                 grad[a,0] -= 1.0/4.0 * pow(r2[i,j],-1.5) * dr2d1[i,j,a]
                 grad[a,1] -= 1.0/4.0 * pow(r2[i,j],-1.5) * dr2d2[i,j,a]
-    print "coul = %s" % coul
+    print("coul = %s" % coul)
 #    print "grad = %s" % grad
-    print "|grad| = %s" % la.norm(grad.ravel())
+    print("|grad| = %s" % la.norm(grad.ravel()))
 
     # compare with Fortran
     err_coul = abs(coul - coul_f)
@@ -534,7 +534,7 @@ def optimize_thomson(x, s, o, R=1.0, callback=None):
     return x,s,o, fmin, d["grad"]
 
 def remove_overlapping_atoms(atomlist, tol=1.0e-4):
-    print "remove overlapping atoms"
+    print("remove overlapping atoms")
     nat = len(atomlist)
     # The i-th atom should be removed if duplicate[i] == 1
     # Fortran
@@ -573,7 +573,7 @@ def find_best_cap(n1,n2,L, Ncap=0, Ntrial=10, north_south="N"):
     """
     caps = []
     ens = []
-    print "CAP FOR %s-HEMISPHERE" % north_south
+    print("CAP FOR %s-HEMISPHERE" % north_south)
     for n in range(0, Ntrial):
         tp = ThomsonProblem(n1, n2, Ncap=Ncap, L=L, north_south=north_south)
         en,grad = tp.addCap()
@@ -582,12 +582,12 @@ def find_best_cap(n1,n2,L, Ncap=0, Ntrial=10, north_south="N"):
             atomlist = tp.dual_lattice()
             caps.append(atomlist)
             ens.append(en)
-            print "Trial %s (%s points)   => cap with Coulomb en = %s" % (n,Ncap,en)
+            print("Trial %s (%s points)   => cap with Coulomb en = %s" % (n,Ncap,en))
             break
         else:
-            print "Trial %s (%s points)   optimization did not converge, |grad| = %s" % (n,Ncap,grad_nrm)
+            print("Trial %s (%s points)   optimization did not converge, |grad| = %s" % (n,Ncap,grad_nrm))
     nmin = np.argmin(ens)
-    print "I select cap %s" % nmin
+    print("I select cap %s" % nmin)
     return caps[nmin]
 
 def capped_nanotube(n1,n2,L,NcapN=0, NcapS=0):
@@ -626,7 +626,7 @@ if __name__ == "__main__":
 
     atomlist_carbons = capped_nanotube(opts.n1,opts.n2,opts.L,NcapN=opts.NcapN, NcapS=opts.NcapS)
     if opts.optimize_uff == 1:
-        print "CNT will be optimized further with the Universal Force Field of G09"
+        print("CNT will be optimized further with the Universal Force Field of G09")
         tmp_dir="/tmp"
         com_file = join(tmp_dir, "cnt_uff_opt.com")
         chk_file = join(tmp_dir, "cnt_uff_opt.chk")
@@ -642,4 +642,4 @@ if __name__ == "__main__":
         atomlist_carbons = atomlist_uff
 
     XYZ.write_xyz(opts.out_xyz, [atomlist_carbons])
-    print "Geometry of capped CNT written to %s" % opts.out_xyz
+    print("Geometry of capped CNT written to %s" % opts.out_xyz)

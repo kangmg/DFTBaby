@@ -680,8 +680,8 @@ def test_angular_laplacian():
     Lmax, (th,ph,angular_weights) = select_angular_grid(lebedev_order)
     lap_ang = angular_laplacian(lebedev_order)
 
-    print "laplacian matrix"
-    print lap_ang
+    print("laplacian matrix")
+    print(lap_ang)
     
     f = np.sin(th)*np.cos(ph)
     Lf_exact = 2.0*np.sin(th)*np.cos(ph)
@@ -691,9 +691,9 @@ def test_angular_laplacian():
 
     err = la.norm(Lf - Lf_exact)
     
-    print Lf
-    print Lf_exact
-    print "|Lf - Lf (exact)|= %e" % err
+    print(Lf)
+    print(Lf_exact)
+    print("|Lf - Lf (exact)|= %e" % err)
     assert err < 1.0e-8
 
 def test_radial_laplacian():
@@ -710,8 +710,8 @@ def test_radial_laplacian():
     lap_rad = radial_laplacian(Nr, rm)
     Lf = np.dot(lap_rad, f)
     
-    print Lf
-    print Lf_exact
+    print(Lf)
+    print(Lf_exact)
     
     import matplotlib.pyplot as plt
     plt.plot(r, f, label="f(r)")
@@ -738,9 +738,9 @@ def test_radial_laplacian_symmetry():
     #lap_rad_boundary0 = radial_laplacian_boundary0(Nr, rm)
 
     # print Laplacian matrix
-    print "Laplacian matrix (no boundary conditions)"
+    print("Laplacian matrix (no boundary conditions)")
     labels = ["%3.1d" % i for i in range(0, Nr)]
-    print utils.annotated_matrix(lap_rad, labels, labels, format="%+3.3e")
+    print(utils.annotated_matrix(lap_rad, labels, labels, format="%+3.3e"))
 
     #print "Laplacian matrix (implicit boundary conditions)"
     ## print symmetric Laplacian matrix (with implicit boundary conditions)
@@ -768,8 +768,8 @@ def test_laplacian():
     lap = laplacian_matrix_spherical(Zat,
                                      lebedev_order=settings.lebedev_order,
                                      radial_grid_factor=settings.radial_grid_factor)
-    print "size of matrices"
-    print lap.shape
+    print("size of matrices")
+    print(lap.shape)
 
     """
     # test function
@@ -809,7 +809,7 @@ def test_laplacian():
                                        lebedev_order=settings.lebedev_order,
                                        radial_grid_factor=settings.radial_grid_factor)
     err = la.norm(Lf - Lf_matvec)
-    print "|L.f - L.f(matvec)|= %e" % err
+    print("|L.f - L.f(matvec)|= %e" % err)
     assert err < 1.0e-7
     
     # interpolate Lf
@@ -817,11 +817,11 @@ def test_laplacian():
     lap_func_interp = multicenter_interpolation([Lf], atomic_coordinates, atomic_numbers,
                                           lebedev_order=settings.lebedev_order, radial_grid_factor=settings.radial_grid_factor)
 
-    print Lf
-    print Lf_exact
+    print(Lf)
+    print(Lf_exact)
 
     dif = abs(Lf_exact - Lf)
-    print dif
+    print(dif)
     
     import matplotlib.pyplot as plt
     r = np.linspace(-5.0, 5.0, 1000)
@@ -882,17 +882,17 @@ def test_multicenter_laplacian():
     # evaluate wavefunction on the grid
     psi_sigma_vec = lap_op.grid.evaluate_function(psi_sigma)
 
-    print "matvec L.x"
+    print("matvec L.x")
     lap_sigma_vec = lap_op.matvec(psi_sigma_vec)
 
-    print "interpolation"
+    print("interpolation")
     atomic_numbers, atomic_coordinates = atomlist2arrays(atomlist)
     lap_sigma_grid = multicenter_interpolation(lap_op.grid.vector2grid(lap_sigma_vec),
                                                atomic_coordinates, atomic_numbers,
                                                lebedev_order=settings.lebedev_order,
                                                radial_grid_factor=settings.radial_grid_factor)
 
-    print "Laplacian on Becke grid"
+    print("Laplacian on Becke grid")
     from DFTB.MolecularIntegrals.MulticenterIntegration import multicenter_laplacian
     lap_sigma_num = multicenter_laplacian(psi_sigma, atomic_coordinates, atomic_numbers,
                                           cusps_separate=True,
@@ -1297,7 +1297,7 @@ def test_interpolation():
 
     rho = rho0
     for i in range(0, 20):
-        print "%d x sampling/interpolating" % i
+        print("%d x sampling/interpolating" % i)
         plt.plot(r, rho(x,y,z), label=r"$\rho$ %d x interp." % i)
 
         f = grid.evaluate_function(rho)
@@ -1307,7 +1307,7 @@ def test_interpolation():
         # compute deviation from original function
         err = np.sqrt(integral(atomlist, lambda x,y,z: abs(rho(x,y,z) - rho0(x,y,z))**2))
 
-        print "  i= %d     |f_i - f|= %e" % (i, err)
+        print("  i= %d     |f_i - f|= %e" % (i, err))
         
     plt.legend()
     plt.show()
@@ -1345,7 +1345,7 @@ def test_possion_solver_sparse():
     # solve
     #   __2
     #   \/  V = rho
-    print "solve Poisson equation..."
+    print("solve Poisson equation...")
     y = Lop.grid.evaluate_function(rho)
     ret = lsmr(Lop, y)
     x = ret[0]
@@ -1395,10 +1395,10 @@ def test_integration():
     #
     integ = integral(atomlist, f)
 
-    print "integral on the grid"
-    print " I = %e" % integ_grid
-    print "integral using Becke's integration scheme"
-    print " I = %e" % integ
+    print("integral on the grid")
+    print(" I = %e" % integ_grid)
+    print("integral using Becke's integration scheme")
+    print(" I = %e" % integ)
 
     assert abs(integ_grid - integ) < 1.0e-10
 
@@ -1494,15 +1494,15 @@ def test_hydrogen_spherical_grid():
     # solve non-Hermitian eigenvalue problem
     #  K.f = E f
     # For some reason the direct eigenvalue solver produces garbage
-    print "diagonalizing %d x %d dimensional non-symmetric matrix" % K.shape
+    print("diagonalizing %d x %d dimensional non-symmetric matrix" % K.shape)
     eigvals, eigvecs = la.eig(K)
     """
     # solve for lowest few eigenvectors iteratively
     from scipy.sparse.linalg import eigs
-    print "solve for lowest eigenvectors using iterative algorithm"
+    print("solve for lowest eigenvectors using iterative algorithm")
     en_guess = -0.5
     eigvals, eigvecs = eigs(K, k=8, sigma=en_guess)
-    print eigvals
+    print(eigvals)
     # The number of degenerate eigenstates of the hydrogen atom
     # should be
     #
@@ -1526,8 +1526,8 @@ def test_hydrogen_spherical_grid():
 
     # overlap matrix between eigenvectors
     S = np.dot(eigvecs.transpose(), np.dot(np.diag(w), eigvecs))
-    print "overlap matrix between eigenstates"
-    print S
+    print("overlap matrix between eigenstates")
+    print(S)
     
     
     # lowest eigenvector
@@ -1547,17 +1547,17 @@ def test_hydrogen_spherical_grid():
         # Therefore we need to renormalize the f_i's
         f /= np.sqrt( np.sum(w * f**2) )
 
-        print "normalization"
+        print("normalization")
         norm2 = np.sum(w * f**2)
-        print np.sqrt(norm2)
+        print(np.sqrt(norm2))
     
         en = np.sum(w * f * np.dot(T+V, f)) 
-        print "energy expectation value of %d-th eigenvector" % i
-        print en
+        print("energy expectation value of %d-th eigenvector" % i)
+        print(en)
 
         enK = np.sum(w * f * np.dot(K, f))
-        print "(w*f)^T.K.f"
-        print enK
+        print("(w*f)^T.K.f")
+        print(enK)
     
         # plot function belonging to lowest eigenvalue
         psi0 = multicenter_interpolation([f],
@@ -1576,17 +1576,17 @@ def test_hydrogen_spherical_grid():
 
     f_exact = psi_1s(xg,yg,zg)
 
-    print "normalization of exact solution"
+    print("normalization of exact solution")
     norm2 = np.sum(w * f_exact**2)
-    print np.sqrt(norm2)
+    print(np.sqrt(norm2))
     
     en = np.sum(w * f_exact * np.dot(T+V, f_exact)) 
-    print "energy expectation value of exact solution"
-    print en
+    print("energy expectation value of exact solution")
+    print(en)
 
     enK = np.sum(w * f_exact * np.dot(K, f_exact))
-    print "(w*f)^T.K.f (exact)"
-    print enK
+    print("(w*f)^T.K.f (exact)")
+    print(enK)
 
     
     # plot exact eigenfunctions
@@ -1620,7 +1620,7 @@ def test_linear_operator_hydrogen():
     Hop = HamiltonianOperator(atomlist, potential)
 
     from scipy.sparse.linalg import eigs
-    print "solve for lowest eigenvectors using iterative algorithm"
+    print("solve for lowest eigenvectors using iterative algorithm")
     en_guess = -0.5
 
     # check the identity   (K.u)^H.v = u^H.(K^H.v)
@@ -1638,7 +1638,7 @@ def test_linear_operator_hydrogen():
     
     #K = Hop.dense_matrix()
     #eigvals, eigvecs = eigs(K, k=8, sigma=en_guess)
-    print eigvals
+    print(eigvals)
 
 def test_multicenter_hmi():
     """
@@ -1673,12 +1673,12 @@ def test_multicenter_hmi():
 
     """
     # compute exact ground state of HMI
-    print "compute numerically exact HMI wavefunctions"
+    print("compute numerically exact HMI wavefunctions")
     from DFTB.Scattering.hydrogen_molecular_ion import DimerWavefunctions
     wfn = DimerWavefunctions(R,1.0,1.0, plot=False)
 
     en0, (Rfunc,Sfunc,Pfunc),wavefunction_exact = wfn.getBoundOrbital(0,0,'cos',0)
-    print "HMI ground state energy = %e" % en0
+    print("HMI ground state energy = %e" % en0)
     def phi_exact(x,y,z):
         return wavefunction_exact((x,y,z), None)
     """
@@ -1705,27 +1705,27 @@ def test_multicenter_hmi():
 
     # sum_i w_i f_i^2
     norm2 = grid.scalar_product(f_exact, f_exact)
-    print "normalization norm^2 = %e" % norm2
+    print("normalization norm^2 = %e" % norm2)
 
     # sum_i w_i f_i (H.f)_i
     Hf = Hop.matvec(f_exact)
     en = grid.scalar_product(f_exact, Hf)
-    print "energy expectation value <psi|H|psi> of exact ground state"
-    print en
+    print("energy expectation value <psi|H|psi> of exact ground state")
+    print(en)
 
     # sum_i w_i f_i ((T+V).f)_i
     TpVf = -0.5 * Lop.matvec(f_exact) + Vop.matvec(f_exact)
     en = grid.scalar_product(f_exact, TpVf)
-    print "energy expectation value <psi|T+V|psi> of exact ground state"
-    print en
+    print("energy expectation value <psi|T+V|psi> of exact ground state")
+    print(en)
 
-    print "H.f_exact"
-    print Hf.tolist()
-    print "(T+V).f_exact"
-    print TpVf.tolist()
+    print("H.f_exact")
+    print(Hf.tolist())
+    print("(T+V).f_exact")
+    print(TpVf.tolist())
 
     err = la.norm(Hf - TpVf)
-    print "|H.f - (T+V).f|= %e" % err
+    print("|H.f - (T+V).f|= %e" % err)
     
     # plot the exact eigenfunction
     import matplotlib.pyplot as plt

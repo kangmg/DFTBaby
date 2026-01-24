@@ -91,7 +91,7 @@ if __name__ == "__main__":
     parser.add_option("--normalize", dest="normalize", action="store_true", help="Normalize spectrum so that maximum has intensity of 1 [default: %default]")
     (opts, args) = parser.parse_args()
     if len(args) < 1:
-        print usage
+        print(usage)
         exit(-1)
 
     spectra = []
@@ -119,7 +119,7 @@ if __name__ == "__main__":
         transient_spectra = []
         transient_labels = []
         for itime,t in enumerate(ts):
-            print "Time step: %s" % itime
+            print("Time step: %s" % itime)
             i_en = []
             i_osz = []
             i_label = "%2.3f" % t
@@ -127,7 +127,7 @@ if __name__ == "__main__":
                 i_en += list(spectra[iweight][0])
                 i_osz += list(weight * spectra[iweight][1])
             data = np.array([i_en, i_osz])
-            print data.shape
+            print(data.shape)
             transient_spectra.append(data)
             transient_labels.append(i_label)
         spectra = transient_spectra
@@ -142,7 +142,7 @@ if __name__ == "__main__":
                 axes = plt.subplot(len(spectra),1,i+1)
                 axes.xaxis.set_visible(False)
                 axes.yaxis.set_ticklabels([])
-        print "spectrum %s" % i
+        print("spectrum %s" % i)
         en_in, osz = data[0], data[1]
         # sort energies
         sort_indx = np.argsort(en_in)
@@ -151,7 +151,7 @@ if __name__ == "__main__":
         #
         en = convert_energy(en_in, opts.in_units, "Hartree")
         if opts.save_converted != "":
-            print "Save converted spectrum to %s" % opts.save_converted
+            print("Save converted spectrum to %s" % opts.save_converted)
             en_conv = convert_energy(en, "Hartree", opts.out_units)
             np.savetxt(expandvars(expanduser(opts.save_converted)), np.vstack((en_conv, osz)).transpose())
             exit(0)
@@ -167,7 +167,7 @@ if __name__ == "__main__":
                 max_intensity = spec.max()
             spec /= max_intensity
         if opts.save_convolved != "":
-            print "Save convolved spectrum to %s" % opts.save_convolved
+            print("Save convolved spectrum to %s" % opts.save_convolved)
             np.savetxt(expandvars(expanduser(opts.save_convolved)), np.vstack((ens_out, spec)).transpose())
             exit(0)
 

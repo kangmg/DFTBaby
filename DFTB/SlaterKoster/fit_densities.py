@@ -45,6 +45,6 @@ density_exponents = {(1,1): fit_density(h),
                      (3,3): fit_density(li),
                      (6,6): fit_density(c)}
 
-print "density_exponents = %s" % density_exponents
+print("density_exponents = %s" % density_exponents)
 
     

@@ -69,7 +69,7 @@ class NEB:
                     path.append(Rinterp)
         path.append(self.R[-1])
         st.append(self.states[-1])
-        print "initial guess for path contains %s images" % len(path)
+        print("initial guess for path contains %s images" % len(path))
         self.R = path
         self.states = st
     def _getPES(self):
@@ -84,7 +84,7 @@ class NEB:
             pool = Pool(self.nr_processors)
             results = pool.map(run_gaussian_map, zip(atomlists, image_dirs))
             for i,(en,grad) in enumerate(results):
-                print "image %4.d   energy= %+e   |grad|= %e" % (i,en, la.norm(grad))
+                print("image %4.d   energy= %+e   |grad|= %e" % (i,en, la.norm(grad)))
                 self.V[i] = en
                 self.F[i] = -grad
         else:
@@ -94,11 +94,11 @@ class NEB:
                 en, grad = run_gaussian(atomlist, directory="IMAGE_%2.2d" % i)
                 self.V[i] = en
                 self.F[i] = - grad
-                print "image %4.d   energy= %+e   |grad|= %e" % (i,en, la.norm(grad))
+                print("image %4.d   energy= %+e   |grad|= %e" % (i,en, la.norm(grad)))
     def _getTangents(self):
         """tangents along the path at the image positions"""
         self.tangents = [None for Ri in self.R]
-        for i in xrange(1,len(self.R)-1):
+        for i in range(1,len(self.R)-1):
             if self.V[i-1] <= self.V[i] <= self.V[i+1]:
                 self.tangents[i] = self.R[i+1] - self.R[i]
             elif self.V[i+1] < self.V[i] < self.V[i-1]:
@@ -119,7 +119,7 @@ class NEB:
     def _getEffectiveForces(self):
         # effective total force
         self.effF = [None for Ri in self.R]
-        for i in xrange(1,len(self.R)-1):
+        for i in range(1,len(self.R)-1):
             # spring force parallel to tangents
             km = self.force_constant
             if self.states[i+1] != self.states[i]:
@@ -130,12 +130,12 @@ class NEB:
 
                 F1 = dR + (dE - np.dot(self.F[i+1], dR)) * self.F[i+1]
                 F2   = -dR + (-dE + np.dot(self.F[i], dR)) * self.F[i]
-                print "dE = %s" % dE
-                print "erf(dE) = %s" % special.erf(dE)
-                print "Fi+1 = %s" % self.F[i+1]
-                print "Fi   = %s" % self.F[i]
+                print("dE = %s" % dE)
+                print("erf(dE) = %s" % special.erf(dE))
+                print("Fi+1 = %s" % self.F[i+1])
+                print("Fi   = %s" % self.F[i])
                 Fspring = kp * (F1 + F2)
-                print "Fspring = %s" % Fspring
+                print("Fspring = %s" % Fspring)
             else:
                 kp = self.force_constant
                 Fspring = kp * norm(self.R[i+1] - self.R[i]) * self.tangents[i] # new implementation by Henkelman/Jonsson
@@ -161,7 +161,7 @@ class NEB:
     def _converged(self, tolerance):
         """Check if average forces have dropped below certain threshold"""
         self.avgForce = 0.0
-        for i in xrange(1,len(self.R)-1):
+        for i in range(1,len(self.R)-1):
             self.avgForce += norm(self.effF[i])
         if self.optimize_endpoints == True:
             # force on enpoints should only add to the convergence measure
@@ -169,7 +169,7 @@ class NEB:
             self.avgForce += norm(self.effF[0])
             self.avgForce += norm(self.effF[-1])
         self.avgForce /= len(self.R)
-        print "average force = %2.5f (tolerance = %2.5f)" % (self.avgForce, tolerance)
+        print("average force = %2.5f (tolerance = %2.5f)" % (self.avgForce, tolerance))
         if self.avgForce < tolerance:
             return True
         else:
@@ -191,13 +191,13 @@ class NEB:
         self.optimize_endpoints = optimize_endpoints
         Rlast = [Ri for Ri in self.R] # R(t-dt), R[0] and R[-1] stay always the same
         Rnext = [Ri for Ri in self.R] # R(t+dt)
-        for self.istep in xrange(0, nsteps):
+        for self.istep in range(0, nsteps):
             self._getPES()
             self._getTangents()
             self._getEffectiveForces()
             # optimized positions of intermediate images
             # and minimize positions of ends
-            for i in xrange(0, len(self.R)):
+            for i in range(0, len(self.R)):
                 if i in [0, len(self.R)-1] and (self.optimize_endpoints == False):
                     # as effF[0] = 0 and effF[-1] = 0 this line should not be neccessary ????
                     continue
@@ -220,7 +220,7 @@ class NEB:
             raise Warning("Could not find minimum energy path in %s iterations (average force = %2.5f > tolerance = %2.5f)." % (self.istep+1, self.avgForce, tolerance))
     def _writeIteration(self):
         import sys
-        print "Iteration = %s  " % self.istep
+        print("Iteration = %s  " % self.istep)
         sys.stdout.flush()
     def plot(self):
         images = self.getImages()
@@ -229,7 +229,7 @@ class NEB:
             geometries = [XYZ.vector2atomlist(im, self.atomlist) for im in images]
             xyz_out = "neb_%s_%4.4d.xyz" % (self.name, self.istep)
             XYZ.write_xyz(xyz_out, geometries)
-            print "wrote path for iteration %d to %s" % (self.istep, xyz_out)
+            print("wrote path for iteration %d to %s" % (self.istep, xyz_out))
             if energies != []:
                 # first column: index of image
                 # second column: energy of image
@@ -445,21 +445,21 @@ if __name__ == "__main__":
     (opts, args) = parser.parse_args()
     
     if len(args) < 1:
-        print usage
+        print(usage)
         exit(-1)
 
     if not exists("neb.gjf"):
-        print "ERROR: Gaussian input script 'neb.gjf' not found in current folder!"
+        print("ERROR: Gaussian input script 'neb.gjf' not found in current folder!")
         exit(-1)
 
-    print """
+    print("""
     ****************************
     *                          *
     *  Nudged Elastic Band     *
     *                          *
     ****************************
-    """
-    print opts
+    """)
+    print(opts)
     
     # path to xyz-file
     xyz_file = args[0]

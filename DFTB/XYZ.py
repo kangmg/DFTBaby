@@ -50,13 +50,13 @@ def read_xyz_it(filename, units="Angstrom", fragment_id=atomic_number):
         try:
             nat = int(words[0])
         except ValueError as e:
-            print e
+            print(e)
             raise Exception("Probably wrong number of atoms in xyz-file '%s'" % filename)
         # skip title
         title = fh.readline()
         # read coordinates of nat atoms
         atoms = []
-        for i in xrange(nat):
+        for i in range(nat):
             line = fh.readline()
             words = line.split()
             atno = fragment_id(words[0])
@@ -214,7 +214,7 @@ def update_xyz(filename,atomlist,title="", units="Angstrom"):
     # read comment
     comment = fh.readline().strip()
     symbols = []
-    for i in xrange(nat):
+    for i in range(nat):
         line = fh.readline()
         words = line.split()
         symbols.append( words[0] )
@@ -249,11 +249,11 @@ def read_initial_conditions(filename, units="Angstrom", fragment_id=atomic_numbe
     try:
         nat = int(line.split()[0])
     except ValueError as e:
-        print e
+        print(e)
         raise Exception("Error while reading initial conditions from '%s'" % filename)
     # read coordinates
     coords = []
-    for i in xrange(nat):
+    for i in range(nat):
         line = fh.readline()
         words = line.split()
         atno = fragment_id(words[0])
@@ -263,7 +263,7 @@ def read_initial_conditions(filename, units="Angstrom", fragment_id=atomic_numbe
         coords.append((atno,(x,y,z)))
     # read velocities
     vels = []
-    for i in xrange(nat):
+    for i in range(nat):
         line = fh.readline()
         words = line.split()
         atno = coords[i][0]
@@ -338,8 +338,8 @@ def read_charges(chg_file, units="Angstrom"):
     try:
         Nat = int(fh.readline())
     except ValueError as e:
-        print e
-        print "First two lines of chg-file should contain number of atoms and a comment!"
+        print(e)
+        print("First two lines of chg-file should contain number of atoms and a comment!")
         exit(-1)
     # read comments
     comment = fh.readline()
@@ -495,8 +495,8 @@ def connectivity_matrix(atomlist, search_neighbours=None, thresh=1.3, hydrogen_b
                         Con[C,B] = 1
 
                         if debug > 0:
-                            print "hydrogen bond %s(%2.d)--H(%2.d)--%s(%2.d)     distance= %8.4f Ang    angle= %8.4f degrees" \
-                            % (atom_names[ZA-1].upper(), A+1, C+1, atom_names[ZB-1].upper(), B+1, RAB*bohr_to_angs, angle*180.0/np.pi)
+                            print("hydrogen bond %s(%2.d)--H(%2.d)--%s(%2.d)     distance= %8.4f Ang    angle= %8.4f degrees"
+                                  % (atom_names[ZA-1].upper(), A+1, C+1, atom_names[ZB-1].upper(), B+1, RAB*bohr_to_angs, angle*180.0/np.pi))
 
         # 
     return Con
@@ -520,7 +520,7 @@ if __name__ == "__main__":
     atomlist = read_xyz("DFTB/test_structures/benzene.xyz")[0]
     vec = atomlist2vector(atomlist)
     atlist = vector2atomlist(vec, atomlist)
-    print "atomlist:"
-    print atomlist
-    print "atlist  :"
-    print atlist
+    print("atomlist:")
+    print(atomlist)
+    print("atlist  :")
+    print(atlist)

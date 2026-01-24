@@ -12,10 +12,10 @@ class Worker(mp.Process):
         self.q = results_queue
         self.fq = finished_queue
     def run(self):
-        print "RUNNING %s" % self.ID
+        print("RUNNING %s" % self.ID)
         res = self._target()
         self.q.put((self.ID, res))
-        print "FINISHED %s" % self.ID
+        print("FINISHED %s" % self.ID)
         self.fq.put(self.ID)
         return
 
@@ -56,12 +56,12 @@ class Jobs:
                         except Empty:
                             break
                     """
-                    print "finished IDs = %s" % finished_IDs
+                    print("finished IDs = %s" % finished_IDs)
                     for pf in self.jobs:
                         if pf.ID in finished_IDs:
-                            print "JOIN %s" % pf.ID
+                            print("JOIN %s" % pf.ID)
                             pf.join(self.wait_time)
-                            print "JOINED %s" % pf.ID
+                            print("JOINED %s" % pf.ID)
                     """
                     time.sleep(self.wait_time)
 #            p.start()

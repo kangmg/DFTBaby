@@ -40,10 +40,10 @@ def lithium_cation_continuum(l, m, k):
     print_grid_summary(atomlist,
                        settings.lebedev_order, settings.radial_grid_factor)
     
-    print "electron density..."
+    print("electron density...")
     # electron density of two electrons in the 1s core orbital
     rho = density_func(bound_orbitals)
-    print "effective potential..."
+    print("effective potential...")
     # potential energy for Li nucleus and 2 core electrons
     potential = effective_potential_func(atomlist, rho, None, nelec=2)
 
@@ -62,13 +62,13 @@ def lithium_cation_continuum(l, m, k):
     # angular quantum numbers of asymptotic solution
     assert abs(m) <= l
 
-    print " "
-    print "Asymptotic continuum wavefunction"
-    print "================================="
-    print "  energy           E= %e Hartree  ( %e eV )" % (E, E*AtomicData.hartree_to_eV)
-    print "  wavevector       k= %e a.u." % k
-    print "  angular moment   l= %d m= %+d" % (l,m)
-    print " "
+    print(" ")
+    print("Asymptotic continuum wavefunction")
+    print("=================================")
+    print("  energy           E= %e Hartree  ( %e eV )" % (E, E*AtomicData.hartree_to_eV))
+    print("  wavevector       k= %e a.u." % k)
+    print("  angular moment   l= %d m= %+d" % (l,m))
+    print(" ")
     
     # asymptotically correct solution for V0 = -1/r (hydrogen)
     Cf = regular_coulomb_func(E, charge, l, m, 0.0)
@@ -84,7 +84,7 @@ def lithium_cation_continuum(l, m, k):
 
     atomic_numbers, atomic_coordinates = atomlist2arrays(atomlist)
 
-    print "Schroedinger equation..."
+    print("Schroedinger equation...")
     dphi = multicenter_inhomogeneous_schroedinger(potential, source,  E,
                                                   atomic_coordinates, atomic_numbers,
                                                   radial_grid_factor=settings.radial_grid_factor,
@@ -114,7 +114,7 @@ def lithium_cation_continuum(l, m, k):
     # The matching points are spread over several periods,
     # but not more than 30 bohr.
     wavelength = 2.0*np.pi / k
-    print "wavelength = %e" % wavelength
+    print("wavelength = %e" % wavelength)
     rmin = 70.0 
     rmax = rmin + max(10*wavelength, 30.0)
     Npts = 100
@@ -123,8 +123,8 @@ def lithium_cation_continuum(l, m, k):
     # fit the the regular Coulomb function
     scale, delta = phaseshift_lstsq(atomlist, phi, E, charge, l, m, rmin, rmax, Npts)
 
-    print "scale factor (relative to Coulomb wave) = %s" % scale
-    print "phase shift (relative to Coulomb wave) = %e " % delta
+    print("scale factor (relative to Coulomb wave) = %s" % scale)
+    print("phase shift (relative to Coulomb wave) = %e " % delta)
 
     # normalize wavefunction, so that 1/scale phi(x,y,z) approaches
     # asymptotically a phase-shifted Coulomb wave
@@ -136,13 +136,13 @@ def lithium_cation_continuum(l, m, k):
     # The continuum orbital should be orthogonal to the bound
     # orbitals belonging to the same Hamiltonian. I think this
     # should come out correctly by default.
-    print " "
-    print " Overlaps between bound orbitals and continuum orbital"
-    print " ====================================================="
+    print(" ")
+    print(" Overlaps between bound orbitals and continuum orbital")
+    print(" =====================================================")
     for ib,bound_orbital in enumerate(bound_orbitals):
         olap_bc = overlap(atomlist, bound_orbital, phi_norm)
-        print "  <bound %d| continuum> = %e" % (ib+1, olap_bc)
-    print ""
+        print("  <bound %d| continuum> = %e" % (ib+1, olap_bc))
+    print("")
 
     # shifted regular coulomb function
     Cf_shift = regular_coulomb_func(E, charge, l, m, delta)
@@ -155,23 +155,23 @@ def lithium_cation_continuum(l, m, k):
     # radial part of scattering solution
     phi_norm_rad = radial_wave_func(atomlist, phi_norm, l, m)
 
-    print ""
-    print "# RADIAL_WAVEFUNCTIONS"
-    print "# Asymptotic wavefunction:"
-    print "#   charge            Z= %+d" % charge
-    print "#   energy            E= %e  k= %e" % (E, k)
-    print "#   angular momentum  l= %d m= %+d" % (l, m)
-    print "#   phase shift       delta= %e rad" % delta
-    print "# "
-    print "#     R/bohr           Coulomb           Coulomb       radial wavefunction   spherical avg. residual"
-    print "#                                        shifted           R_{l,m}(r)           <|(H-E)phi|^2>"
+    print("")
+    print("# RADIAL_WAVEFUNCTIONS")
+    print("# Asymptotic wavefunction:")
+    print("#   charge            Z= %+d" % charge)
+    print("#   energy            E= %e  k= %e" % (E, k))
+    print("#   angular momentum  l= %d m= %+d" % (l, m))
+    print("#   phase shift       delta= %e rad" % delta)
+    print("# ")
+    print("#     R/bohr           Coulomb           Coulomb       radial wavefunction   spherical avg. residual")
+    print("#                                        shifted           R_{l,m}(r)           <|(H-E)phi|^2>")
     import sys
     # write table to console
     r = np.linspace(1.0e-3, 100, 1000)
     data = np.vstack((r, phi0_rad(r), Cf_shift_rad(r), phi_rad(r), residual_avg(r))).transpose()
     np.savetxt(sys.stdout, data, fmt="    %+e    ")
-    print "# END"
-    print ""
+    print("# END")
+    print("")
     
 if __name__ == "__main__":
     import sys
@@ -192,7 +192,7 @@ if __name__ == "__main__":
         
         """ %  os.path.basename(sys.argv[0])
 
-        print usage
+        print(usage)
         exit(-1)
 
     l = int(args[0])

@@ -18,7 +18,7 @@ def f_cart(x):
             coul += 1.0/la.norm(x[3*i:3*(i+1)]-x[3*j:3*(j+1)])
     #
     coul *= 0.5
-    print "coul = %s" % coul
+    print("coul = %s" % coul)
     return coul
 
 # gradient of objective function
@@ -57,7 +57,7 @@ def initial_thomson_points_sph(nrT):
     for i in range(0, nr_rest):
         th = np.random.rand(1)[0]*np.pi
         ph = np.random.rand(1)[0]*2*np.pi
-        print "th = %s   ph = %s" % (th, ph)
+        print("th = %s   ph = %s" % (th, ph))
         angles += [ph, th]
     assert len(angles) == 2*nrT
     return np.array(angles)
@@ -109,7 +109,7 @@ def f_sph_old(x):
             coul += 1.0/la.norm(ri-rj)
     #
     coul *= 0.5
-    print "coul = %s" % coul
+    print("coul = %s" % coul)
     return coul
 
 def f_sph(x):
@@ -197,16 +197,16 @@ def f_rij2(x):
             for a in range(0, npts):
                 grad[2*a]   -= 1.0/4.0 * pow(r2[i,j],-1.5) * r2dth[i,j,a]
                 grad[2*a+1] -= 1.0/4.0 * pow(r2[i,j],-1.5) * r2dph[i,j,a]
-    print "coul = %s" % coul
+    print("coul = %s" % coul)
 #    print "grad = %s" % grad
-    print "|grad| = %s" % la.norm(grad)
+    print("|grad| = %s" % la.norm(grad))
     return coul, grad
 
 if __name__ == "__main__":
     """
     # CARTESIAN
     x0 = initial_thomson_points_cart(12)
-    print "err = %s" % optimize.check_grad(f_cart, grad_cart, x0)
+    print("err = %s" % optimize.check_grad(f_cart, grad_cart, x0))
 #    xmin, fmin, d = optimize.fmin_l_bfgs_b(f_cart, x0, grad)
     xmin = optimize.fmin(f_cart, x0,maxfun=100000000000000000000, maxiter=100000000000000000)
     atomlist = cart2atomlist(4*xmin)
@@ -222,6 +222,6 @@ if __name__ == "__main__":
     atomlist = sph2atomlist(xmin, R)
     XYZ.write_xyz("/tmp/thomson_spherical.xyz", [atomlist])
  
-    print "fmin = %s" % (2*fmin)
+    print("fmin = %s" % (2*fmin))
 
 #    print "err = %s" % optimize.check_grad(lambda x: f_rij2(x)[0], lambda x: f_rij2(x)[1], x0)

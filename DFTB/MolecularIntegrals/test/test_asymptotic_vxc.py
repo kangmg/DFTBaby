@@ -41,10 +41,10 @@ if __name__ == "__main__":
     RDFT = BasissetFreeDFT(atomlist, None, charge=charge)
     bound_orbitals = RDFT.getOrbitalGuess()
 
-    print "electron density..."
+    print("electron density...")
     # electron density of two electrons in the 1s core orbital
     rho = density_func(bound_orbitals)
-    print "effective potential..."
+    print("effective potential...")
 
     # List of (exchange, correlation) functionals implemented
     # in libXC

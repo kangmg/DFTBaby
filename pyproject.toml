@@ -1,0 +1,102 @@
+[build-system]
+requires = [
+    "setuptools>=65.0",
+    "wheel",
+    "numpy>=1.26.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "DFTBaby"
+version = "0.1.0"
+description = "Tight binding density functional theory for excited states"
+readme = "README.txt"
+license = {text = "See LICENSE file"}
+authors = [
+    {name = "Alexander Humeniuk", email = "alexander.humeniuk@gmail.com"}
+]
+requires-python = ">=3.12"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Fortran",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+]
+dependencies = [
+    "numpy>=1.26.0",
+    "scipy>=1.11.0",
+    "matplotlib>=3.7.0",
+    "mpmath>=1.3.0",
+    "sympy>=1.12",
+]
+
+[project.optional-dependencies]
+gui = [
+    "mayavi>=4.8.0",
+]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov",
+]
+
+[project.scripts]
+"DFTB2.py" = "DFTB.DFTB2:main"
+"LR_TDDFTB.py" = "DFTB.LR_TDDFTB:main"
+"optimize.py" = "DFTB.optimize:main"
+"optimize_neb.py" = "DFTB.optimize_neb:main"
+"optimize_meci.py" = "DFTB.optimize_meci:main"
+"scan.py" = "DFTB.scan:main"
+"split_xyz.py" = "DFTB.Modeling.split_xyz:main"
+"show_molcoords.py" = "DFTB.Modeling.show_molcoords:main"
+"modify_internal.py" = "DFTB.Modeling.modify_internal:main"
+"cut_sphere.py" = "DFTB.Modeling.cut_sphere:main"
+"convert_xyz.py" = "DFTB.Modeling.convert_xyz:main"
+"nanotube_builder.py" = "DFTB.Modeling.nanotube_builder:main"
+"filter_fragments.py" = "DFTB.Modeling.filter_fragments:main"
+"check_initial_distribution.py" = "DFTB.Dynamics.check_initial_distribution:main"
+"random_velocities.py" = "DFTB.Dynamics.random_velocities:main"
+"absorption_spectrum.py" = "DFTB.Analyse.absorption_spectrum:main"
+"ph_correlation.py" = "DFTB.Analyse.ph_correlation:main"
+"SurfaceHopping.py" = "DFTB.Dynamics.SurfaceHopping:main"
+"populations.py" = "DFTB.Dynamics.Analyse.populations:main"
+"trajViewer2.py" = "DFTB.Dynamics.Analyse.Viewer.trajViewer2:main"
+"reconstruct.py" = "DFTB.MetaDynamics.reconstruct:main"
+"GeometryOptimization.py" = "DFTB.Optimize.GeometryOptimization:main"
+"assign_atom_types.py" = "DFTB.ForceField.assign_atom_types:main"
+"copy_atom_types.py" = "DFTB.ForceField.copy_atom_types:main"
+"ff_optimize.py" = "DFTB.ForceField.ff_optimize:main"
+"fit_electric_charges.py" = "DFTB.ForceField.fit_electric_charges:main"
+"fit_magnetic_dipoles.py" = "DFTB.ForceField.fit_magnetic_dipoles:main"
+"electrostatic_potential.py" = "DFTB.Poisson.electrostatic_potential:main"
+"vector_potential.py" = "DFTB.Poisson.vector_potential:main"
+"electroSka.py" = "DFTB.MultipleScattering.electroSka:main"
+
+[project.urls]
+Homepage = "http://dftbaby.chemie.uni-wuerzburg.de/"
+Repository = "https://github.com/kangmg/DFTBaby"
+
+[tool.setuptools]
+zip-safe = false
+
+[tool.setuptools.packages.find]
+include = ["DFTB*"]
+
+[tool.setuptools.package-data]
+DFTB = ["dftbaby.cfg"]
+"DFTB.Dynamics.Analyse.Viewer" = ["*.ui"]
+"DFTB.RepulsivePotential.reppot_tables" = ["*"]
+"DFTB.SlaterKoster.slako_tables" = ["*"]
+"DFTB.SlaterKoster.confined_pseudo_atoms" = ["*"]
+"DFTB.SlaterKoster.free_pseudo_atoms" = ["*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

@@ -163,5 +163,5 @@ def save_partial_dipoles(filename, atomlist, ddip):
     for i in range(0, nat):
         print>>fh, "%s %s %s" % tuple(ddip[i,:])
     fh.close()
-    print "wrote partial dipoles to file %s" % filename
+    print("wrote partial dipoles to file %s" % filename)
 

@@ -191,7 +191,7 @@ def numerical_gradient(f,x0,h=1.0e-5):
     f0 = f(x0)
     dfdx = zeros(n)
     for i in range(0, n):
-        print "numerical gradient: %d of %d" % (i,n)
+        print("numerical gradient: %d of %d" % (i,n))
         ei = zeros(n)
         ei[i] = 1.0 # unit vector
 #        # forward gradient
@@ -284,13 +284,13 @@ def call_with_opts_from_dict(func):
             actualargs = args #[args[argname] for argname in argnames]
             actualopts = {}
             for io,optname in enumerate(optnames):
-                if optname in opts.keys(): 
+                if optname in opts.keys():
                     actualopts[optname] = opts[optname]
                 else:
                     actualopts[optname] = func.func_defaults[io]
 #            print "Calling %s with arguments = %s and options = %s" % (func.func_name, actualargs, actualopts)
-        except TypeError: raise TypeError, '%s(...) requires arg(s) %r'%(
-            func.func_name, [argname for argname in argnames])
+        except TypeError:
+            raise TypeError('%s(...) requires arg(s) %r' % (func.func_name, [argname for argname in argnames]))
         return func(*actualargs, **actualopts)
     
     _f.func_name = func.func_name
@@ -303,6 +303,6 @@ from optparse import OptionParserFuncWrapper
 
 if __name__ == "__main__":
     def bla(x,y,z=100,w=1000):
-        print "x = %s, y = %s, z = %s, w = %s" % (x,y,z,w)
+        print("x = %s, y = %s, z = %s, w = %s" % (x,y,z,w))
     opts = {'w': -1000, 'test':100}
     call_with_opts_from_dict(bla)(1,2,**opts)

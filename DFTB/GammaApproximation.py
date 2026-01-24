@@ -34,7 +34,7 @@ def gaussian_decay(hubbard_U, valorbs, Rlr, lc_flag, verbose=0):
     sigma: dictionary with decay constants for each atomic number
     """
     sigmas0 = {}
-    for Z,U in hubbard_U.iteritems():
+    for Z,U in hubbard_U.items():
         sigmas0[Z] = 1.0/(np.sqrt(np.pi)*U)
 
     sigmas = {}
@@ -46,7 +46,7 @@ def gaussian_decay(hubbard_U, valorbs, Rlr, lc_flag, verbose=0):
         # sigma is one of the roots of the
         # quartic polynomial
         # p(x) = a*x^4 + b*x^3 + c*x^2 + d*x + e
-        for Z,U in hubbard_U.iteritems():
+        for Z,U in hubbard_U.items():
             # angular momentum of highest shell
             lH = max([l for (n,l,m) in valorbs[Z]])
             a = np.pi*U**2
@@ -72,12 +72,12 @@ def gaussian_decay(hubbard_U, valorbs, Rlr, lc_flag, verbose=0):
         sigmas = sigmas0
 
     if verbose > 0:
-        print "Gaussian decay constants"
-        print "========================================================="
-        print "Atom      U/Hartree      sigma/bohr    sigma/bohr (no lc)"
-        for Z,U in hubbard_U.iteritems():
+        print("Gaussian decay constants")
+        print("=========================================================")
+        print("Atom      U/Hartree      sigma/bohr    sigma/bohr (no lc)")
+        for Z,U in hubbard_U.items():
             # for comparison: sigma without lc-correction
-            print " %2.s         %2.4f         %2.4f          %2.4f" % (AtomicData.atom_names[Z-1],U,sigmas[Z],sigmas0[Z])   
+            print(" %2.s         %2.4f         %2.4f          %2.4f" % (AtomicData.atom_names[Z-1],U,sigmas[Z],sigmas0[Z])   )
 
     return sigmas
 
@@ -87,13 +87,13 @@ def slater_decay(hubbard_U, valorbs, Rlr, lc_flag, verbose=0):
     """
     taus = {}
     if lc_flag == 0:
-        for Z,U in hubbard_U.iteritems():
+        for Z,U in hubbard_U.items():
             taus[Z] = 16.0/5.0 * U
     else:
         # TODO: solve eqn. (58) from Lutsker's LC-DFTB article for tau
 #        raise NotImplemented("")
         # Meanwhile use the same taus
-        for Z,U in hubbard_U.iteritems():
+        for Z,U in hubbard_U.items():
             taus[Z] = 16.0/5.0 * U        
     return taus
 
@@ -280,14 +280,14 @@ class GammaNumerical(GammaFunction):
             try:
                 gamma_dic = gamma_integrals.gamma_integrals[(Za,Zb)]
             except KeyError as e:
-                print "ERROR: No numerical gamma-function found for atom pair %s-%s." % (AtomicData.atom_names[Za-1], AtomicData.atom_names[Zb-1])
-                print "You have to add these atoms in the script 'generate_gamma_integrals.py' and recompute."
+                print("ERROR: No numerical gamma-function found for atom pair %s-%s." % (AtomicData.atom_names[Za-1], AtomicData.atom_names[Zb-1]))
+                print("You have to add these atoms in the script 'generate_gamma_integrals.py' and recompute.")
                 raise e
             # There are different gamma-functions for interactions between s- and p-shells, but
             # their values are quite similar. Since we want to have a single gamma function per
             # atom combination we need to average over gamma functions for different shells.
             gamma_g = 0*rg
-            for (la,lb),gamma_ab in gamma_dic.iteritems():
+            for (la,lb),gamma_ab in gamma_dic.items():
                 gamma_g += gamma_ab
             gamma_g /= len(gamma_dic)
             
@@ -509,7 +509,7 @@ def gaussian_decay_multipoles(hubbard_U):
     sigma: dictionary with decay constants for each atomic number
     """
     sigmas = {}
-    for Z,U in hubbard_U.iteritems():
+    for Z,U in hubbard_U.items():
 
         # monopoles only
         sig = 1.0/(np.sqrt(np.pi)*U)
@@ -535,7 +535,7 @@ class GammaGaussianMultipole(GammaFunction):
     def __init__(self, hubbard_U):
         sigmas_s = {}
         sigmas_p = {}
-        for Z,U in hubbard_U.iteritems():
+        for Z,U in hubbard_U.items():
             sigmas_s[Z] = 1.0/(np.sqrt(np.pi)*U)
             sigmas_p[Z] = sigmas_s[Z] #sigmas_s[Z] #1.0/(6.0*np.sqrt(np.pi)*U**3) #
         """construct the C_AB matrix"""
@@ -671,7 +671,7 @@ class AuxiliaryBasisSet:
     def __init__(self, atomlist, hubbard_U):
         sigmas_s = {}
         sigmas_p = {}
-        for Z,U in hubbard_U.iteritems():
+        for Z,U in hubbard_U.items():
             sigmas_s[Z] = 1.0/(np.sqrt(np.pi)*U)
             sigmas_p[Z] = sigmas_s[Z] #1.0/(6.0*np.sqrt(np.pi)*U**3)
         #

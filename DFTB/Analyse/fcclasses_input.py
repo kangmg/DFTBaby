@@ -31,7 +31,7 @@ if __name__ == "__main__":
     """ % os.path.basename(sys.argv[0])
 
     if len(sys.argv) < 4:
-        print usage
+        print(usage)
         exit(-1)
         
     args = sys.argv[1:]
@@ -48,8 +48,8 @@ if __name__ == "__main__":
     atomlist = XYZ.read_xyz(xyz_file)[-1]
     hess = np.loadtxt(hessian_file)
 
-    print "optimized geometry read from '%s'" % xyz_file
-    print "Hessian read from '%s'" % hessian_file
+    print("optimized geometry read from '%s'" % xyz_file)
+    print("Hessian read from '%s'" % hessian_file)
     
     # compute normal modes and frequencies
     xopt = XYZ.atomlist2vector(atomlist)
@@ -117,14 +117,14 @@ if __name__ == "__main__":
 
     fh.close()
 
-    print "State file written to '%s'" % state_file
+    print("State file written to '%s'" % state_file)
 
     masses = np.array(AtomicData.atomlist2masses(atomlist))
     masses_amu = masses[0::3] * AtomicData.aumass2amu
 
     np.savetxt("masses.dat", masses_amu, fmt="     %15.8f  ")
 
-    print "Masses in amu written to 'masses.dat'"
+    print("Masses in amu written to 'masses.dat'")
     
     
         

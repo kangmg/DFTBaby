@@ -170,19 +170,19 @@ def abscissas():
     zr = k/(n+1.0)
     xr = np.cos(zr * np.pi)
 
-    print xr
+    print(xr)
 
     # Chebyshev-Gauss points
     k = np.array(range(0,n+1))
     zr = (2.0*k+1.0)/(2.0*n+2.0)
     xr = np.cos(zr * np.pi)
-    print xr
+    print(xr)
 
     #
     k = np.array(range(1, n+1))
     zr = (k-0.5)/n
     xr = np.cos(zr * np.pi)
-    print xr
+    print(xr)
 
 def test_chebyshev_interpolation():
     x = np.linspace(-1.0, 1.0, 100)

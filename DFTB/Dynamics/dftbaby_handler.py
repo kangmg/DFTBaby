@@ -46,16 +46,16 @@ class dftbaby_handler:
         tdip = self.pes.getTransitionDipoles()
         # oscillator strengths  f[I] = 2/3 omega[I] |<0|r|I>|^2
         f = 2.0/3.0 * en_exc * (tdip[0,1:,0]**2 + tdip[0,1:,1]**2 + tdip[0,1:,2]**2)
-        print "The dynamics starts on the excited state with the largest oscillator strength." 
+        print("The dynamics starts on the excited state with the largest oscillator strength." )
         state = 1 + np.argmax(f)
-        print " State     Excitation energy / eV      Oscillator strength / e*bohr"
+        print(" State     Excitation energy / eV      Oscillator strength / e*bohr")
         for i in range(0, self.nstates-1):
-            print " %d         %.7f                   %.7f" % (i+1, en_exc[i]*AtomicData.hartree_to_eV, f[i]),
+            print(" %d         %.7f                   %.7f" % (i+1, en_exc[i]*AtomicData.hartree_to_eV, f[i]), end=" ")
             if i+1 == state:
-                print "      (initial)"
+                print("      (initial)")
             else:
-                print ""
-        print "selected initial state: %d" % state
+                print("")
+        print("selected initial state: %d" % state)
         return state
 
     def getFragmentExcitation(self, coordinates, ifrag,iorb, afrag,aorb):
@@ -93,8 +93,8 @@ class dftbaby_handler:
             accel = np.reshape(accel,(self.Nat,3))
         except SCFNotConverged as e:
             if self.last_step != None:
-                print "WARNING: %s" % e
-                print "Trying to continue with gradient and energy from last step!"
+                print("WARNING: %s" % e)
+                print("Trying to continue with gradient and energy from last step!")
                 energies, accel, coupl, tdip, olap = self.last_step
                 self.pes.resetSCF()
             else:
@@ -112,8 +112,8 @@ class dftbaby_handler:
             # probably because we have hit a conical 
             # intersection or because the molecule has dissociated.
             # We try to continue on the ground state until we have passed the CI.
-            print "WARNING: %s" % e
-            print "Trying to continue with ground state gradient, energies=E0 and zero coupling!"
+            print("WARNING: %s" % e)
+            print("Trying to continue with ground state gradient, energies=E0 and zero coupling!")
             if self.last_step != None or (state == 0):
                 energies, accel, coupl, tdip, olap = self.getAll_S0(coordinates, has_scf=True)
                 self.pes.resetXY()

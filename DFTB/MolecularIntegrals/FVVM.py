@@ -109,7 +109,7 @@ def fvvm_matrix_elements(atomlist, bfs, potential, E, r0):
     """
     # number of basis functions
     nbfs = len(bfs)
-    print " %d basis functions" % nbfs
+    print(" %d basis functions" % nbfs)
 
     # volume integral
     #       __     __
@@ -141,7 +141,7 @@ def fvvm_matrix_elements(atomlist, bfs, potential, E, r0):
         chi_i = bfs[i]
         for j in range(i, nbfs):
             # basis function j
-            print " integrals between basis functions i= %d and j= %d" % (i+1,j+1)
+            print(" integrals between basis functions i= %d and j= %d" % (i+1,j+1))
             chi_j = bfs[j]
 
             # volume integral A_ij
@@ -230,12 +230,12 @@ def test_hydrogen_atom():
 
     A, D, S = fvvm_matrix_elements(atomlist, bfs, potential, E, r0)
 
-    print "A matrix"
-    print A
-    print "D matrix"
-    print D
-    print "S matrix"
-    print S
+    print("A matrix")
+    print(A)
+    print("D matrix")
+    print(D)
+    print("S matrix")
+    print(S)
     
     # solve generalized eigenvalue problem
     #   A.C = b.D.C
@@ -247,11 +247,11 @@ def test_hydrogen_atom():
     mbinv, C = sla.eigh(np.dot(la.inv(A),D))
     b = -1.0/mbinv
     
-    print "b's"
-    print b
+    print("b's")
+    print(b)
 
-    print "C's"
-    print C
+    print("C's")
+    print(C)
     
     # continuum orbitals in inner region
     psi_in = orbital_transformation(atomlist, bfs, C)
@@ -259,7 +259,7 @@ def test_hydrogen_atom():
     # energy expectation values
     for i,bi in enumerate(b):
         en = energy(atomlist, psi_in[i], psi_in[i], potential)
-        print " bi= %e  energy= %e" % (bi, en)
+        print(" bi= %e  energy= %e" % (bi, en))
     
     import matplotlib.pyplot as plt
     r = np.linspace(0.0, 10.0, 1000)
@@ -295,7 +295,7 @@ def test():
     xc = XCFunctionals.libXCFunctional(Parameters.pseudo_orbital_x, Parameters.pseudo_orbital_c)
     dft = BasissetFreeDFT(atomlist, xc)
 
-    print "initial orbital guess from DFTB calculation"
+    print("initial orbital guess from DFTB calculation")
     orbitals = dft.getOrbitalGuess()
     
     norb = len(orbitals)

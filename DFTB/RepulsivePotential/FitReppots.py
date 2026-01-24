@@ -349,12 +349,12 @@ def get_unique_atomtypes(fit_dir):
 
     unique_atomtypes = np.sort(unique_atomtypes)
     
-    print ""
-    print "Atom Types:"
-    print "-----------"
+    print("")
+    print("Atom Types:")
+    print("-----------")
     for Zi in unique_atomtypes:
-        print "  %s" % AtomicData.atom_names[Zi-1]
-    print ""
+        print("  %s" % AtomicData.atom_names[Zi-1])
+    print("")
     
     return unique_atomtypes
 
@@ -416,11 +416,11 @@ class Fitter:
         
         self.basis = Basis(self.unique_atomtypes, cutoffs)
 
-        print "Basis functions:"
-        print "----------------"
+        print("Basis functions:")
+        print("----------------")
         for bf in self.basis.basis_functions:
-            print bf
-        print ""
+            print(bf)
+        print("")
         
     def fit(self, targets=["energies"]): #, "forces"]):
         """
@@ -485,15 +485,15 @@ class Fitter:
         avg_error = la.norm(np.dot(self.A, self.x) - self.y)/len(self.y)
         max_error = abs(np.dot(self.A, self.x) - self.y).max()
         
-        print "average error: %e" % avg_error
-        print "maximal error: %e" % max_error
+        print("average error: %e" % avg_error)
+        print("maximal error: %e" % max_error)
 
         # show one-body terms
-        print "One-body terms (Hartree):"
+        print("One-body terms (Hartree):")
         for Za in self.basis.unique_atomtypes:
             atname = AtomicData.atom_names[Za-1]
             Ua = self.basis.one_body_term(self.x, Za)
-            print "  V_%s = %7.5f" % (atname, Ua) 
+            print("  V_%s = %7.5f" % (atname, Ua) )
             
     def load_fitpaths_it(self, fit_dir):
         """
@@ -513,7 +513,7 @@ class Fitter:
         self.names = [os.path.basename(xyz)[:-4] for xyz in glob.glob("%s/FIT_PATHS/*.xyz" % fit_dir)]
 
         for name in self.names:
-            print "Loading fit path '%s' " % name
+            print("Loading fit path '%s' " % name)
             geom_xyz = os.path.join(fit_dir, "FIT_PATHS", "%s.xyz" % name)
         
             en_dftb_dat = os.path.join(fit_dir, "DFTB", "%s.energies.dat" % name)        
@@ -541,7 +541,7 @@ class Fitter:
                     yield atomlist, en_rep, force_rep
                 
             except IOError as e:
-                print "Loading of fit path '%s' failed!" % name
+                print("Loading of fit path '%s' failed!" % name)
         
     def show_fit(self):
         """
@@ -569,7 +569,7 @@ class Fitter:
                 # the repulsive potential for this atom pair could not be determined
                 continue
             label = "%s-%s" % (AtomicData.atom_names[Za-1].capitalize(), AtomicData.atom_names[Zb-1].capitalize())
-            print "%s" % label
+            print("%s" % label)
             # evaluate Uab on equidistant grid
             Uab = self.basis.evaluate_reppot_array(self.x, rs, Za,Zb)
             l = plt.plot(rs*AtomicData.bohr_to_angs,
@@ -602,7 +602,7 @@ class Fitter:
             if len(self.basis.rij_points[(Z1,Z2)]) == 0:
                 # None the fit paths contained the atom combination Z1-Z2, so
                 # the repulsive potential for this atom pair could not be determined
-                print "Atom combination %s-%s not present in any fit path" % (atname1, atname2)
+                print("Atom combination %s-%s not present in any fit path" % (atname1, atname2))
                 continue
             dmin = min(self.basis.rij_points[(Z1,Z2)])
             d = np.linspace(dmin, self.basis.cutoffs[(Z1,Z2)], Npts)
@@ -629,7 +629,7 @@ class Fitter:
         
             fh.close()
 
-            print "saved repulsive potential %s_%s.py to %s" % (atname1,atname2,reppot_dir)
+            print("saved repulsive potential %s_%s.py to %s" % (atname1,atname2,reppot_dir))
 
 def lsqlin(A,y, C):
     """
@@ -669,11 +669,11 @@ def lsqlin(A,y, C):
         iprint=2,
         iter=1000,
         full_output=True)
-    print "exit mode of optimizer: %s" % imode
+    print("exit mode of optimizer: %s" % imode)
     assert imode == 0
     # check that constraint C.x <= 0 is fulfilled
-    print "C.x"
-    print np.dot(C, xopt)
+    print("C.x")
+    print(np.dot(C, xopt))
     #assert np.all(np.dot(C, xopt) <= 0.0)
     
     
@@ -687,8 +687,8 @@ if __name__ == "__main__":
     import os.path
     
     if len(sys.argv) < 2:
-        print "Usage: %s  <fit directory>" % os.path.basename(sys.argv[0])
-        print ""
+        print("Usage: %s  <fit directory>" % os.path.basename(sys.argv[0]))
+        print("")
         exit(-1)
     
     fit_dir = sys.argv[1]

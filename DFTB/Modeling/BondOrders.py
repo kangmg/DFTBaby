@@ -45,7 +45,7 @@ def solve_linprog(c, A_ub, b_ub, A_eq, b_eq, bounds):
         # use scipy's linprog
         res = optimize.linprog(c, A_ub=A_ub, b_ub=b_ub, A_eq=A_eq, b_eq=b_eq, bounds=bounds, options={"maxiter": 10000000, "disp": True})
         X = res.x
-        print "WARNING: simplex algorithm may not respect integer constraints! Some bond orders may not be integers."
+        print("WARNING: simplex algorithm may not respect integer constraints! Some bond orders may not be integers.")
         return X
         
     
@@ -124,12 +124,12 @@ def assign_bond_orders(atomlist, ConMat, charge=0, latte_file=""):
                 Zj = atomlist[J][0]
                 if is_metal_ion(Zi) or is_metal_ion(Zj):
                     # neglect ionic bonds
-                    print "neglect ionic bond between %s%d and %s%d" % (AtomicData.atom_names[Zi-1], I+1, AtomicData.atom_names[Zj-1], J+1)
+                    print("neglect ionic bond between %s%d and %s%d" % (AtomicData.atom_names[Zi-1], I+1, AtomicData.atom_names[Zj-1], J+1))
                     continue
                 #
                 bonds.append( (I,J) )
 
-                print "BOND %d  = %s%d-%s%d" % (i, AtomicData.atom_names[Zi-1], I+1, AtomicData.atom_names[Zj-1], J+1)
+                print("BOND %d  = %s%d-%s%d" % (i, AtomicData.atom_names[Zi-1], I+1, AtomicData.atom_names[Zj-1], J+1))
                 i += 1
     # number of bonds + number of free electron pairs = number of variables Xk
     Nb = len(bonds)
@@ -237,14 +237,14 @@ def assign_bond_orders(atomlist, ConMat, charge=0, latte_file=""):
             ub_constraintsB.append(-b)
     
     
-    print "number of atoms: %d" % Nat
-    print "number of bonds: %d" % Nb
-    print "number of hydrogens+carbons: %s" % Nc
-    print "number of equality constraints: %d" % len(constraintsB)
-    print "number of upper-bound constraints: %d" % len(ub_constraintsB)
-    print "number of valence electrons V=%d" % V
-    print "number of bond electrons B=%d" % B
-    print "number of variables: %d" % N
+    print("number of atoms: %d" % Nat)
+    print("number of bonds: %d" % Nb)
+    print("number of hydrogens+carbons: %s" % Nc)
+    print("number of equality constraints: %d" % len(constraintsB))
+    print("number of upper-bound constraints: %d" % len(ub_constraintsB))
+    print("number of valence electrons V=%d" % V)
+    print("number of bond electrons B=%d" % B)
+    print("number of variables: %d" % N)
     # additional constraints on free electron pairs
     bounds = []
 
@@ -276,7 +276,7 @@ def assign_bond_orders(atomlist, ConMat, charge=0, latte_file=""):
     if latte_file != "":
         # create input for Latte to determine number of resonance structures compatible with the constraints
         latte_input(latte_file, A_eq, b_eq, A_ub, b_ub)
-        print "Latte input written to %s" % latte_file
+        print("Latte input written to %s" % latte_file)
         #nr_resonances = latte_count(latte_file)
         #print "number of resonance structures: %d" % nr_resonances
     """
@@ -289,38 +289,38 @@ def assign_bond_orders(atomlist, ConMat, charge=0, latte_file=""):
     X[6+2] = 2
     X[6+3] = 3
     X[6+4:6+7]= 0
-    print "test solution X"
-    print X
-    print "equality constraints A_eq.X:"
+    print("test solution X")
+    print(X)
+    print("equality constraints A_eq.X:")
     print (np.dot(A_eq, X) - b_eq)
-    print "upper-bound constraints A_ub.X:"
+    print("upper-bound constraints A_ub.X:")
     print (b_ub - np.dot(A_ub, X))
 
-    print "A_eq"
-    print A_eq
-    print "b_eq"
-    print b_eq
+    print("A_eq")
+    print(A_eq)
+    print("b_eq")
+    print(b_eq)
     """
     """
     # input for LattE
-    print "Input for LattE"
-    print "------------------------------------"
+    print("Input for LattE")
+    print("------------------------------------")
     m,d = A_eq.shape
-    print "%d %d" % (m,d+1)
+    print("%d %d" % (m,d+1))
     for i in range(0, m):
-        print "%2d  " % b_eq[i],
+        print("%2d  " % b_eq[i], end=" ")
         for j in range(0, d):
-            print "%2d " % (-A_eq[i,j]),
-        print ""
-    print "linearity %d " % m,
+            print("%2d " % (-A_eq[i,j]), end=" ")
+        print("")
+    print("linearity %d " % m, end=" ")
     for i in range(0, m):
-        print "%d " % (i+1),
-    print ""
-    print "nonnegative %d " % d,
+        print("%d " % (i+1), end=" ")
+    print("")
+    print("nonnegative %d " % d, end=" ")
     for j in range(0, d):
-        print "%d " % (j+1),
-    print ""
-    print "-------------------------------------"
+        print("%d " % (j+1), end=" ")
+    print("")
+    print("-------------------------------------")
     """
     """
     # 
@@ -328,25 +328,25 @@ def assign_bond_orders(atomlist, ConMat, charge=0, latte_file=""):
     for i in range(0, Nb):
         X[i] = 2  # single bonds with two electrons
         
-    print "A_eq"
-    print A_eq
-    print "b_eq"
-    print b_eq
+    print("A_eq")
+    print(A_eq)
+    print("b_eq")
+    print(b_eq)
     """
     X = solve_linprog(c, A_ub, b_ub, A_eq, b_eq, bounds)
-    print "c.X = %s" % np.dot(c, X)
-    print "equality constraints:"
+    print("c.X = %s" % np.dot(c, X))
+    print("equality constraints:")
     dif = np.dot(A_eq, X) - b_eq
     for n in range(0, Nc):
-        print "constraint %d  deviation = %s" % (n, dif[n])
-    print "upper bound constraints:"
+        print("constraint %d  deviation = %s" % (n, dif[n]))
+    print("upper bound constraints:")
     dif = np.dot(A_ub, X) - b_ub
     for n in range(0, Nc_ub):
-        print "ub constraint %d  deviation = %s <? 0" % (n, dif[n])
+        print("ub constraint %d  deviation = %s <? 0" % (n, dif[n]))
     
     bond_orders = X[:Nb]
-    print "Bond Orders"
-    print "==========="
+    print("Bond Orders")
+    print("===========")
     for i,bond in enumerate(bonds):
         bo = bond_orders[i]
         I,J = bond
@@ -354,19 +354,19 @@ def assign_bond_orders(atomlist, ConMat, charge=0, latte_file=""):
         Zi = atomlist[I][0]
         Zj = atomlist[J][0]
 
-        print "BOND %s%d-%s%d   BO=%f" % (AtomicData.atom_names[Zi-1], I+1, AtomicData.atom_names[Zj-1], J+1, bo)
+        print("BOND %s%d-%s%d   BO=%f" % (AtomicData.atom_names[Zi-1], I+1, AtomicData.atom_names[Zj-1], J+1, bo))
     lone_pairs = X[Nb:Nb+Nat]
-    print "Free Electron Pairs"
-    print "==================="
+    print("Free Electron Pairs")
+    print("===================")
     for I in range(0, Nat):
         fI = lone_pairs[I]
         if (fI > 0):
             Zi = atomlist[I][0]
             atname = AtomicData.atom_names[Zi-1]
-            print "Atom %s%d  number of lone pairs = %d" % (atname, I+1,fI)
+            print("Atom %s%d  number of lone pairs = %d" % (atname, I+1,fI))
     formal_charges = []
-    print "Formal Charges"
-    print "=============="
+    print("Formal Charges")
+    print("==============")
     for I in range(0, Nat):
         fcI = 0.0
         for i,bond in enumerate(bonds):
@@ -379,7 +379,7 @@ def assign_bond_orders(atomlist, ConMat, charge=0, latte_file=""):
             Zi = atomlist[I][0]
             atname = AtomicData.atom_names[Zi-1]
             # change sign of fcI so that having less electrons leads to a positive number
-            print "Atom %s%d  formal charge = %f" % (atname, I+1, -fcI)
+            print("Atom %s%d  formal charge = %f" % (atname, I+1, -fcI))
         formal_charges.append( -fcI )
             
     return bonds, bond_orders, lone_pairs, formal_charges
@@ -420,14 +420,14 @@ def latte_count(latte_file):
     os.system("count %s &> latte.out" % latte_file)
     fh = open("latte.out", "r")
     lines = fh.readlines()
-    print "LINES = %s" % lines
+    print("LINES = %s" % lines)
     fh.close()
     for l in lines:
-        print "LINE=%s" % line.strip()
+        print("LINE=%s" % line.strip())
         if ("The polytope has" in l) and ("vertices." in l):
             nr_vertices = int(l.split()[3])
         elif "The number of lattice points is:" in l:
-            print "##################################################"
+            print("##################################################")
             exit(-1)
             if len(l.split()) == 9:
                 nr_inside = int(l.split()[7])
@@ -436,7 +436,7 @@ def latte_count(latte_file):
             break
     else:
         raise Exception("Latte calculation failed! See output")
-    print "DONE"
+    print("DONE")
     return nr_inside+nr_vertices
     
 if __name__ == "__main__":

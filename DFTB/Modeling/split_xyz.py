@@ -15,7 +15,7 @@ if __name__ == "__main__":
     (opts, args) = parser.parse_args()
     
     if len(args) < 2:
-        print usage
+        print(usage)
         exit(-1)
     xyz_file = sys.argv[1]
     prefix = sys.argv[2]

@@ -15,11 +15,11 @@ import numpy.fft as fft
 if __name__ == "__main__":
     import sys
     if len(sys.argv) < 4:
-        print "Usage: %s <cube file> <axes to integrate over> <output>\n" % sys.argv[0]
-        print "  integrates the cube file over the positive quadrant spanned by two axes"
-        print "  The planes can be specified by combinations of 'x','y' and 'z', for instance"
-        print "    'xy' -> rho(z) = integrate_(0<x<inf, 0<y<inf) f(x,y,z)"
-        print "  The 1D function rho(z) is written as a table with rows 'zi rho(zi)' to <output>."
+        print("Usage: %s <cube file> <axes to integrate over> <output>\n" % sys.argv[0])
+        print("  integrates the cube file over the positive quadrant spanned by two axes")
+        print("  The planes can be specified by combinations of 'x','y' and 'z', for instance")
+        print("    'xy' -> rho(z) = integrate_(0<x<inf, 0<y<inf) f(x,y,z)")
+        print("  The 1D function rho(z) is written as a table with rows 'zi rho(zi)' to <output>.")
         exit(-1)
     cube_file = sys.argv[1]
     axes_str = sys.argv[2]
@@ -35,8 +35,8 @@ if __name__ == "__main__":
         if not (i in axes_integrate):
             axis_remains = i
             break
-    print "axes %s are integrated out" % str(axes_integrate)
-    print "remaining axis: %s" % axis_remains
+    print("axes %s are integrated out" % str(axes_integrate))
+    print("remaining axis: %s" % axis_remains)
 
     # load the cube file
     atomlist, origin, axes, data = Cube.readCube(cube_file)
@@ -48,19 +48,19 @@ if __name__ == "__main__":
 
     # remaining coordinate is called u
     du = la.norm(axes[axis_remains])
-    print "du = %s" % du
+    print("du = %s" % du)
     nu = ns[axis_remains]
     u = np.linspace(origin[axis_remains], nu*du, nu)
     # shift axis so that the center is located at u=0
     u = u-u[len(u)/2]
     # rho(u), 1D curve after integrating
     rho_u = np.zeros(ns[axis_remains])
-    print u.shape
-    print rho_u.shape
+    print(u.shape)
+    print(rho_u.shape)
 
-    for i in xrange(nx):
-        for j in xrange(ny):
-            for k in xrange(nz):
+    for i in range(nx):
+        for j in range(ny):
+            for k in range(nz):
                 index_i = [i,j,k]
                 xi = x0 + i*axes[0] + j*axes[1] + k*axes[2]
                 for ai in axes_integrate:
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     print>>fh, "# u  in bohr              rho(u)"
     np.savetxt(fh, data_1d)
     fh.close()
-    print "Curve saved to %s" % out_file
+    print("Curve saved to %s" % out_file)
 
     # Now the curve is Fourier transformed
     rho_k = fft.rfft(rho_u)
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     print>>fh, "# k  in 1/bohr              rho(k)"
     np.savetxt(fh, data_kspace_1d)
     fh.close()
-    print "Fourier transform of curve saved to %s" % out_file_kspace
+    print("Fourier transform of curve saved to %s" % out_file_kspace)
     
     # Analyse rho(k) to find an approximate wavevector for the state
     rho_k2 = abs(rho_k)**2
@@ -97,9 +97,9 @@ if __name__ == "__main__":
             break
     kmax = k[ik]
     rho_kmax = rho_k[ik]
-    print "k max = %s" % kmax
-    print "rho(k kmax) = %s" % rho_kmax
-    print "wave length lambda = 2*pi/kmax = %s bohr" % (2.0*np.pi/kmax)
+    print("k max = %s" % kmax)
+    print("rho(k kmax) = %s" % rho_kmax)
+    print("wave length lambda = 2*pi/kmax = %s bohr" % (2.0*np.pi/kmax))
 
     from matplotlib import pyplot as plt
     plt.plot(u,rho_u)

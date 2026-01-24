@@ -144,7 +144,7 @@ def continuum_overlap(bfs, E, rlarge=50000.0):
     # wavelength
     k = np.sqrt(2*E)
     lamb = 2.0*np.pi/k
-    print "k = %s" % k
+    print("k = %s" % k)
     
     # radial grid on the interval [rlarge,rlarge+lambda]
     Nr = 1000
@@ -174,12 +174,12 @@ def continuum_overlap(bfs, E, rlarge=50000.0):
             #  S[i,i] = pi/k
             S[i,j] = np.sum( phi_i(x,y,z) * phi_j(x,y,z) * weights )
 
-    print "overlap (unnormalized)"
-    print S
+    print("overlap (unnormalized)")
+    print(S)
     
     # For printing we normalize the overlap matrix
     # so that the diagonal elements are equal to 1.
-    print "overlap (normalized)"
+    print("overlap (normalized)")
     print (S * k / np.pi)
             
     return S
@@ -213,7 +213,7 @@ def residual2_matrix(atomlist, potential, ps, bs):
         I = ui.atom_index
         poti = ps.pots[I]
         for j in range(i, nb):
-            print "computing R[%d,%d] = " % (i,j), 
+            print("computing R[%d,%d] = " % (i,j), end=" ")
             uj = bs.bfs[j]
             J = uj.atom_index
             potj = ps.pots[J]
@@ -277,7 +277,7 @@ def residual2_matrix(atomlist, potential, ps, bs):
             R[i,j] = integral(atomlist, integrand)
             R[j,i] = R[i,j]
 
-            print R[i,j]
+            print(R[i,j])
 
     return R
 
@@ -369,23 +369,23 @@ def variational_mixture_continuum(atomlist, phi, delta_phi, potential_ee, E,
 
             # compute the integrals R_ab = <a|(H-E)(H-E)|b> where |a> and |b>
             # are phi or delta_phi
-            print "integration R[%d,%d]" % (a,b)
+            print("integration R[%d,%d]" % (a,b))
             R[a,b] = integral(atomlist, integrand)
 
-    print "matrix elements of R = (H-E)^2"
-    print R
+    print("matrix elements of R = (H-E)^2")
+    print(R)
 
     # 
     S = continuum_overlap([phi, delta_phi], E, rlarge=rlarge)
-    print "continuum overlap matrix"
-    print S
+    print("continuum overlap matrix")
+    print(S)
     
     # solve generalized eigenvalue problem
     eigvals, eigvecs = sla.eigh(R, S)
-    print "eigenvalues"
-    print eigvals
-    print "eigenvectors"
-    print eigvecs
+    print("eigenvalues")
+    print(eigvals)
+    print("eigenvectors")
+    print(eigvecs)
     
     # select eigenvector with smallest (in magnitude) eigenvalue
     imin = np.argmin(abs(eigvals))
@@ -454,7 +454,7 @@ def improve_continuum_orbital(atomlist, phi0, potential_ee, E,
     def potential(x,y,z):
         return potential_ee(x,y,z) + nuclear_potential(x,y,z)
     
-    print "orbital corrections..."
+    print("orbital corrections...")
 
     phi = phi0
     for i in range(0, max_iter):
@@ -478,11 +478,11 @@ def improve_continuum_orbital(atomlist, phi0, potential_ee, E,
             err[rlarge < r] = 0.0
             return err
         error = integral(atomlist, error_density)
-        print "  iteration i= %d   |dphi|^2= %e   b^2= %e  (threshold= %e )" % (i+1, error, b**2, thresh)
+        print("  iteration i= %d   |dphi|^2= %e   b^2= %e  (threshold= %e )" % (i+1, error, b**2, thresh))
         # The solution is converged, when the weight of the
         # correction term b**2 is small enough.
         if b**2 < thresh:
-            print "CONVERGED"
+            print("CONVERGED")
             break
         
         # next approximation for phi
@@ -515,7 +515,7 @@ def improve_continuum_orbital(atomlist, phi0, potential_ee, E,
         phi = phi_next
     else:
         msg = "Orbital corrections did not converge in '%s' iterations!" % max_iter
-        print "WARNING: %s" % msg
+        print("WARNING: %s" % msg)
         #raise RuntimeError(msg)    
     return phi
 
@@ -576,17 +576,17 @@ def relax_continuum_orbital(atomlist, phi0, potential_ee, E,
     x = null
     for i in range(0, max_iter):
         # compute A.x^(k) = (H-E)^2 phi_k
-        print "residuals..."
+        print("residuals...")
         residual1 = residual_ee_func(atomlist, x, potential_ee, E)
         residual2 = residual_ee_func(atomlist, residual1, potential_ee, E)
         Ax = residual2
         # b - A.x^(k)
-        print "error..."
+        print("error...")
         bmAx = add_two_functions(atomlist, b, Ax, 1.0, -1.0)
         error = np.sqrt(overlap(atomlist, bmAx, bmAx))
-        print "iteration i= %d  error |b-Ax|= %e" % (i, error)
+        print("iteration i= %d  error |b-Ax|= %e" % (i, error))
         if error < thresh:
-            print "CONVERGED"
+            print("CONVERGED")
             break
         
         # x^(k+1) = x^(k) + w * (b - A.x^(k))
@@ -613,7 +613,7 @@ def relax_continuum_orbital(atomlist, phi0, potential_ee, E,
         
     else:
         msg = "Orbital relaxation did not converge in '%s' iterations!" % max_iter
-        print "WARNING: %s" % msg
+        print("WARNING: %s" % msg)
         #raise RuntimeError(msg)    
     return phi
 
@@ -628,7 +628,7 @@ def averaged_angular_distribution(atomlist, bound_orbs, continuum_orbs, E):
     for i in range(0, nb):
         for j in range(0, nc):
             dipoles_bf[i,j,:] = electronic_dipole(atomlist, bound_orbs[i], continuum_orbs[j])
-            print "dipole <bound %d|er|free %d> = %s" % (i+1,j+1, dipoles_bf[i,j,:])
+            print("dipole <bound %d|er|free %d> = %s" % (i+1,j+1, dipoles_bf[i,j,:]))
 
     # wrappers
     class AtomicBasisFunction:
@@ -654,8 +654,8 @@ def averaged_angular_distribution(atomlist, bound_orbs, continuum_orbs, E):
     mo_bound[-1] = 1.0
     pad, betas = orientation_averaging.averaged_pad(mo_bound)
 
-    print "betas"
-    print betas
+    print("betas")
+    print(betas)
 
 
     
@@ -722,7 +722,7 @@ def test_h2_continuum_orbital():
     xc = XCFunctionals.libXCFunctional(Parameters.pseudo_orbital_x, Parameters.pseudo_orbital_c)
     dft = BasissetFreeDFT(atomlist, xc)
 
-    print "initial orbital guess from DFTB calculation"
+    print("initial orbital guess from DFTB calculation")
     orbitals = dft.getOrbitalGuess()
     
     norb = len(orbitals)
@@ -752,15 +752,15 @@ def test_h2_continuum_orbital():
     
     R = residual2_matrix(atomlist, veff, ps, bs)
     S = continuum_overlap(bs.bfs, E)
-    print "continuum overlap"
-    print S
-    print "residual^2 matrix"
-    print R        
+    print("continuum overlap")
+    print(S)
+    print("residual^2 matrix")
+    print(R        )
         
     eigvals, eigvecs = sla.eigh(R, S)
-    print eigvals
-    print "eigenvector belonging to lowest eigenvalue"
-    print eigvecs[:,0]
+    print(eigvals)
+    print("eigenvector belonging to lowest eigenvalue")
+    print(eigvecs[:,0])
 
     # LCAO continuum orbitals
     continuum_orbitals = orbital_transformation(atomlist, bs.bfs, eigvecs)
@@ -774,7 +774,7 @@ def test_h2_continuum_orbital():
     #
     #   (H-E)dphi = -(H-E)phi0
     #
-    print "orbital correction..."
+    print("orbital correction...")
     phi0 = continuum_orbitals[0]
     
     phi = improve_continuum_orbital(atomlist, phi0, veff_ee, E)
@@ -931,7 +931,7 @@ def test_hmi_continuum():
     # scale numerical phi such that the maxima agree
     scale = phi_exact_xyz.max() / phi_xyz.max()
     phi_xyz *= scale
-    print "scaling factor  s = %s" % scale
+    print("scaling factor  s = %s" % scale)
     
     plt.plot(r, phi_exact_xyz, label="exact")
     plt.plot(r, phi_xyz, label="numerical")
