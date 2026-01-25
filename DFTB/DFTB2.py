@@ -488,9 +488,7 @@ class DFTB2(object):
             print(string.ljust("Atom",15) + string.center("X/bohr",10) + string.center("Y/bohr",10) + string.center("Z/bohr",10))
             print("-"*45)
             for (Zi, posi) in self.atomlist:
-                print(string.ljust(atom_names[Zi-1], 15) )
-                    + string.rjust("%.5f" % posi[0],10) + string.rjust("%.5f" % posi[1],10) \
-                    + string.rjust("%.5f" % posi[2],10)
+                print(string.ljust(atom_names[Zi-1], 15) + string.rjust("%.5f" % posi[0],10) + string.rjust("%.5f" % posi[1],10) + string.rjust("%.5f" % posi[2],10))
             print("")
     def setPointCharges(self, point_charges):
         """
@@ -504,9 +502,7 @@ class DFTB2(object):
             print(string.ljust("Charge",15) + string.center("X/bohr",10) + string.center("Y/bohr",10) + string.center("Z/bohr",10))
             print("-"*45)
             for (Zi, posi) in point_charges:
-                print(string.ljust("%.3f" % Zi, 10) )
-                    + string.rjust("%.5f" % posi[0],10) + string.rjust("%.5f" % posi[1],10) \
-                    + string.rjust("%.5f" % posi[2],10)
+                print(string.ljust("%.3f" % Zi, 10) + string.rjust("%.5f" % posi[0],10) + string.rjust("%.5f" % posi[1],10) + string.rjust("%.5f" % posi[2],10))
             print("")
     def setChargeGuess(self, charge_guess):
         self.charge_guess = charge_guess
@@ -2030,7 +2026,7 @@ class DFTB2(object):
 
                     self.writeIteration()
                 if cur_constr < constr_conv: #or abs(a-b) < 1.0e-14: # NOOOO
-#                    diis_dq.reset() break
+                    pass  # diis_dq.reset() break
                 if self.i > maxiter:
                     from numpy import linspace, argmin
                     lagrange_arr = array(lagrange_arr)
@@ -2059,7 +2055,8 @@ class DFTB2(object):
                 #dq = 0.9*dq + 0.1*self.dq
                 rel_change = sum(abs(dq - self.dq))/sum(abs(self.dq))
                 #
-#                print "nr trial vectors = %s" % len(diis_dq.trial_vectors) if DIIS_memory > 1:
+                # print "nr trial vectors = %s" % len(diis_dq.trial_vectors)
+                if DIIS_memory > 1:
                     diis_dq.next_approximation(dq) # add trial vectors
                 #
             if self.verbose > 0:
@@ -2150,7 +2147,7 @@ class DFTB2(object):
             txt += "  ================\n"
             sort_indx = argsort(self.orbe) # calculated redundantly in fermi_occupation !!
             for i,a in enumerate(sort_indx):
-                txt += "%s: %s %s  (%.3f e)\n" % (string.rjust(str(i+1),6), string.rjust("%.7f hartree" % self.orbe[a], 20), \ string.rjust("%.7f eV" % (self.orbe[a]*hartree_to_eV), 20), self.f[a])
+                txt += "%s: %s %s  (%.3f e)\n" % (string.rjust(str(i+1),6), string.rjust("%.7f hartree" % self.orbe[a], 20), string.rjust("%.7f eV" % (self.orbe[a]*hartree_to_eV), 20), self.f[a])
             if self.verbose > 1:
                 txt += "  MO Coefficients\n"
                 txt += "  ===============\n"
@@ -2275,8 +2272,9 @@ class DFTB2(object):
         ########################################
 
         if len(self.constraints) == 0:
-#            print "SCC" self.runSCC(**opts)
-#            self.runNonSCC()  
+            # print "SCC" self.runSCC(**opts)
+            # self.runNonSCC()
+            pass
         else:
             # constrained SCC calculation
             print("Constrained SCC calculation")

@@ -35,26 +35,25 @@ class MolecularDynamics:
                      output_step=1,
                      fragment_excitation=None,
                      decoherence_correction=0):
-                """
-                Parameters
-                ==========
-                Molecular Dynamics.charge: total charge of the molecule, the cation or anion has to be a closed shell species for TD-DFTB to work properly.
-                Molecular Dynamics.nstates: number of excited states. Only the lowest states are calculated with TD-DFTB. For dynamics in the ground state `nstates` should be set to 0 to avoid the expensive calculation of excitation energies and non-adiabatic couplings.
-                Molecular Dynamics.initial_state: initial electronic state of the trajectory, 0 for ground state. 'brightest' selects the state with the largest oscillator strength as the initial state. 'fragment' creates a superposition of adiabatic states corresponding to a localized excitation on a single fragment or between fragments (see option 'fragment_excitation').
-                Molecular Dynamics.nstep: number of nuclear time steps.
-                Molecular Dynamics.nuclear_step: length of nuclear time step for integration of Newton's equations (in fs).
-                Molecular Dynamics.dyn_mode: 'T' for constant temperature, 'E' for constant energy. To equilibrate a trajectory on the ground state use 'T', non-adiabatic dynamics on excited states should be run at constant energy.
-                Molecular Dynamics.temp: temperature in Kelvin, only needed if the dynamics is run at constant temperature. The temperature is controlled using a Berendsen thermostat.
-                Molecular Dynamics.timecoupling: Time constant for Berendsen thermostat in fs. The strength of the coupling to the external heat bath is proportional to 1/timecoupling. 
-                Molecular Dynamics.scalar_coupling_threshold: Excitation coefficients that are smaller than this threshold are neglected when calculating scalar couplings from the overlap between electronic states at successive time steps. For large molecules this value should be reduced.
-                Molecular Dynamics.switch_to_groundstate: If set to 1, a hop to the ground state is forced if the S0-S1 energy gap drops below 0.1 eV. In TD-DFT(B) conical intersections to the ground state are not described correctly. If a point of point of degeneracy between S0 and S1 is reached, the TD-DFT(B) calculation usually breaks down. 
-                If something goes wrong in the excited state calculation, the trajectory continues with the ground state gradients until the excited state calculation starts working again.
-                Molecular Dynamics.artificial_energy_conservation: Energy conservation can be enforced artificially by rescaling the velocities after each time step. This avoids the drift of the total energy observed for long dynamics simulations. This option only takes effect if dyn_mode=="E".
-                Molecular Dynamics.time_series: To better analyze trajectories it is helpful to write out time series of additional quantities along the trajectory. You can specify a list of the desired quantities (so far only --time_series="['particle-hole charges']" is available).
-                Molecular Dynamics.output_step: Output is written to disk only for every N'th time step. 
-                Molecular Dynamics.fragment_excitation: The initial state does not have to be an adiabatic state. If initial_state='fragment', this option allows to specify a local excitation on a fragment or a charge-transfer excitation from one fragment to the other as the initial state. To this end the disconnected fragments are identified and the molecular orbitals are localized onto the fragments by the Pipek-Mezey method. The excitation is specified by a tuple of four integers '(ifrag,iorb, afrag,aorb)' with the following meaning, ifrag - index of fragment for occupied orbital (1-based), iorb - occupied orbital counted from the HOMO downward (so iorb=0 corresponds to HOMO, iorb=1 to HOMO-1 etc.), afrag - index of fragment for virtual orbital (1-based), aorb - virtual orbital counted from the LUMO upward (so aorb=0 corresponds to LUMO, aorb=1 to LUMO+1 etc.). For instance, if there are two fragments, the tuple '(1,0,1,0)' constitutes a local HOMO(1)->LUMO(1) excitation, while '(1,0,2,0)' constitutes a charge-transfer HOMO(1)->LUMO(2) excitation.
-                Molecular Dynamics.decoherence_correction: If set to 1, the decoherence correction according to eqn. (17) in JCP 126, 134114 (2007) is turned on.
-                """
+        """
+        Parameters
+        ==========
+        Molecular Dynamics.charge: total charge of the molecule, the cation or anion has to be a closed shell species for TD-DFTB to work properly.
+        Molecular Dynamics.nstates: number of excited states. Only the lowest states are calculated with TD-DFTB. For dynamics in the ground state `nstates` should be set to 0 to avoid the expensive calculation of excitation energies and non-adiabatic couplings.
+        Molecular Dynamics.initial_state: initial electronic state of the trajectory, 0 for ground state. 'brightest' selects the state with the largest oscillator strength as the initial state. 'fragment' creates a superposition of adiabatic states corresponding to a localized excitation on a single fragment or between fragments (see option 'fragment_excitation').
+        Molecular Dynamics.nstep: number of nuclear time steps.
+        Molecular Dynamics.nuclear_step: length of nuclear time step for integration of Newton's equations (in fs).
+        Molecular Dynamics.dyn_mode: 'T' for constant temperature, 'E' for constant energy. To equilibrate a trajectory on the ground state use 'T', non-adiabatic dynamics on excited states should be run at constant energy.
+        Molecular Dynamics.temp: temperature in Kelvin, only needed if the dynamics is run at constant temperature. The temperature is controlled using a Berendsen thermostat.
+        Molecular Dynamics.timecoupling: Time constant for Berendsen thermostat in fs. The strength of the coupling to the external heat bath is proportional to 1/timecoupling. 
+        Molecular Dynamics.scalar_coupling_threshold: Excitation coefficients that are smaller than this threshold are neglected when calculating scalar couplings from the overlap between electronic states at successive time steps. For large molecules this value should be reduced.
+        Molecular Dynamics.switch_to_groundstate: If set to 1, a hop to the ground state is forced if the S0-S1 energy gap drops below 0.1 eV. In TD-DFT(B) conical intersections to the ground state are not described correctly. If a point of point of degeneracy between S0 and S1 is reached, the TD-DFT(B) calculation usually breaks down. If something goes wrong in the excited state calculation, the trajectory continues with the ground state gradients until the excited state calculation starts working again.
+        Molecular Dynamics.artificial_energy_conservation: Energy conservation can be enforced artificially by rescaling the velocities after each time step. This avoids the drift of the total energy observed for long dynamics simulations. This option only takes effect if dyn_mode=="E".
+        Molecular Dynamics.time_series: To better analyze trajectories it is helpful to write out time series of additional quantities along the trajectory. You can specify a list of the desired quantities (so far only --time_series="['particle-hole charges']" is available).
+        Molecular Dynamics.output_step: Output is written to disk only for every N'th time step. 
+        Molecular Dynamics.fragment_excitation: The initial state does not have to be an adiabatic state. If initial_state='fragment', this option allows to specify a local excitation on a fragment or a charge-transfer excitation from one fragment to the other as the initial state. To this end the disconnected fragments are identified and the molecular orbitals are localized onto the fragments by the Pipek-Mezey method. The excitation is specified by a tuple of four integers '(ifrag,iorb, afrag,aorb)' with the following meaning, ifrag - index of fragment for occupied orbital (1-based), iorb - occupied orbital counted from the HOMO downward (so iorb=0 corresponds to HOMO, iorb=1 to HOMO-1 etc.), afrag - index of fragment for virtual orbital (1-based), aorb - virtual orbital counted from the LUMO upward (so aorb=0 corresponds to LUMO, aorb=1 to LUMO+1 etc.). For instance, if there are two fragments, the tuple '(1,0,1,0)' constitutes a local HOMO(1)->LUMO(1) excitation, while '(1,0,2,0)' constitutes a charge-transfer HOMO(1)->LUMO(2) excitation.
+        Molecular Dynamics.decoherence_correction: If set to 1, the decoherence correction according to eqn. (17) in JCP 126, 134114 (2007) is turned on.
+        """
         # units checked 06/08/2014
         self.fs_to_au=1.0/AtomicData.autime2fs # 41.34137333
         self.au_to_fs=1.0/self.fs_to_au
@@ -64,82 +63,82 @@ class MolecularDynamics:
         random.seed()
 
         self.charge=charge
-                self.nstep=nstep # number of time steps for dynamics
-                self.tstep=nuclear_step*self.fs_to_au # time step for dynamics
-                self.mode=dyn_mode
-                self.temperature = temp
+        self.nstep=nstep # number of time steps for dynamics
+        self.tstep=nuclear_step*self.fs_to_au # time step for dynamics
+        self.mode=dyn_mode
+        self.temperature = temp
 
-                self.decoherence_correction = decoherence_correction
-                # use the recommended value for C in eqn. (17) of JCP 126, 134114 (2007)
-                self.decoherence_constant = 0.1 # in Hartree
-                
-                # write information on coefficients and hopping:
-                # 0: only write state.dat,
-                # 1: also |c_i|^2 in coeff_$i.dat,
-                # 2: also hopping probabilities in prob.dat and rejected hops in rej_hop.dat,
-                # 3: also real and imaginary parts of coeffs, 4: coherences instead of real and imaginary parts
-                self.printcoeff=2
+        self.decoherence_correction = decoherence_correction
+        # use the recommended value for C in eqn. (17) of JCP 126, 134114 (2007)
+        self.decoherence_constant = 0.1 # in Hartree
+        
+        # write information on coefficients and hopping:
+        # 0: only write state.dat,
+        # 1: also |c_i|^2 in coeff_$i.dat,
+        # 2: also hopping probabilities in prob.dat and rejected hops in rej_hop.dat,
+        # 3: also real and imaginary parts of coeffs, 4: coherences instead of real and imaginary parts
+        self.printcoeff=2
 
-                # write nonadiabatic couplings and transition dipole moments if available
-                self.printcoup=1
+        # write nonadiabatic couplings and transition dipole moments if available
+        self.printcoup=1
 
         self.nstates=nstates+1   # internally nstates includes the ground state
-                
+        
         self.writeflag="xyz"
 
-                self.scalar_coupling_threshold = scalar_coupling_threshold
-                self.switch_to_groundstate = switch_to_groundstate
-                self.artificial_energy_conservation = artificial_energy_conservation
-                if time_series == None:
-                        time_series = []
-                self.time_series = time_series
-                assert output_step > 0
-                self.output_step = output_step
-                
-                self.time=0.0
+        self.scalar_coupling_threshold = scalar_coupling_threshold
+        self.switch_to_groundstate = switch_to_groundstate
+        self.artificial_energy_conservation = artificial_energy_conservation
+        if time_series == None:
+                time_series = []
+        self.time_series = time_series
+        assert output_step > 0
+        self.output_step = output_step
+        
+        self.time=0.0
+        try:
+                # the initial state is given as an integer index
+                self.state = int(initial_state)
+        except ValueError:
+                assert initial_state in ["brightest", "fragment"], "Allowed values for initial_state are integers or 'brightest' or 'fragment'"
+                self.state = initial_state
                 try:
-                        # the initial state is given as an integer index
-                        self.state = int(initial_state)
-                except ValueError:
-                        assert initial_state in ["brightest", "fragment"], "Allowed values for initial_state are integers or 'brightest' or 'fragment'"
-                        self.state = initial_state
-                        try:
-                                ifrag,iorb, afrag,aorb = fragment_excitation
-                                self.fragment_excitation = ifrag,iorb, afrag,aorb
-                        except (ValueError,TypeError) as e:
-                                print("ERROR: expected tuple of integers (ifrag,iorb, afrag,aorb) for option 'fragment_excitation'")
-                                print("       but got '%s'." % fragment_excitation)
-                                raise e
-                        
-                if (self.state==0) and (self.nstates==1):
-                        # DFTBaby program needs to compute excited states at least once
-                        # to initialize all variable correctly that are needed for the gradient
-                        # calculations. In the first step a single excited state is calculate, in
-                        # later steps the excited state calculation is skipped if grounddyn==1.
-                        self.nstates += 1
-                        self.grounddyn=1
-                else:
-                        self.grounddyn=0
+                        ifrag,iorb, afrag,aorb = fragment_excitation
+                        self.fragment_excitation = ifrag,iorb, afrag,aorb
+                except (ValueError,TypeError) as e:
+                        print("ERROR: expected tuple of integers (ifrag,iorb, afrag,aorb) for option 'fragment_excitation'")
+                        print("       but got '%s'." % fragment_excitation)
+                        raise e
+                
+        if (self.state==0) and (self.nstates==1):
+                # DFTBaby program needs to compute excited states at least once
+                # to initialize all variable correctly that are needed for the gradient
+                # calculations. In the first step a single excited state is calculate, in
+                # later steps the excited state calculation is skipped if grounddyn==1.
+                self.nstates += 1
+                self.grounddyn=1
+        else:
+                self.grounddyn=0
 
 
         if self.mode=="T" or self.mode=="M":
             self.currtemperature=200.0
             self.timecoupling=timecoupling*self.fs_to_au
-                        
-                if os.path.exists("dynamics.in0"):
-                        print("")
-                        print("'dynamics.in0' found => dynamics is RESTARTED from last step")
-                        print("")
-                        print("  Initial coordinates and velocities are read from   'dynamics.in0'")
-                        print("  Electronic coefficients are read from              'coefficients.dat0'")
-                        print("  Current state is read from                         'state.dat'")
-                        print("  Non-adiabatic couplings cannot be recovered fully.")
-                        print("")
-                        print("To avoid a restart you have to delete 'dynamics.in0'.")
-                        print("")
-                        self.restart = 1
-                else:
-                        self.restart = 0
+                
+        if os.path.exists("dynamics.in0"):
+                print("")
+                print("'dynamics.in0' found => dynamics is RESTARTED from last step")
+                print("")
+                print("  Initial coordinates and velocities are read from   'dynamics.in0'")
+                print("  Electronic coefficients are read from              'coefficients.dat0'")
+                print("  Current state is read from                         'state.dat'")
+                print("  Non-adiabatic couplings cannot be recovered fully.")
+                print("")
+                print("To avoid a restart you have to delete 'dynamics.in0'.")
+                print("")
+                self.restart = 1
+        else:
+                self.restart = 0
 
     ###########################################################################################################################
     # MOLECULAR DYNAMICS ROUTINES
@@ -182,7 +181,7 @@ class MolecularDynamics:
         for i in range(len(mass)):
             I=I+mass[i]*(np.inner(coordi[i],coordi[i])*Emat-np.outer(coordi[i],coordi[i]))
         return I
-                
+        
     def getAngularVelocity(self,Angmom,Inertia):
         return np.dot(la.inv(Inertia),(Angmom))
 
@@ -234,7 +233,9 @@ class MolecularDynamics:
                                 r = np.random.rand(1)[0]
                                 probsum = np.cumsum(prob)
                                 for i in range(0, self.nstates):
-                                        if r <= probsum[i]: self.state = i break
+                                        if r <= probsum[i]:
+                                                self.state = i
+                                                break
                                 #print "coefficients of electronic wavefunction"
                                 #print " C = %s" % self.c
                                 print("")
