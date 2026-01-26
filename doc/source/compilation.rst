@@ -123,12 +123,12 @@ If you have Intel compilers and MKL::
     cd DFTB/extensions/
 
     # Compile each module individually
-    f2py -c thomson.f90 -m thomson --fcompiler=gfortran --opt="-O3"
-    f2py -c tddftb.f90 -m tddftb --fcompiler=gfortran --opt="-O3"
-    f2py -c mulliken.f90 -m mulliken --fcompiler=gfortran --opt="-O3"
-    f2py -c slako.f90 -m slako --fcompiler=gfortran --opt="-O3"
-    f2py -c grad.f90 -m grad --fcompiler=gfortran --opt="-O3"
-    f2py -c cosmo.f90 -m cosmo --fcompiler=gfortran --opt="-O3"
+    python3 -m numpy.f2py -c thomson.f90 -m thomson --fcompiler=gfortran --opt="-O3"
+    python3 -m numpy.f2py -c tddftb.f90 -m tddftb --fcompiler=gfortran --opt="-O3"
+    python3 -m numpy.f2py -c mulliken.f90 -m mulliken --fcompiler=gfortran --opt="-O3"
+    python3 -m numpy.f2py -c slako.f90 -m slako --fcompiler=gfortran --opt="-O3"
+    python3 -m numpy.f2py -c grad.f90 -m grad --fcompiler=gfortran --opt="-O3"
+    python3 -m numpy.f2py -c cosmo.f90 -m cosmo --fcompiler=gfortran --opt="-O3"
 
 Verification
 ------------

@@ -152,22 +152,25 @@ Trajectory surface hopping for non-adiabatic dynamics::
 
 **Requirements:**
 
-1. **dynamics.in** - Initial geometry (Bohr) and velocities (a.u.)::
+1. **dynamics.in** - Initial geometry (Bohr) and velocities (a.u.).
+   Format: atomic positions first, then velocities::
 
        3
-       Initial conditions for water
-       O   0.0000   0.0000   0.2217   0.0001  -0.0002   0.0000
-       H   0.0000   1.4315  -0.8868   0.0000   0.0010  -0.0005
-       H   0.0000  -1.4315  -0.8868   0.0000  -0.0010  -0.0005
+       o   0.0000   0.0000   0.2217
+       h   0.0000   1.4315  -0.8868
+       h   0.0000  -1.4315  -0.8868
+       0.0001  -0.0002   0.0000
+       0.0000   0.0010  -0.0005
+       0.0000  -0.0010  -0.0005
 
 2. **dftbaby.cfg** - Configuration file (see Configuration section)
 
 **Output files:**
 
 - ``dynamics.xyz``: Trajectory of nuclear positions
-- ``energy_*.dat``: Energies of electronic states vs. time
+- ``energy_0.dat, energy_1.dat, ...``: Energies of electronic states vs. time
 - ``state.dat``: Active electronic state vs. time
-- ``coefficients.dat``: Electronic wavefunction coefficients
+- ``coeff_0.dat, coeff_1.dat, ...``: Quantum populations for each state
 
 **Example workflow**::
 
