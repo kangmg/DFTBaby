@@ -25,6 +25,7 @@ Contents:
 
    introduction.rst
    usage_guide.rst
+   examples.rst
    parametrization.rst
    ground_state.rst
    excited_states.rst
