@@ -24,6 +24,7 @@ Contents:
    :maxdepth: 2
 
    introduction.rst
+   usage_guide.rst
    parametrization.rst
    ground_state.rst
    excited_states.rst
