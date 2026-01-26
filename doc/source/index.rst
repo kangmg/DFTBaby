@@ -17,7 +17,6 @@ Quick Links
 
 * **GitHub Repository**: https://github.com/kangmg/DFTBaby
 * **Installation**: ``pip install git+https://github.com/kangmg/DFTBaby.git``
-* **Original Website**: http://dftbaby.chemie.uni-wuerzburg.de/
 
 Contents:
 

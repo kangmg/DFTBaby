@@ -57,5 +57,4 @@ Links
 
  - **Documentation**: https://kangmg.github.io/DFTBaby/
  - **Repository**: https://github.com/kangmg/DFTBaby
- - **Original Website**: http://dftbaby.chemie.uni-wuerzburg.de/
 

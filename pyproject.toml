@@ -78,8 +78,8 @@ dev = [
 "electroSka.py" = "DFTB.MultipleScattering.electroSka:main"
 
 [project.urls]
-Homepage = "http://dftbaby.chemie.uni-wuerzburg.de/"
 Repository = "https://github.com/kangmg/DFTBaby"
+Documentation = "https://kangmg.github.io/DFTBaby/"
 
 [tool.setuptools]
 zip-safe = false
