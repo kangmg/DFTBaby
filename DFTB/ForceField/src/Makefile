@@ -6,8 +6,9 @@ OBJECTS = ff.o linked_list.o input.o
 
 ../ff.so: $(OBJECTS) ff_pythonmodule.c
 	rm -rf build
-	python setup.py build
-	mv build/lib.linux-x86_64-2.7/ff.so $@
+	python3 setup.py build
+	# Move from build directory (path may vary by Python version)
+	find build -name "ff*.so" -exec mv {} $@ \;
 	rm -rf build
 
 clean:
