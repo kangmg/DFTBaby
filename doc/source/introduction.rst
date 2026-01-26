@@ -21,8 +21,17 @@ Prerequisites
 **Optional:**
 
  - libxc 3.0.0 (for pseudoorbital calculations)
- - Gaussian 09 or newer (for calculating repulsive potentials)
  - Mayavi (for graphical visualization)
+
+**For DFTB Parametrization Only:**
+
+ - Gaussian 09/16, Psi4, or PySCF (for calculating reference forces/energies)
+
+.. note::
+   Most users do **not** need Gaussian/Psi4/PySCF. Pre-parametrized repulsive
+   potentials are already included for common elements (H, C, N, O, S, Ag, etc.).
+   Quantum chemistry programs are only required when creating new DFTB parameters
+   for unsupported elements or developing custom parametrizations.
 
 Installation
 ============
@@ -48,5 +57,4 @@ Links
 
  - **Documentation**: https://kangmg.github.io/DFTBaby/
  - **Repository**: https://github.com/kangmg/DFTBaby
- - **Original Website**: http://dftbaby.chemie.uni-wuerzburg.de/
 

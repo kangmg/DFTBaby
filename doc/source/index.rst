@@ -17,7 +17,6 @@ Quick Links
 
 * **GitHub Repository**: https://github.com/kangmg/DFTBaby
 * **Installation**: ``pip install git+https://github.com/kangmg/DFTBaby.git``
-* **Original Website**: http://dftbaby.chemie.uni-wuerzburg.de/
 
 Contents:
 
@@ -25,6 +24,7 @@ Contents:
    :maxdepth: 2
 
    introduction.rst
+   usage_guide.rst
    parametrization.rst
    ground_state.rst
    excited_states.rst
