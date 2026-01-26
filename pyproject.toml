@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 name = "DFTBaby"
 version = "0.1.0"
 description = "Tight binding density functional theory for excited states"
-readme = "README.txt"
+readme = "README.md"
 license = {text = "See LICENSE file"}
 authors = [
     {name = "Alexander Humeniuk", email = "alexander.humeniuk@gmail.com"}
