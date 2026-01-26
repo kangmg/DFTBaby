@@ -65,9 +65,9 @@ class CacheFactorial:
     The instances of this class can be used in the same way as a function returning
     the factorial of a number. However, already calculated factorials are cached.
        factorial = CacheFactorial()
-       print factorial(10)
-       print factorial(1)
-       print factorial(10)       # looked up in cache
+       print(factorial(10))
+       print(factorial(1))
+       print(factorial(10)       # looked up in cache)
     The overhead is not really worth the speedup!!!
     """
     def __init__(self, cache_size=100):
@@ -150,7 +150,7 @@ def assocLegendre_it(x):
     l = 1
     while True:
         nextPcol = range(0, l)
-        for m in xrange(0, l):
+        for m in range(0, l):
             nextPcol[m] = increase_degree(curPcol[m], lastPcol[m], x, l, m)
             yield nextPcol[m]
         curPcol.append(zeros(x.shape))
@@ -224,7 +224,7 @@ def assocLegendre_renorm_it(x):
     l = 1
     while True:
         nextPcol = range(0, l)
-        for m in xrange(0, l):
+        for m in range(0, l):
             nextPcol[m] = increase_degree_renorm(curPcol[m], lastPcol[m], x, l, m)
             yield nextPcol[m]
         curPcol.append(zeros(x.shape))
@@ -259,7 +259,7 @@ def spherical_harmonics_it(th, phi, outerproducts=True):
     ap_it = assocLegendre_renorm_it(x)
     l = 0
     while True:
-        for m in xrange(0, l+1):
+        for m in range(0, l+1):
             Plm = ap_it.next()
             # factorials = sqrt( fact(l-m)/float(fact(l+m)) ) * fact2(2*l-1)
             """use high precision mpf type to calculate ratios of factorials"""
@@ -287,7 +287,7 @@ def sphvec(th,phi, nchannels):
     for i in range(0, nchannels):
         Ylm,l,m = sph_it.next()
         Ylm_vec.append(Ylm)
-    print "nchannels = %s" % nchannels
+    print("nchannels = %s" % nchannels)
     assert m == -l 
     assert nchannels == l*(l+2)+1
     return array(Ylm_vec)
@@ -298,9 +298,9 @@ def sphvec(th,phi, nchannels):
 def test_assocLegendre():
     x = linspace(-1.0, 1.0, 100)
     ap_it = assocLegendre_it(x)
-    for l in xrange(0, 100):
-        for m in xrange(0, l+1):
-            print "l = %s, m = %s" % (l,m)
+    for l in range(0, 100):
+        for m in range(0, l+1):
+            print("l = %s, m = %s" % (l,m))
             Plm = assoc_legendre_p(l, m, x)
 #            Plm_scipy = array([lpmn(m,l,xi)[0][-1][-1] for xi in x])
             Plm_it = ap_it.next()
@@ -312,14 +312,14 @@ def test_assocLegendre():
 def test_assocLegendre_renorm():
     x = linspace(-1.0, 1.0, 100)
     ap_it = assocLegendre_renorm_it(x)
-    for l in xrange(0, 100):
-        for m in xrange(0, l+1):
-            print "l = %s, m = %s" % (l,m)
+    for l in range(0, 100):
+        for m in range(0, l+1):
+            print("l = %s, m = %s" % (l,m))
             Plm = assoc_legendre_p(l, m, x)
             Plm_scipy = array([lpmn(m,l,xi)[0][-1][-1] for xi in x])
             Plm_it = fact2(2*l-1)*ap_it.next()
             dif = sum(abs(Plm_scipy - Plm_it))/sum(abs(Plm_scipy))
-            print "dif = %s" % dif
+            print("dif = %s" % dif)
             assert dif < 1e-10
 #            plt.plot(x, Plm)
 #            plt.plot(x, Plm_scipy, ls="-.")
@@ -329,10 +329,10 @@ def test_assocLegendre_renorm():
 
 def test_factorialCache():
     factorial = CacheFactorial(cache_size=200)
-    for n in xrange(0, 10):
-        print factorial(n)
-    for n in xrange(0, 10):
-        print factorial(n)
+    for n in range(0, 10):
+        print(factorial(n))
+    for n in range(0, 10):
+        print(factorial(n))
 
 def test_spherical_harmonics():
     from scipy.special import sph_harm
@@ -343,8 +343,8 @@ def test_spherical_harmonics():
     PHI = outer(ones(th.shape), phi)
     Ylm_it = spherical_harmonics_it(TH, PHI)
 #    Ylm_it = spherical_harmonics_it(th, phi)
-    for l in xrange(0, 50):
-        for m in xrange(0, l+1):
+    for l in range(0, 50):
+        for m in range(0, l+1):
             Ylm, l, m = Ylm_it.next()
             Ylm_scipy = sph_harm(m,l,outer(ones(th.shape), phi),outer(th, ones(phi.shape)))
             if (m > 0):
@@ -356,10 +356,10 @@ def test_spherical_harmonics():
                 deltaY = (sqrt(sum(abs(difplus)) + sum(abs(difminus))))/sqrt(sum(abs(Yl_minus_m)) + sum(abs(Ylm)))
             else:
                 deltaY = sqrt(sum(abs(difplus)))/sqrt(sum(abs(Ylm)))
-            print "|deltaY(%s,%s)| = %s" % (l,m,deltaY)
+            print("|deltaY(%s,%s)| = %s" % (l,m,deltaY))
             assert deltaY < 1e-6
             """
-            print Ylm_scipy.real.shape
+            print(Ylm_scipy.real.shape)
             plt.imshow(Ylm_scipy.real)
             plt.savefig("/tmp/sph_scipy_%s_%s.png" % (l,m))
             plt.imshow(Ylm.real)

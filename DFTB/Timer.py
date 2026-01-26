@@ -10,7 +10,7 @@ from Timer import GlobalTimer as T
 def some_function(x):
     return x*x
 
-print T
+print(T)
 
 WARNING: for parallel excution only sequential functions are timed
 """
@@ -52,16 +52,16 @@ class Timer:
         return wrapper
     def relative_times(self):
         total_time = 0.0
-        for func_name,T in self.timed_functions.iteritems():
+        for func_name,T in self.timed_functions.items():
             total_time += T.total_time
         # set relative times
-        for func_name,T in self.timed_functions.iteritems():
+        for func_name,T in self.timed_functions.items():
             T.relative_time = T.total_time/total_time
     def __str__(self):
 #        self.relative_times()
         txt =  "Code Timing\n"
         txt += "===========\n"
-        for func_name,T in self.timed_functions.iteritems():
+        for func_name,T in self.timed_functions.items():
             txt += str(T)
         return txt
 
@@ -93,4 +93,4 @@ if __name__ == "__main__":
     C = SomeClass()
     C.bla(10)
 
-    print T
+    print(T)

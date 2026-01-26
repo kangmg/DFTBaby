@@ -122,30 +122,29 @@ class DensityFitting:
                 y += self.bf_grid[:,m] * P[m,n] * self.bf_grid[:,n]
         # linear least square fit
         Q = np.array([Qtot, Dtot[0], Dtot[1], Dtot[2]])
-        print "Q = %s" % Q
+        print("Q = %s" % Q)
         # solve for Lagrange multiplier
         c = Q - np.dot(self.A1,y)
         lagr = la.solve(self.A2,c)
-        print "Lagrange multiplier = %s" % lagr
+        print("Lagrange multiplier = %s" % lagr)
         #
         x = np.dot(self.A4,y) + np.dot(self.A3,lagr)
-        print "  Density Fitting"
-        print "  ==============="
-        print "  Atom     dQ             partial dipole"
+        print("  Density Fitting")
+        print("  ===============")
+        print("  Atom     dQ             partial dipole")
         for i,(Zi,posi) in enumerate(self.atomlist):
-            print "  %s%d   %+5.3f  [%+5.3f %+5.3f %+5.3f]" \
-                % (AtomicData.atom_names[Zi-1], i, x[4*i+0], x[4*i+1], x[4*i+2], x[4*i+3])
+            print("  %s%d   %+5.3f  [%+5.3f %+5.3f %+5.3f]" ) % (AtomicData.atom_names[Zi-1], i, x[4*i+0], x[4*i+1], x[4*i+2], x[4*i+3])
 
         # compare fit density with true density at the fit points
         yfit = np.dot(self.M,x)
         err = np.sum(abs(y-yfit))
         """
-        print "RHO"
-        print y
-        print "RHO fit"
-        print yfit
+        print("RHO")
+        print(y)
+        print("RHO fit")
+        print(yfit)
         """
-        print "|y-yfit| = %s" % err
-        print "|y-0   | = %s" % np.sum(abs(y))
+        print("|y-yfit| = %s" % err)
+        print("|y-0   | = %s" % np.sum(abs(y)))
         return x
     

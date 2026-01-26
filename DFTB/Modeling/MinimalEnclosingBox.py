@@ -223,11 +223,11 @@ def test_minimal_enclosing_rectangle():
     plt.plot(points[:,0], points[:,1], "o")
     # convex hull
     for simplex in hull.simplices:
-        print "simplex = %s" % simplex
+        print("simplex = %s" % simplex)
         plt.plot(points[simplex,0], points[simplex,1], "k-")
     # minimal enclosing rectangle
-    print "rectangle vertices:"
-    print rect.vertices
+    print("rectangle vertices:")
+    print(rect.vertices)
     for edge in rect.edges:
         plt.plot(rect.vertices[edge,0], rect.vertices[edge,1], "r-", lw=2)
 
@@ -248,10 +248,10 @@ def test_minimal_enclosing_box():
     plt.plot(points[:,0], points[:,1], points[:,2], "o")
     # convex hull
     for simplex in hull.simplices:
-        print "simplex = %s" % simplex
+        print("simplex = %s" % simplex)
         plt.plot(points[simplex,0], points[simplex,1], points[simplex,2], "k-")
     # minimal enclosing box
-    print box.vertices
+    print(box.vertices)
     for edge in box.edges:
         plt.plot(box.vertices[edge,0], box.vertices[edge,1], box.vertices[edge,2], "r-", lw=2)
     # show the center of the box

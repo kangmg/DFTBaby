@@ -180,13 +180,13 @@ class QSpectrumWidget(QtGui.QWidget):
             I = selected[0].row()
             self.tdenseLabel.setText("Excited State: %s (%s%d)" % (self.tddftb.Irreps[I],self.tddftb.multiplicity, I+1))
             self.showPartialCharges(I)
-            if self.tdense_cubes.has_key(I):
+            if I in self.tdense_cubes:
                 tdense_cube = self.tdense_cubes[I]
                 self.transitionDensityViewer.setCubes([tdense_cube])
                 difdense_cube = self.difdense_cubes[I]
                 self.differenceDensityViewer.setCubes([difdense_cube])
             else:
-                print "No cube for transition and difference density of state %d" % (I+1)
+                print("No cube for transition and difference density of state %d" % (I+1))
             # transition densities in occ-virt plane
             self.plotExcitationCoefficients2D(I)
         self.canvasExvec.draw()
@@ -218,7 +218,7 @@ class QSpectrumWidget(QtGui.QWidget):
                 color = "white"
             else:
                 color = "black"
-            print "%s -> %s    %s" % (active_occupied_orbs[o]+1,active_virtual_orbs[v]+1, self.Cexvec[o,v])
+            print("%s -> %s    %s" % (active_occupied_orbs[o]+1,active_virtual_orbs[v]+1, self.Cexvec[o,v]))
             ax.text(o-0.4,v-0.25,"$%d \\to %d$\n%+3.3f" % (active_occupied_orbs[o]+1,active_virtual_orbs[v]+1, self.Cexvec[o,v]), color=color, fontsize=12)
             self.canvasExvec.draw()
             
@@ -226,7 +226,7 @@ class QSpectrumWidget(QtGui.QWidget):
     def showPartialCharges(self, I):
         atomlist = self.tddftb.dftb2.getGeometry()
         # particle-hole charges
-        print "compute particle-hole charges for excited state %d" % (I+1)
+        print("compute particle-hole charges for excited state %d" % (I+1))
         particle_charges, hole_charges = self.tddftb.ParticleHoleCharges(I)
         # partial charges on ground state
         dq0 = self.tddftb.dftb2.getPartialCharges()
@@ -236,19 +236,19 @@ class QSpectrumWidget(QtGui.QWidget):
         # internally charges are measured in units of e,
         charges = -dqI
         self.chargesViewer.setGeometriesAndCharges([atomlist], [charges])
-        print "compute transition charges between ground and excited state %d" % (I+1)
+        print("compute transition charges between ground and excited state %d" % (I+1))
         transition_charges = self.tddftb.TransitionChargesState(I)
         self.trans_chargesViewer.setGeometriesAndCharges([atomlist], [transition_charges])
     def calculateCubes(self):
         selected = self.tableStates.selectionModel().selectedRows()
         for s in selected:
             I = s.row()
-            if not (self.tdense_cubes.has_key(I)):
+            if not (I in self.tdense_cubes):
                 self.showPartialCharges(I)
                 # need to calculated cube
-                print "compute transition and difference density for state %d ..." % (I+1),
+                print("compute transition and difference density for state %d ..." % (I+1), end=" ")
                 tdense_cube, difdense_cube = self._computeTransitionAndDifferenceDensity(I)
-                print "...done"
+                print("...done")
                 self.tdense_cubes[I] = tdense_cube
                 self.difdense_cubes[I] = difdense_cube
                 
@@ -472,11 +472,11 @@ class QMolecularOrbitalWidget(QtGui.QWidget):
         if len(selected) > 0:
             i = selected[0].row()
             self.moLabel.setText("Molecular Orbital: %s %s" % (i+1, self.mo_names[i]))
-            if self.mo_cubes.has_key(i):
+            if i in self.mo_cubes:
                 mo_cube = self.mo_cubes[i]
                 self.molecularOrbitalViewer.setCubes([mo_cube])
             else:
-                print "No cube for molecular orbital %d" % (i+1)
+                print("No cube for molecular orbital %d" % (i+1))
     def showMullikenCharges(self):
         atomlist = self.tddftb.dftb2.getGeometry()
         dq0 = self.tddftb.dftb2.getPartialCharges()
@@ -487,11 +487,11 @@ class QMolecularOrbitalWidget(QtGui.QWidget):
         selected = self.tableMOs.selectionModel().selectedRows()
         for s in selected:
             i = s.row()
-            if not (self.mo_cubes.has_key(i)):
+            if not (i in self.mo_cubes):
                 # need to calculated cube
-                print "compute cube for molecular orbital %d ..." % (i+1),
+                print("compute cube for molecular orbital %d ..." % (i+1), end=" ")
                 mo_cube = self._computeMO(i)
-                print "...done"
+                print("...done")
                 self.mo_cubes[i] = mo_cube
 
                 self.tableMOs.setItem(i, self.tableMOs.columnCount()-1, QtGui.QTableWidgetItem("Y"))

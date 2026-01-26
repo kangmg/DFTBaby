@@ -5,7 +5,6 @@
 Module for reading geometry, spherical GTO basis and MO coefficients from file in molden format.
 
 """
-from __future__ import print_function
 
 from DFTB.MolecularIntegrals.SphericalCoords import cartesian2spherical
 from DFTB.MolecularIntegrals.LebedevQuadrature import spherical_harmonics_it
@@ -267,7 +266,7 @@ class MoldenFileInput(object):
         # [Atoms] section is required
         self.read_atoms(self.sections["atoms"], units=self.options.get("atoms", "angs"))
         
-        for title, lines in self.sections.iteritems():
+        for title, lines in self.sections.items():
             if title == "gto":
                 self.read_gto_basis(lines)
             elif title == "mo":
@@ -303,9 +302,9 @@ class MoldenFileInput(object):
         parse [GTO] section, list of contracted Gaussian basis functions is stored in `self.basis`
         """
         #print( "reading GTO basis ... ")
-        if not (   self.sections.has_key("5d")
-                or self.sections.has_key("7f")
-                or self.sections.has_key("9g")):
+        if not (   "5d" in self.sections
+                or "7f" in self.sections
+                or "9g" in self.sections):
             raise RuntimeError("Only spherical basis (5d, 7f, 9g) are supported!")
 
         self.basis = []

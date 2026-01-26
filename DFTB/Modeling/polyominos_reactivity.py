@@ -240,12 +240,12 @@ if __name__ == "__main__":
     args = sys.argv[1:]
 
     if len(args) < 1:
-        print ""
-        print "Usage: %s  flakes_####.xyz" % os.path.basename(sys.argv[0])
-        print ""
-        print "  perform DFTB calculation on Zn-porphyrin polyomino"
-        print "  and plot electron density of HOMO (~reactivity)"
-        print ""
+        print("")
+        print("Usage: %s  flakes_####.xyz" % os.path.basename(sys.argv[0]))
+        print("")
+        print("  perform DFTB calculation on Zn-porphyrin polyomino")
+        print("  and plot electron density of HOMO (~reactivity)")
+        print("")
         exit(-1)
     
     xyz_file = sys.argv[1]
@@ -262,15 +262,15 @@ if __name__ == "__main__":
     beta_density = homo_density_on_atoms(dftb2, beta_carbons)
     meso_density = homo_density_on_atoms(dftb2, meso_carbons)
 
-    print "Indeces of beta carbons"
-    print [i+1 for i in beta_carbons]
-    print "Density of HOMO at beta carbons"
-    print beta_density
+    print("Indeces of beta carbons")
+    print([i+1 for i in beta_carbons])
+    print("Density of HOMO at beta carbons")
+    print(beta_density)
     
-    print "Indeces of meso carbons"
-    print [i+1 for i in meso_carbons]
-    print "Density of HOMO at meso carbons"
-    print meso_density
+    print("Indeces of meso carbons")
+    print([i+1 for i in meso_carbons])
+    print("Density of HOMO at meso carbons")
+    print(meso_density)
 
     # plot sketch of polyomino
     ax = plt.gca()

@@ -353,7 +353,6 @@ References
 +----------------------------------------------------+-------------------------------------------------------------+
 
 """
-from __future__ import print_function
 from DFTB.MolecularIntegrals import settings
 import json
 import numpy as np

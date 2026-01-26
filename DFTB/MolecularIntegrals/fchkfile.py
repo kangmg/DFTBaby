@@ -90,7 +90,7 @@ class G09ResultsDFT:
     """
     def __init__(self, fchk_file):
         """read results from formatted checkpoint file"""
-        print "reading data from formatted checkpoint file '%s'" % fchk_file
+        print("reading data from formatted checkpoint file '%s'" % fchk_file)
         fchk = read_fchk(fchk_file)
         assert fchk['Largest degree of contraction'] == 1, "Basis set should be fully uncontracted!"
 
@@ -141,7 +141,7 @@ class G09ResultsDFT:
         """
         perform some consistency checks on the loaded data
         """
-        print "consistency checks..."
+        print("consistency checks...")
         # check that the M.O.s are orthogonal
         # overlap between A.O.s
         Sao = basis_overlap(self.basis)
@@ -160,16 +160,16 @@ if __name__ == "__main__":
     import os.path
     
     if len(sys.argv) < 2:
-        print "Usage: %s  <formatted checkpoint file>" % os.path.basename(sys.argv[0])
-        print "  read data from formatted checkpoint file"
+        print("Usage: %s  <formatted checkpoint file>" % os.path.basename(sys.argv[0]))
+        print("  read data from formatted checkpoint file")
         exit(-1)
         
     filename = sys.argv[1]
     fchk = read_fchk(filename)
 
-    for key, value in fchk.iteritems():
-        print key
-        print value
+    for key, value in fchk.items():
+        print(key)
+        print(value)
 
     res = G09ResultsDFT(filename)
     res.consistency_checks()

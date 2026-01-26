@@ -146,31 +146,31 @@ class CHELPG:
         The first n elements of the solution vector x are the point charges
         """
         # _d[i,j] is the distance between the i-th fit point and the j-th center, |r_i - R_j|
-        print "compute distances..."
+        print("compute distances...")
         _d = np.zeros((self.m, self.n))
         for xyz in range(0, 3):
             for j in range(0, self.n):
                 _d[:,j] += (self.r[xyz,:] - self.R[xyz,j])**2
         _d = np.sqrt(_d)
 
-        print "eliminate those fit points that are either"
-        print "  - closer than the van der Waals radius to any atom"
-        print "  - or farther away than Rmax=2.8 Angstrom from all atoms"
+        print("eliminate those fit points that are either")
+        print("  - closer than the van der Waals radius to any atom")
+        print("  - or farther away than Rmax=2.8 Angstrom from all atoms")
         Rmax = 2.8 / AtomicData.bohr_to_angs
         d = []  # list of fit points outside vdW radius and inside volume with max distance Rmax from each atom
         V = []  # electrostatic potential at the selected fit points
-        print "vdW radii: %s" % self.vdw_radii
-        print "Rmax= %s bohr" % Rmax
+        print("vdW radii: %s" % self.vdw_radii)
+        print("Rmax= %s bohr" % Rmax)
         for i in range(0, self.m): 
             if (_d[i,:] >= self.vdw_radii).all() and (_d[i,:] < Rmax).any():
                 d.append( _d[i,:] )
                 V.append( self.V[i] )
         m = len(d)
-        print "%d of %d fit points left" % (m, self.m)
+        print("%d of %d fit points left" % (m, self.m))
         d = np.array(d)
         V = np.array(V)
 
-        print "build linear equation system..."
+        print("build linear equation system...")
         # A matrix
         A = np.zeros((self.n+1,self.n+1))
         # right hand side of A.x = b
@@ -190,7 +190,7 @@ class CHELPG:
         A[:self.n,-1] = -1.0
         A[-1,-1] = 0.0
 
-        print "solve A.x = b..."
+        print("solve A.x = b...")
         x = la.solve(A,b)
         q = x[:-1]
 
@@ -200,18 +200,18 @@ class CHELPG:
         dip = sum( [q[i] * self.R[:,i] for i in range(0, self.n)] )
         
         if verbose > 0:
-            print ""
-            print "root mean square deviation V(electrostatic) - V(monopoles): %e" % rmsd
-            print "sum of charges: %s" % sum(q)
-            print "dipole vector of charge distribution: %+7.5f  %+7.5f  %+7.5f" % tuple(dip.tolist())
-            print ""
+            print("")
+            print("root mean square deviation V(electrostatic) - V(monopoles): %e" % rmsd)
+            print("sum of charges: %s" % sum(q))
+            print("dipole vector of charge distribution: %+7.5f  %+7.5f  %+7.5f" % tuple(dip.tolist()))
+            print("")
             
-            print "  #       Element      Monopole charge"
-            print "========================================="
+            print("  #       Element      Monopole charge")
+            print("=========================================")
             for i,((Zi, posi),qi) in enumerate(zip(self.atomlist, q)):
-                print "  %4.1d     %4.2s           %+7.5f" % (i, AtomicData.atom_names[Zi-1].capitalize(), qi)
+                print("  %4.1d     %4.2s           %+7.5f" % (i, AtomicData.atom_names[Zi-1].capitalize(), qi))
 
-            print ""
+            print("")
             
         return q
 
@@ -232,17 +232,17 @@ if __name__ == "__main__":
     
     (opts, args) = parser.parse_args()
     if len(args) < 2:
-        print usage
+        print(usage)
         exit(-1)
         
     esp_cube_file = args[0]
     chg_file = args[1]
     
     # load cube file with electrostatic potential (esp)
-    print "load ESP from cube file..."
+    print("load ESP from cube file...")
     atomlist, origin, axes, data = Cube.readCube(esp_cube_file)
     if opts.fit_centers != "":
-        print "loading fit centers from '%s'" % opts.fit_centers
+        print("loading fit centers from '%s'" % opts.fit_centers)
         atomlist = XYZ.read_xyz(opts.fit_centers)[0]
     # extract positions of points and values of ESP
     points, epot = Cube.get_points_and_values(origin, axes, data)
@@ -258,4 +258,4 @@ if __name__ == "__main__":
         np.savetxt(chg_file, partial_charges)
     else:
         XYZ.write_charges(chg_file, atomlist, partial_charges)
-    print "partial charges saved to '%s'" % chg_file
+    print("partial charges saved to '%s'" % chg_file)

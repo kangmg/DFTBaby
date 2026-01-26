@@ -23,9 +23,9 @@ if __name__ == "__main__":
     import os.path
     
     if len(sys.argv) < 3:
-        print "Usage: %s  <atom A> <atom B>" % os.path.basename(sys.argv[0])
-        print "  plot gamma-integrals for atom combination A-B."
-        print "  <atom A> and <atom B> should be the names of the atoms, i.e. 'h' or 'c' etc."
+        print("Usage: %s  <atom A> <atom B>" % os.path.basename(sys.argv[0]))
+        print("  plot gamma-integrals for atom combination A-B.")
+        print("  <atom A> and <atom B> should be the names of the atoms, i.e. 'h' or 'c' etc.")
         exit(-1)
 
     atom_nameA = sys.argv[1].upper()
@@ -42,8 +42,8 @@ if __name__ == "__main__":
     try:
         gamma_dic = gamma_integrals.gamma_integrals[(Za,Zb)]
     except KeyError as e:
-        print "ERROR: No numerical gamma-functions found for atom pair %s-%s." % (atom_nameA, atom_nameB)
-        print "You have to add these atoms in the script 'generate_gamma_integrals.py' and recompute."
+        print("ERROR: No numerical gamma-functions found for atom pair %s-%s." % (atom_nameA, atom_nameB))
+        print("You have to add these atoms in the script 'generate_gamma_integrals.py' and recompute.")
         raise e
 
     plt.xlabel(r"$r=\vert R_A - R_B \vert$ / bohr", fontsize=17)
@@ -52,7 +52,7 @@ if __name__ == "__main__":
     # distances (in bohr) for which gamma_ab's are tabulated
     rg = gamma_integrals.r
 
-    for (la,lb),gamma_ab in gamma_dic.iteritems():
+    for (la,lb),gamma_ab in gamma_dic.items():
         plt.plot(rg, gamma_ab, lw=2, label=r"$\gamma_{%s%s}(r)$ $(%s%s)$" % (atom_nameA, atom_nameB, l2spec[la], l2spec[lb]))
 
     # gamma-integrals for Gaussian fluctuation functions

@@ -51,10 +51,10 @@ class CarbonNanotube:
         self.L = L
         self.tube_vector = self.L*self.tube_axis
         assert abs(np.dot(self.chiral_axis, self.tube_axis)) < 1.0e-10
-        print "a1            = %s" % self.a1
-        print "a2            = %s" % self.a2
-        print "chiral_vector = %s" % self.chiral_vector
-        print "tube vector   = %s" % self.tube_vector 
+        print("a1            = %s" % self.a1)
+        print("a2            = %s" % self.a2)
+        print("chiral_vector = %s" % self.chiral_vector)
+        print("tube vector   = %s" % self.tube_vector )
     def createTube(self):
         # 
         def plane2cylinder(coords):
@@ -171,14 +171,14 @@ def solve_constrained_Thomson(thomson_tube, thomson_cap, L, R):
     def f(x):
         thomson_cap = XYZ.vector2atomlist(x, thomson_cap_ref)
 #        thomson_cap = enforce_constaints(thomson_cap)
-        print "thomson_cap"
-        print thomson_cap
+        print("thomson_cap")
+        print(thomson_cap)
         thomson_pts = thomson_tube + thomson_cap
         XYZ.write_xyz("/tmp/thomson_minimization.xyz", [thomson_cap], mode="a")
         en = potential_energy(thomson_pts)
         # gradient of potential energy
         grad = XYZ.atomlist2vector(gradient_energy(thomson_pts))
-        print "en = %s" % en
+        print("en = %s" % en)
         return en #, grad
     def grad(x):
         thomson_cap = XYZ.vector2atomlist(x, thomson_cap_ref)

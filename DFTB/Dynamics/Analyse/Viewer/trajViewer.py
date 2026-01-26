@@ -90,7 +90,7 @@ class Main(QMainWindow, Ui_MainWindow):
         
     def fetchURL(self):
         dyndir = str( self.dirBrowser.text() )
-        print "TOP DIRECTORY: %s" % dyndir
+        print("TOP DIRECTORY: %s" % dyndir)
         self.loadTrajectories(dyndir)
         
     def loadTrajectories(self, dyndir):
@@ -106,7 +106,7 @@ class Main(QMainWindow, Ui_MainWindow):
             self.trajdirs = []
             for i,trajdir in enumerate(dirs):
                 if os.path.isfile(os.path.join(trajdir, "dynamics.xyz")):
-                    print "Load trajectory form %s" % trajdir
+                    print("Load trajectory form %s" % trajdir)
                     self.trajSelection.addItem("%d" % i)
                     self.trajdirs.append( trajdir )
                     
@@ -133,7 +133,7 @@ class Main(QMainWindow, Ui_MainWindow):
             try:
                 data = np.loadtxt(state_file)
             except IOError as e:
-                print e
+                print(e)
                 continue
             Nst = max(data[:,1].max()+1, Nst)
             tmin = min(data[:,0].min(), tmin)
@@ -142,8 +142,8 @@ class Main(QMainWindow, Ui_MainWindow):
             data_list.append(data) 
         Nst = int(Nst)
         Nt = int(Nt)
-        print "%d electronic states" % Nst
-        print "%d time steps between %s and %s" % (Nt, tmin, tmax)
+        print("%d electronic states" % Nst)
+        print("%d time steps between %s and %s" % (Nt, tmin, tmax))
         pop = np.zeros((Nt,Nst+1))
         pop[:,0] = np.linspace(tmin,tmax,Nt) # time axis in fs
         Ntraj = [0 for t in range(0, Nt)]  # count trajectories available at each time step
@@ -151,12 +151,12 @@ class Main(QMainWindow, Ui_MainWindow):
             # only consider trajectories that finished nicely
             Nt_i = data.shape[0]
             if Nt_i != Nt:
-                print "Trajectory %d has only %d time steps" % (i,Nt_i)
+                print("Trajectory %d has only %d time steps" % (i,Nt_i))
             for t in range(0, Nt_i):
                 st = data[t,1]
                 pop[t,st+1] += 1
                 Ntraj[t] += 1.0
-        print "%s trajectories" % Ntraj[0]
+        print("%s trajectories" % Ntraj[0])
         # divide populations by the number of trajectories
         for t in range(0, Nt):
             pop[t,1:] /= float(Ntraj[t])
@@ -202,20 +202,20 @@ class Main(QMainWindow, Ui_MainWindow):
         trajs = map(int, [s.text() for s in selected])
         self.geometries = []
         self.nsteps = 0
-        print "Selected: %s" % map(str, trajs)
-        print "Plot trajectories %s" % trajs
+        print("Selected: %s" % map(str, trajs))
+        print("Plot trajectories %s" % trajs)
         for ax in self.axes:
             ax.clear()
         for t in trajs:
             trajdir = self.trajdirs[t]
-            print trajdir
+            print(trajdir)
             try:
                 self.plotTrajectory(trajdir, t)
                 self.geometries.append( XYZ.read_xyz(os.path.join(trajdir, "dynamics.xyz")) )
                 self.nsteps = max(len(self.geometries[-1]), self.nsteps)
             except (ValueError, IOError) as e:
-                print "Unable to load %s" % trajdir
-                print "ERROR: %s" % e
+                print("Unable to load %s" % trajdir)
+                print("ERROR: %s" % e)
         for canvas in self.canvases:
             canvas.draw()    
 
@@ -270,14 +270,14 @@ class Main(QMainWindow, Ui_MainWindow):
             energies[:,i] = energies_list[indx[i]]
         # plot levels
         if self.picture == "adiabatic":
-            print "adiabatic levels ...",
+            print("adiabatic levels ...", end=" ")
             self.energiesAxis.set_xlabel("Time / fs", fontsize=15)
             self.energiesAxis.set_ylabel("Adiab. Energy / eV", fontsize=15)
             for i in range(0, Nst):
                 self.energiesAxis.plot(times, energies[:,i]*27.211, lw=2, color=self.colors[i], label="State %d" % i)
-            print "...done"
+            print("...done")
         else:
-            print "local diabatic levels ..."
+            print("local diabatic levels ...")
             # local diabatic picture
             ld_energy_file = os.path.join(trajdir, "local_diabatic_energies.dat")
             self.energiesAxis.set_xlabel("Time / fs", fontsize=15)
@@ -286,12 +286,12 @@ class Main(QMainWindow, Ui_MainWindow):
                 data = np.loadtxt(ld_energy_file)
                 for i in range(0, Nst):
                     self.energiesAxis.plot(data[:,0], data[:,1+i]*27.211, lw=2, color=self.colors[i], label="State %d" % i)
-                print "...done"
+                print("...done")
             except IOError as e:
-                print "No diabatic energies"
-                print e
+                print("No diabatic energies")
+                print(e)
         # plot current state
-        print "current states ...",
+        print("current states ...", end=" ")
         curr_states = np.loadtxt( os.path.join(trajdir, "state.dat") )
         curr_energy = []
         state_changes = [0]
@@ -305,13 +305,13 @@ class Main(QMainWindow, Ui_MainWindow):
         state_changes.append(i) 
         curr_energy = np.array(curr_energy)
         self.energiesAxis.plot(times, curr_energy*27.211, ls="-.", lw=3, color="brown", label="Curr. State")
-        print "...done"
+        print("...done")
         # time-step in fs
         self.dt = times[1]-times[0]
         # couplings
         if self.picture == "adiabatic":
             # non-adiabatic couplings
-            print "non-adiabatic couplings...",
+            print("non-adiabatic couplings...", end=" ")
             self.couplingsAxis.set_xlabel("Time / fs", fontsize=15)
             self.couplingsAxis.set_ylabel("Scalar Non-adiab. Coupling", fontsize=15)
             for i in range(0, Nst):
@@ -320,11 +320,11 @@ class Main(QMainWindow, Ui_MainWindow):
                         data = np.loadtxt(os.path.join(trajdir, "nonadiabatic"+str(i)+str(j)+".dat"))
                         self.couplingsAxis.plot(data[:,0], data[:,1], lw=2, label="Non-adiab. coupling %d-%d" % (i,j))
                     except IOError as e:
-                        print e
-            print "...done"
+                        print(e)
+            print("...done")
         else:
             # local diabatic couplings
-            print "local diabatic coupling...",
+            print("local diabatic coupling...", end=" ")
             ld_coupling_file = os.path.join(trajdir, "local_diabatic_couplings.dat")
             self.couplingsAxis.set_xlabel("Time / fs", fontsize=15)
             self.couplingsAxis.set_ylabel("Scalar Local Diab. Coupling", fontsize=15)
@@ -335,13 +335,13 @@ class Main(QMainWindow, Ui_MainWindow):
                     for j in range(i+1,Nst):
                         self.couplingsAxis.plot(data[:,0], data[:,c], lw=2, label="Local diab. coupling %d-%d" % (i,j))
                         c += 1
-                print "...done"
+                print("...done")
             except IOError as e:
-                print "No diabatic couplings"
-                print e
+                print("No diabatic couplings")
+                print(e)
             
         # coefficients
-        print "coefficients ...",
+        print("coefficients ...", end=" ")
         self.coefficientsAxis.set_xlabel("Time / fs", fontsize=15)
         self.coefficientsAxis.set_ylabel("Electronic Coefficients $\\vert C_i \\vert^2$", fontsize=15)
         for i in range(0, Nst):
@@ -349,10 +349,10 @@ class Main(QMainWindow, Ui_MainWindow):
                 data = np.loadtxt(os.path.join(trajdir, "coeff_"+str(i)+".dat"))
                 self.coefficientsAxis.plot(data[:,0], data[:,1], lw=2, color=self.colors[i], label="$\\vert C_%d \\vert^2$" % i)
             except IOError as e:
-                print e
-        print "...done"
+                print(e)
+        print("...done")
         # current energy
-        print "current energy ...",
+        print("current energy ...", end=" ")
         self.currEnergyAxis.set_xlabel("Time / fs", fontsize=15)
         self.currEnergyAxis.set_ylabel("Current Energy / eV", fontsize=15)
         try:
@@ -366,10 +366,10 @@ class Main(QMainWindow, Ui_MainWindow):
                 handles, labels = self.currEnergyAxis.get_legend_handles_labels()
                 self.currEnergyAxis.legend(handles, labels, loc=1)
         except IOError as e:
-            print e
-        print "...done"
+            print(e)
+        print("...done")
         # current states as blocks
-        print "current state blocks ...",
+        print("current state blocks ...", end=" ")
         self.currStateAxis.set_yticks(range(0, len(self.trajdirs)))
         self.currStateAxis.set_xlabel("Time / fs", fontsize=15)
         self.currStateAxis.set_ylabel("Trajectory", fontsize=15)
@@ -387,7 +387,7 @@ class Main(QMainWindow, Ui_MainWindow):
         self.currStateAxis.set_xlim((min(times[0], xmin), max(times[-1], xmax)))
         ymin,ymax = self.currStateAxis.get_ylim()
         self.currStateAxis.set_ylim((min(ymin, trajID-1), max(ymax,trajID+1)))
-        print "...done"
+        print("...done")
             
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

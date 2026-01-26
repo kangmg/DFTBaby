@@ -187,10 +187,10 @@ def morgan_ordering(atomlist, hydrogen_bonds=False):
     A_can = A[ordering,:][:,ordering]
     # check
     """
-    print "A reordered"
-    print A_can
-    print "A calculated"
-    print XYZ.connectivity_matrix(atomlist_can)
+    print("A reordered")
+    print(A_can)
+    print("A calculated")
+    print(XYZ.connectivity_matrix(atomlist_can))
     """
     return atomlist_can, A_can
 
@@ -226,7 +226,7 @@ def fragment_trajectory(geometries):
         fragment_labels = [identifier( *morgan_ordering(atomlist) ) for atomlist in fragments]
         #
         for ifrag,fl in enumerate(fragment_labels):
-            if not fragdic.has_key(fl):
+            if not fl in fragdic:
                 fragdic[fl] = fragments[ifrag]
         #
         fragtraj.append( fragment_labels )
@@ -241,4 +241,4 @@ if __name__ == "__main__":
         
     XYZ.write_xyz("/tmp/fragments.xyz", atomlists_ordered) #atomlists_frag)
     
-    print fragment_trajectory( XYZ.read_xyz( sys.argv[1] ) )
+    print(fragment_trajectory( XYZ.read_xyz( sys.argv[1] ) ))

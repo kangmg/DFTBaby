@@ -31,12 +31,12 @@ def read_tinker_xyz_it(filename, units="Angstrom"):
             # first line contains number of atoms in one structure
             nat = int(line.split()[0])
         except ValueError as e:
-            print e
+            print(e)
             raise Exception("Probably wrong number of atoms in xyz-file '%s'" % filename)
         atomlist = []
         atomtypes = []
         connectivity = []
-        for i in xrange(nat):
+        for i in range(nat):
             line = fh.readline()
 #            print line
             words = line.split()
@@ -96,12 +96,12 @@ def write_tinker_xyz(filename, geometries, atomtypes, connectivities, title="uff
 if __name__ == "__main__":
     import sys
     if len(sys.argv) < 2:
-        print "Usage: python %s <tinker .xyz file>" % sys.argv[0]
+        print("Usage: python %s <tinker .xyz file>" % sys.argv[0])
         exit(-1)
     xyz_file = sys.argv[1]
     atomlist, atomtypes, connectivities = read_tinker_xyz(xyz_file)[0]
-    print atomlist
-    print atomtypes
-    print connectivities
+    print(atomlist)
+    print(atomtypes)
+    print(connectivities)
 
     write_tinker_xyz("/tmp/tinker.xyz", [atomlist], atomtypes, connectivities)

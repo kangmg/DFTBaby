@@ -41,9 +41,9 @@ def H0andS(atomlist, valorbs, SKT, orbital_energies, Mproximity):
     errH0 = (abs(H0_py-H0_f90)).max()
     assert errH0 < 1.0e-3, "python and Fortran implementations disagree for H0, error = %s" % errH0
 
-    print "Timing:"
-    print "Fortran: %s seconds" % time_f90
-    print "Python : %s seconds" % time_py
+    print("Timing:")
+    print("Fortran: %s seconds" % time_f90)
+    print("Python : %s seconds" % time_py)
     exit(-1)
     """
     if SLAKO_IMPLEMENTATION == "F90":
@@ -241,15 +241,15 @@ def DipoleMatrix(atomlist, valorbs, SKT, Mproximity, S):
 #        print utils.annotated_matrix(Dipole_py[:,:,i], orb_labels, orb_labels)
     # show differences
     absD = abs(Dipole_py-Dipole_f90)
-    print "Differing matrix elements"
-    print Dipole_py[absD > 1.0e-3]
-    print Dipole_f90[absD > 1.0e-3]
+    print("Differing matrix elements")
+    print(Dipole_py[absD > 1.0e-3])
+    print(Dipole_f90[absD > 1.0e-3])
     errD = (abs(Dipole_py-Dipole_f90)).max()
     assert errD < 1.0e-3, "python and Fortran implementations disagree for Dipoles, error = %s" % errD
 
-    print "Timing:"
-    print "Fortran: %s seconds" % time_f90
-    print "Python : %s seconds" % time_py
+    print("Timing:")
+    print("Fortran: %s seconds" % time_f90)
+    print("Python : %s seconds" % time_py)
     exit(-1)
     """
     if SLAKO_IMPLEMENTATION == "F90":

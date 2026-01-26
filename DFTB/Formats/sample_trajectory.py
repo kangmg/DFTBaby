@@ -21,7 +21,7 @@ if __name__ == "__main__":
     (opts, args) = parser.parse_args()
 
     if len(args) < 2:
-        print usage
+        print(usage)
         exit(-1)
 
     dynout = args[0]
@@ -31,6 +31,6 @@ if __name__ == "__main__":
     for it,(t,atomlist,velocities) in enumerate(DynamicsOut.t_geometries_velocities(dynout)):
         if it > opts.skip and it % opts.freq == 0:
                 ini_file = join(inidir, "dynamics_%.4d.in" % i)
-                print "time step %s fs   =>  %s" % (t, ini_file)
+                print("time step %s fs   =>  %s" % (t, ini_file))
                 DynamicsOut.write_initial_conditions(atomlist, velocities, ini_file)
                 i += 1

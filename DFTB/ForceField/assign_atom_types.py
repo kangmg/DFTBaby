@@ -53,13 +53,13 @@ if __name__ == "__main__":
     import sys
     import os
     if len(sys.argv) < 3:
-        print "Usage: %s .xyz-file .ff-file" % (os.path.basename(sys.argv[0]))
-        print "  assigns atom types automatically for geometry in .xyz-file."
-        print ""
-        print "  This script simply adds a 5th column with the atom type"
-        print "  and writes the result to the .ff-file ."
-        print " "
-        print "  WARNING: The type assignment and the force field implementation itself probably have lots of bugs!"
+        print("Usage: %s .xyz-file .ff-file" % (os.path.basename(sys.argv[0])))
+        print("  assigns atom types automatically for geometry in .xyz-file.")
+        print("")
+        print("  This script simply adds a 5th column with the atom type")
+        print("  and writes the result to the .ff-file .")
+        print(" ")
+        print("  WARNING: The type assignment and the force field implementation itself probably have lots of bugs!")
         exit(-1)
     # laod xyz-file
     xyz_file = sys.argv[1]
@@ -70,9 +70,9 @@ if __name__ == "__main__":
     
     nat=len(atomlist)
     # determine bond orders
-    print "connectivity matrix"
+    print("connectivity matrix")
     ConMat = XYZ.connectivity_matrix(atomlist, search_neighbours=200)
-    print "bond order assignment"
+    print("bond order assignment")
     bondsTuples, bond_orders, lone_pairs, formal_charges = BondOrders.assign_bond_orders(atomlist, ConMat, charge=charge)
     # list of bond orders 
     bond_orders_atomwise = [ [] for i in range(0, nat) ]
@@ -89,7 +89,7 @@ if __name__ == "__main__":
         atnameJ = AtomicData.atom_names[Zj-1].capitalize()
         bonded_atomnames[atI].append( atnameJ )
         bonded_atomnames[atJ].append( atnameI )
-    print "atom type assignment"
+    print("atom type assignment")
     ff_file = sys.argv[2]
     fh = open(ff_file, "w")
     print>>fh, nat
@@ -173,5 +173,5 @@ if __name__ == "__main__":
     print>>fh, "Tv	   0.00000	  0.00000	 %10.7f " % lattice_constant
     fh.close()
     """
-    print "Atom types written to 7th column of '%s'" % ff_file
+    print("Atom types written to 7th column of '%s'" % ff_file)
     

@@ -31,7 +31,7 @@ def test_poisson3d():
     # solve
     u = poisson3d(xvec,yvec,zvec, f, u0, maxiter=500000)
     err = np.sum(abs(u-u_exact))/float(x.size)
-    print "err = %s" % err
+    print("err = %s" % err)
     
     
     

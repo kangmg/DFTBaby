@@ -136,7 +136,7 @@ def line_search_wolfe(xk, fk, grad_fk, pk, func,
         """
 
         if debug > 0:
-            print "alo=%e  ahi=%e   s(alo)=%e  s(ahi)=%e" % (alo, ahi, slo, shi)
+            print("alo=%e  ahi=%e   s(alo)=%e  s(ahi)=%e" % (alo, ahi, slo, shi))
             import matplotlib.pyplot as plt
             npts = 200
             a_arr = np.linspace(alo, ahi, npts)
@@ -175,7 +175,7 @@ def line_search_wolfe(xk, fk, grad_fk, pk, func,
             sj,Dsj = s(aj)
             
             if debug > 0:
-                print "aj=%e  alo=%e  ahi=%e" % (aj, alo, ahi)
+                print("aj=%e  alo=%e  ahi=%e" % (aj, alo, ahi))
                 plt.xlabel("step length $\\alpha$")
                 plt.plot(a_arr, s_arr, label="$s(\\alpha)$")
                 plt.plot([ahi],[shi], "^", color="red")
@@ -204,7 +204,7 @@ def line_search_wolfe(xk, fk, grad_fk, pk, func,
         else:
             msg = "``zoom`` could not find a point satisfying Wolfe's condition in the interval [%e,%e] in %d iterations!" % (alo,ahi, j)
             aWolfe = 0.5*(alo+ahi)
-            print "WARNING: %s" % msg
+            print("WARNING: %s" % msg)
             #raise RuntimeError(msg)
             
         return aWolfe
@@ -294,7 +294,7 @@ def line_search_wolfe(xk, fk, grad_fk, pk, func,
         # choose a new a_(i+1) from the interval (ai,amax)
         ai = 2*aim1
         if ai >= amax:
-            print "WARNING: end of search interval reached!"
+            print("WARNING: end of search interval reached!")
             # end of interval reached when multiplying ai by 2, approach amax from below
             ai = 0.5*(aim1 + amax)
         #print "a_(i-1) = %e  a_i = %e" % (aim1, ai)
@@ -434,7 +434,7 @@ def minimize(objfunc, x0,
         return H
 
     if debug > 0:
-        print constraints
+        print(constraints)
         C = Contours(x0, func, constraints=constraints, bounds=bounds, xind=0, yind=1)
 
     xk = x0
@@ -459,7 +459,7 @@ def minimize(objfunc, x0,
             else:
                 #assert np.dot(yk,sk) > 0.0
                 if np.dot(yk,sk) <= 0.0:
-                    print "WARNING: positive definiteness of Hessian approximation lost in BFGS update, since yk.sk <= 0!"
+                    print("WARNING: positive definiteness of Hessian approximation lost in BFGS update, since yk.sk <= 0!")
                 #
                 invHk = bfgs_update(invHk, sk, yk, k)
             pk = np.dot(invHk,-grad_fk)
@@ -499,7 +499,7 @@ def minimize(objfunc, x0,
             converged = True
         if f_change < epsilon:
             # f(k+1) and f(k) cannot be distinguished properly because of finite numerical precision
-            print "WARNING: |f(k+1) - f(k)| < epsilon  (numerical precision) !"
+            print("WARNING: |f(k+1) - f(k)| < epsilon  (numerical precision) !")
             converged = True
         # step vector
         sk = x_kp1 - xk
@@ -511,7 +511,7 @@ def minimize(objfunc, x0,
         grad_fk = grad_f_kp1
         if callback != None:
             callback(xk)
-        print "k=%10.1d  f(x) = %15.10f  |x(k+1)-x(k)| = %e  |f(k+1)-f(k)| = %e  |df/dx| = %e" % (k, fk, la.norm(sk), f_change, gnorm)
+        print("k=%10.1d  f(x) = %15.10f  |x(k+1)-x(k)| = %e  |f(k+1)-f(k)| = %e  |df/dx| = %e" % (k, fk, la.norm(sk), f_change, gnorm))
         if converged == True:
             #if method == "Newton":
             #    # tau is the smallest positive number, such that H+tau*Id is positive definite
@@ -569,10 +569,10 @@ class Contours:
                                                     constraints=constraints, bounds=bounds,
                                                     xind=self.xind, yind=self.yind)
     def plot_contours(self, point_k, f, g, p, B):
-        print "current point = %s" % point_k
-        print "current function value = %s" % f
-        print "current gradient = %s" % g
-        print "current search direction = %s" % p
+        print("current point = %s" % point_k)
+        print("current function value = %s" % f)
+        print("current gradient = %s" % g)
+        print("current search direction = %s" % p)
         self.points.append( point_k )
         model = self.quadratic_model(point_k, f, g, B, np.array((self.X, self.Y)))
         CS_objfunc = plt.contour(self.X, self.Y, self.Z, 50, colors="black")
@@ -652,8 +652,8 @@ def check_gradient(f, x0):
     def grad(x):
         return f(x)[1]
     err_rel = check_grad(func, grad, x0)/func(x0)
-    print "grad (NUMERICAL)  = %s" % numerical_gradient(func, x0)
-    print "grad (ANALYTICAL) = %s" % grad(x0)
+    print("grad (NUMERICAL)  = %s" % numerical_gradient(func, x0))
+    print("grad (ANALYTICAL) = %s" % grad(x0))
     assert err_rel < 1.0e-5, "relative error of gradient = %e !" % err_rel
     
     return err_rel
@@ -687,26 +687,26 @@ def test_newton():
 
     # minimize Rosenbrock's function without constraints
     res = minimize(rosenbrock, x0)
-    print res.x, res.fun
+    print(res.x, res.fun)
     # minimize Rosenbrock's function subject to  c1 = 1 - x1^2 - x2^2 > 0
     # ... with Newton (using exact Hessian)
-    print "Newton with Armijo line search"
+    print("Newton with Armijo line search")
     res = minimize(rosenbrock, x0, method="Newton", line_search_method="Armijo", constraints=rosenbrock_constraints)
-    print res.x, res.fun
-    print "Newton with Wolfe line search"
+    print(res.x, res.fun)
+    print("Newton with Wolfe line search")
     res = minimize(rosenbrock, x0, method="Newton", line_search_method="Wolfe", constraints=rosenbrock_constraints)
-    print res.x, res.fun
+    print(res.x, res.fun)
     # ... with BFGS approximation to inverse Hessian
-    print "BFGS with Armijo line search"
+    print("BFGS with Armijo line search")
     res = minimize(rosenbrock, x0, method="BFGS", line_search_method="Armijo", constraints=rosenbrock_constraints)
-    print res.x, res.fun
-    print "BFGS with Wolfe line search"
+    print(res.x, res.fun)
+    print("BFGS with Wolfe line search")
     res = minimize(rosenbrock, x0, method="BFGS", line_search_method="Wolfe", constraints=rosenbrock_constraints)
-    print res.x, res.fun
+    print(res.x, res.fun)
     # ... with Steepest Descent
-    print "Steepest Descent"
+    print("Steepest Descent")
     res = minimize(rosenbrock, x0, method="Steepest Descent", constraints=rosenbrock_constraints, gtol=1.0e-7)
-    print res.x, res.fun
+    print(res.x, res.fun)
     
 if __name__ == "__main__":
     test_newton()

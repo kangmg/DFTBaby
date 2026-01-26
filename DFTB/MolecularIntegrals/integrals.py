@@ -150,7 +150,7 @@ def fact2(i):
 def binomial_prefactor(s,ia,ib,xpa,xpb):
     """From Augspurger and Dykstra"""
     sum = 0
-    for t in xrange(s+1):
+    for t in range(s+1):
         if s-ia <= t <= ib:
             sum = sum + binomial(ia,s-t)*binomial(ib,t)* \
                   pow(xpa,ia-s+t)*pow(xpb,ib-t)
@@ -160,7 +160,8 @@ def binomial(a,b):
     """Binomial coefficient"""
     return fact(a)/fact(b)/fact(a-b)
 
-def norm(alpha, (l,m,n)):
+def norm(alpha, params_tuple):
+    l,m,n = params_tuple
     # eqn. (2.2) from THO paper
     nrm = np.sqrt(pow(2,2*(l+m+n)+1.5)*
                  pow(alpha,l+m+n+1.5)/
@@ -168,7 +169,9 @@ def norm(alpha, (l,m,n)):
                  fact2(2*n-1)/pow(np.pi,1.5))
     return nrm
 
-def overlap_unnorm(alpha1,(l1,m1,n1),A,alpha2,(l2,m2,n2),B):
+def overlap_unnorm(alpha1,lmn1,A,alpha2,lmn2,B):
+    l1,m1,n1 = lmn1
+    l2,m2,n2 = lmn2
     """overlap without normalization constants. Taken from THO eq. 2.12"""
     rab2 = dist2(A,B)
     gamma = alpha1+alpha2
@@ -181,20 +184,20 @@ def overlap_unnorm(alpha1,(l1,m1,n1),A,alpha2,(l2,m2,n2),B):
     wz = overlap_1D(n1,n2,P[2]-A[2],P[2]-B[2],gamma)
     return pre*wx*wy*wz
 
-def overlap(alpha1,(l1,m1,n1),A,alpha2,(l2,m2,n2),B):
+def overlap(alpha1, lmn1, A, alpha2, lmn2, B):
     """
     overlap <g1|g2> between two normalized cartesian Gaussian functions which
     are centered at A and B
 
                                   l1        m1       n1   -alpha1 (r-A)^2
     g1(x,y,z) = N(l1,m1,n1) (x-Ax)   (y-Ay)    (z-Az)    e
-    
+
     and a similar expression for g2(x,y,z).
-    
+
     Parameters
     ----------
     alpha1     :  exponent, > 0
-    (l1,m1,n1) :  powers, L=l1+m1+n1 is the angular momentum
+    lmn1 :  tuple (l1,m1,n1) - powers, L=l1+m1+n1 is the angular momentum
     A          :  3-dim vector, center of basis function
 
     and similary for second basis function
@@ -203,6 +206,8 @@ def overlap(alpha1,(l1,m1,n1),A,alpha2,(l2,m2,n2),B):
     -------
     scalar, <g1|g2>
     """
+    l1, m1, n1 = lmn1
+    l2, m2, n2 = lmn2
     olap = overlap_unnorm(alpha1,(l1,m1,n1),A,alpha2,(l2,m2,n2),B)
     norm1 = norm(alpha1,(l1,m1,n1))
     norm2 = norm(alpha2,(l2,m2,n2))
@@ -222,20 +227,22 @@ def gaussian_product_center(alpha1,A,alpha2,B):
 def overlap_1D(l1,l2,PAx,PBx,gamma):
     """Taken from THO eq. 2.12"""
     sum = 0
-    for i in xrange(1+int(np.floor(0.5*(l1+l2)))):
+    for i in range(1+int(np.floor(0.5*(l1+l2)))):
         sum = sum + binomial_prefactor(2*i,l1,l2,PAx,PBx)* \
               fact2(2*i-1)/pow(2*gamma,i)
     return sum
 
-def dipole(alpha1,(l1,m1,n1),A1, alpha2,(l2,m2,n2),A2):
+def dipole(alpha1, lmn1, A1, alpha2, lmn2, A2):
     """dipole matrix element between two Gaussian orbitals"""
+    l1, m1, n1 = lmn1
+    l2, m2, n2 = lmn2
     olap = overlap_unnorm(alpha1,(l1,  m1  ,n1  ),A1, alpha2,(l2,m2,n2),A2)
     Dx   = overlap_unnorm(alpha1,(l1+1,m1  ,n1  ),A1, alpha2,(l2,m2,n2),A2) + A1[0]*olap
     Dy   = overlap_unnorm(alpha1,(l1  ,m1+1,n1  ),A1, alpha2,(l2,m2,n2),A2) + A1[1]*olap
     Dz   = overlap_unnorm(alpha1,(l1  ,m1  ,n1+1),A1, alpha2,(l2,m2,n2),A2) + A1[2]*olap
     norm1 = norm(alpha1,(l1,m1,n1))
     norm2 = norm(alpha2,(l2,m2,n2))
-    
+
     return norm1*norm2*np.array([Dx,Dy,Dz])
 
 def angmomL(alphaA, nA, A, alphaB, nB, B):
@@ -313,10 +320,18 @@ def angmomL2(alphaA, nA, A, alphaB, nB, B):
 #
 ############################################################
 
-def coulomb_repulsion((xa,ya,za),norma,(la,ma,na),alphaa,
-                      (xb,yb,zb),normb,(lb,mb,nb),alphab,
-                      (xc,yc,zc),normc,(lc,mc,nc),alphac,
-                      (xd,yd,zd),normd,(ld,md,nd),alphad):
+def coulomb_repulsion(ra, norma, lmna, alphaa,
+                      rb, normb, lmnb, alphab,
+                      rc, normc, lmnc, alphac,
+                      rd, normd, lmnd, alphad):
+    xa, ya, za = ra
+    xb, yb, zb = rb
+    xc, yc, zc = rc
+    xd, yd, zd = rd
+    la, ma, na = lmna
+    lb, mb, nb = lmnb
+    lc, mc, nc = lmnc
+    ld, md, nd = lmnd
 
     rab2 = dist2((xa,ya,za),(xb,yb,zb))
     rcd2 = dist2((xc,yc,zc),(xd,yd,zd))
@@ -332,9 +347,9 @@ def coulomb_repulsion((xa,ya,za),norma,(la,ma,na),alphaa,
     Bz = B_array(na,nb,nc,nd,zp,za,zb,zq,zc,zd,gamma1,gamma2,delta)
 
     sum = 0.
-    for I in xrange(la+lb+lc+ld+1):
-        for J in xrange(ma+mb+mc+md+1):
-            for K in xrange(na+nb+nc+nd+1):
+    for I in range(la+lb+lc+ld+1):
+        for J in range(ma+mb+mc+md+1):
+            for K in range(na+nb+nc+nd+1):
                 sum = sum + Bx[I]*By[J]*Bz[K]*Fgamma(I+J+K,0.25*rpq2/delta)
 
     return 2*pow(np.pi,2.5)/(gamma1*gamma2*np.sqrt(gamma1+gamma2)) \
@@ -352,14 +367,13 @@ def B_term(i1,i2,r1,r2,u,l1,l2,l3,l4,Px,Ax,Bx,Qx,Cx,Dx,gamma1,gamma2,delta):
 def B_array(l1,l2,l3,l4,p,a,b,q,c,d,g1,g2,delta):
     Imax = l1+l2+l3+l4+1
     B = [0]*Imax
-    for i1 in xrange(l1+l2+1):
-        for i2 in xrange(l3+l4+1):
-            for r1 in xrange(i1/2+1):
-                for r2 in xrange(i2/2+1):
-                    for u in xrange((i1+i2)/2-r1-r2+1):
+    for i1 in range(l1+l2+1):
+        for i2 in range(l3+l4+1):
+            for r1 in range(i1/2+1):
+                for r2 in range(i2/2+1):
+                    for u in range((i1+i2)/2-r1-r2+1):
                         I = i1+i2-2*(r1+r2)-u
-                        B[I] = B[I] + B_term(i1,i2,r1,r2,u,l1,l2,l3,l4,
-                                             p,a,b,q,c,d,g1,g2,delta)
+                        B[I] = B[I] + B_term(i1,i2,r1,r2,u,l1,l2,l3,l4, p,a,b,q,c,d,g1,g2,delta)
     return B
 
 def fB(i,l1,l2,P,A,B,r,g):
@@ -385,7 +399,7 @@ def gammln(x):
     tmp=x+5.5
     tmp = tmp - (x+0.5)*np.log(tmp)
     ser=1.000000000190015 # don't you just love these numbers?!
-    for j in xrange(6):
+    for j in range(6):
         y = y+1
         ser = ser+cof[j]/y
     return -tmp+np.log(2.5066282746310005*ser/x);
@@ -417,13 +431,13 @@ def _gser(a,x):
 
     ap = a
     delt = sum = 1./a
-    for i in xrange(ITMAX):
+    for i in range(ITMAX):
         ap=ap+1.
         delt=delt*x/ap
         sum=sum+delt
         if abs(delt) < abs(sum)*EPS: break
     else:
-        print 'a too large, ITMAX too small in gser'
+        print('a too large, ITMAX too small in gser')
     gamser=sum*np.exp(-x+a*np.log(x)-gln)
     return gamser,gln
 
@@ -438,7 +452,7 @@ def _gcf(a,x):
     c=1./FPMIN
     d=1./b
     h=d
-    for i in xrange(1,ITMAX+1):
+    for i in range(1,ITMAX+1):
         an=-i*(i-a)
         b=b+2.
         d=an*d+b
@@ -450,6 +464,6 @@ def _gcf(a,x):
         h=h*delt
         if abs(delt-1.) < EPS: break
     else:
-        print 'a too large, ITMAX too small in gcf'
+        print('a too large, ITMAX too small in gcf')
     gammcf=np.exp(-x+a*np.log(x)-gln)*h
     return gammcf,gln

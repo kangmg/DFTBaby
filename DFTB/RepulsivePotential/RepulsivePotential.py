@@ -89,7 +89,7 @@ class RepulsivePotential:
         interpolate repulsive potential (or its derivatives)
         """
         if d < self.dmin:
-            print "WARNING: Repulsive potential is tabulated for %s <= r, got r = %s, probably atoms are too close!" % (self.dmin, d)
+            print("WARNING: Repulsive potential is tabulated for %s <= r, got r = %s, probably atoms are too close!" % (self.dmin, d))
         if d >= self.dmax:
             v = self.smooth_tail(d,deriv=deriv)
         else:
@@ -113,7 +113,7 @@ def dummy_reppot_module():
     """
     create a module that has the same interface as a ReppotModule but which is empty
     """
-    print "DUMMY MODULE !!!!!!!!!!!!!"
+    print("DUMMY MODULE !!!!!!!!!!!!!")
     mod = ReppotModule()
     mod.Z1,mod.Z2 = 0,0
     mod.d = linspace(0.0, 10.0, 100)
@@ -131,7 +131,7 @@ def read_repulsive_potential(filename):
         if not exists(filename):
             # file file A_B.par does not exist, look for file B_A.par
             filename_BA = join(dirname(filename), "%s_%s.par" % (at2,at1))
-            print "parameter file %s does not exist -> try to load %s" % (filename, filename_BA)
+            print("parameter file %s does not exist -> try to load %s" % (filename, filename_BA))
             filename = filename_BA
         data_blocks = hotbit_format.parseHotbitParameters(filename)
         mod = ReppotModule()
@@ -144,7 +144,7 @@ def read_repulsive_potential(filename):
         # DFTBaby format
         # access dictionary by .-notation
         mod = utils.dotdic()
-        execfile(filename, mod)
+        exec(open(filename).read(), mod)
         return mod
     elif ".skf" in filename:
         # DFTB+ format, only the Splines part is read
@@ -152,7 +152,7 @@ def read_repulsive_potential(filename):
         if not exists(filename):
             # file file A-B.skf does not exist, look for file B-A.skf
             filename_BA = join(dirname(filename), "%s-%s.skf" % (at2,at1))
-            print "parameter file %s does not exist -> try to load %s" % (filename, filename_BA)
+            print("parameter file %s does not exist -> try to load %s" % (filename, filename_BA))
             filename = filename_BA
         fh = open(filename)
         lines = fh.readlines()
@@ -276,9 +276,9 @@ def load_repulsive_potentials(atpairs, missing_reppots="error", reppot_paths=[])
                 atompairs[(Zi,Zj)] = __import__("DFTB.RepulsivePotential.reppot_tables.%s_%s" % (atI,atJ), fromlist=['Z1','Z2'])
             except ImportError as e:
                 if missing_reppots == "dummy":
-                    print "WARNING: Repulsive potential for atom pair %s-%s not found!" % (atI,atJ)
-                    print "         A dummy potential with Vrep=0 is loaded instead. Optimizations and"
-                    print "         dynamics simulations with dummy potentials are bound to produce nonsense."
+                    print("WARNING: Repulsive potential for atom pair %s-%s not found!" % (atI,atJ))
+                    print("         A dummy potential with Vrep=0 is loaded instead. Optimizations and")
+                    print("         dynamics simulations with dummy potentials are bound to produce nonsense.")
                     atompairs[(Zi,Zj)] = __import__("DFTB.RepulsivePotential.reppot_tables.dummy", fromlist=['Z1','Z2'])
                     # set correct atomic numbers
                     atompairs[(Zi,Zj)].Z1 = Zi
@@ -286,7 +286,7 @@ def load_repulsive_potentials(atpairs, missing_reppots="error", reppot_paths=[])
                 else:
                     raise e
             continue
-        print "repulsive potential for %s-%s loaded from %s" % (atI.upper(), atJ.upper(), module_path)
+        print("repulsive potential for %s-%s loaded from %s" % (atI.upper(), atJ.upper(), module_path))
     reppot_tables = imp.new_module("reppot_tables")
     reppot_tables.atompairs = atompairs
 
@@ -296,8 +296,8 @@ def load_repulsive_potentials(atpairs, missing_reppots="error", reppot_paths=[])
 if __name__ == "__main__":
     import sys
     if len(sys.argv) < 2:
-        print "Usage: %s <.par file with repulsive potential>" % sys.argv[0]
-        print "Plot repulsive potential"
+        print("Usage: %s <.par file with repulsive potential>" % sys.argv[0])
+        print("Plot repulsive potential")
         exit(-1)
     filename = sys.argv[1]
     reppot_mod = read_repulsive_potential(filename)

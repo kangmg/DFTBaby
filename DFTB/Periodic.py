@@ -39,9 +39,9 @@ class CrystalSystem:
                 t = self.T(int_disp)
             else:
                 t = self.G(int_disp)
-            print "%s   ->  %s" % (str(int_disp), t)
+            print("%s   ->  %s" % (str(int_disp), t))
             Ts.append(t)
-        print "NR translation vectors = %s" % len(Ts)
+        print("NR translation vectors = %s" % len(Ts))
         return Ts
     def G(self, m):
         # reciprocal lattice vector
@@ -52,21 +52,21 @@ class CrystalSystem:
     def nearest_neighbours_r(self, Rmax):
         Nmax = [int(la.norm(self.b[i,:])/(2.0*np.pi)) for i in range(0, self.dim)]
         ns = list(itertools.product(*[range(-Nmax[i], Nmax[i]+1) for i in range(0, self.dim)]))
-        print ns
+        print(ns)
         Rs = np.array([self.T(n) for n in ns])
         ds = np.array([la.norm(R) for R in Rs])
         sort_index = np.argsort(ds)
         ds = ds[sort_index]
         Rs = Rs[sort_index]
         shells = []
-        print "Nearest neighbours"
-        print "=================="
+        print("Nearest neighbours")
+        print("==================")
         for ishell, (k, g) in enumerate(itertools.groupby(Rs, key=lambda R: np.around(la.norm(R), decimals=8))):
-            print "Shell %s" % ishell
-            print "distance = %s" % k
+            print("Shell %s" % ishell)
+            print("distance = %s" % k)
             gl = list(g)
             for R in gl:
-                print "    %s" % R
+                print("    %s" % R)
             shells.append(gl)
         return shells
     def nearest_neighbours_k(self, order):
@@ -83,11 +83,11 @@ class CrystalSystem:
             return x
         # nearest neighbour shell
         nn = self.nearest_neighbours_r(pow(self.Va, 1.0/3.0)*2)[1]
-        print nn
+        print(nn)
         R1 = np.array([0,0,0])
         Cs = []
-        print "Corners of Wigner-Seitz polyhedron"
-        print "=================================="
+        print("Corners of Wigner-Seitz polyhedron")
+        print("==================================")
         for i2, R2 in enumerate(nn):
             for i3, R3 in enumerate(nn[i2+1:]):
                 try:
@@ -95,7 +95,7 @@ class CrystalSystem:
                     # make sure corner is closer to the origin than to any other lattice point
                     if 1.0e-10 < la.norm(c) <= min([la.norm(c - Rn) for Rn in nn]):
                         Cs.append(c)
-                        print c
+                        print(c)
                 except la.LinAlgError:
                     pass
         self.plotPolyhedron(Cs, nn)
@@ -138,9 +138,9 @@ class CrystalSystem:
                 for s in range(1, q[2]+1):
                     k_prs = u(0,p)*self.b[0,:] + u(1,r)*self.b[1,:] + u(2,s)*self.b[2,:]
                     kpoints.append(k_prs)
-        print "NR kpoints = %s" % len(kpoints)
-        print "lattice vectors:"
-        print self.b
+        print("NR kpoints = %s" % len(kpoints))
+        print("lattice vectors:")
+        print(self.b)
         return kpoints
     def integrate_over_BZ(self, func, nmax):
         """
@@ -149,7 +149,7 @@ class CrystalSystem:
         Ts = self.translation_vectors(nmax, space="real")
         ks = self.sample_BZ(nmax)
         fk = func(Ts,ks)
-        print "self.Vb = %s" % self.Vb
+        print("self.Vb = %s" % self.Vb)
         avg = sum(fk) * self.Vb / float(len(ks))
         return avg
     def __str__(self):
@@ -165,7 +165,7 @@ class CrystalSystem:
     def uvw2kxkykz(self, symmetry_kpoints):
         b1,b2,b3 = self.getLatticeVectors(space="reciprocal")
         kpoints = {}
-        for name,(u,v,w) in symmetry_kpoints.iteritems():
+        for name,(u,v,w) in symmetry_kpoints.items():
             k = u*b1 + v*b2 + w*b3
             kpoints[name] = k
         return kpoints
@@ -251,7 +251,7 @@ class PorpheneWire(CrystalSystem):
 if __name__ == "__main__":
     lat = BodyCenteredCubic(1.0)
 #    lat = FaceCenteredCubic(1.0)
-    print lat
+    print(lat)
     lat.nearest_neighbours_r(1.0)
 #    lat.getWignerSeitz(None)
-    print lat.integrate_over_BZ(lambda t,k: np.ones(len(t)), 5)
+    print(lat.integrate_over_BZ(lambda t,k: np.ones(len(t)), 5))

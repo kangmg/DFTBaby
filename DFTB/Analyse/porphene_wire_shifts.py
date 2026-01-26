@@ -77,7 +77,7 @@ def fit_exciton_splitting(splitting_energies, Nmax=4):
     yfit = y[:Nmax]
     A = np.vstack([xfit, np.ones(len(xfit))]).transpose()
     m, c = la.lstsq(A, yfit)[0]
-    print "Exciton splitting energy Delta E_0 = %3.7f Hartree    %3.7f eV    %3.7f nm     %3.7f cm^(-1)" % (m, m*AtomicData.hartree_to_eV, AtomicData.hartree_to_nm/m, m*AtomicData.hartree_to_wavenumbers)
+    print("Exciton splitting energy Delta E_0 = %3.7f Hartree    %3.7f eV    %3.7f nm     %3.7f cm^(-1)" % (m, m*AtomicData.hartree_to_eV, AtomicData.hartree_to_nm/m, m*AtomicData.hartree_to_wavenumbers))
 
     plt.xlabel("$cos(\pi/(N+1))$", fontsize=15)
     plt.ylabel("exciton splitting $\Delta E$ / eV", fontsize=15)
@@ -105,7 +105,7 @@ if __name__ == "__main__":
     
     (opts, args) = parser.parse_args()
     if len(args) < 1:
-        print usage
+        print(usage)
         exit(-1)
 
     spectra = []
@@ -123,11 +123,11 @@ if __name__ == "__main__":
             f = spec[:,1]
             soret_indx = np.argmax(f[en < (5.0 / AtomicData.hartree_to_eV)])
             soret_peak = en[soret_indx]
-            print "Soret peak in the monomer: %3.7f hartree     %3.7f eV" % (soret_peak, soret_peak * AtomicData.hartree_to_eV)
+            print("Soret peak in the monomer: %3.7f hartree     %3.7f eV" % (soret_peak, soret_peak * AtomicData.hartree_to_eV))
         enQ, dExciton = extract_shifts(spec, soret_peak, opts.osc_threshold)
         enQs.append(enQ)
         exciton_splittings.append(dExciton)
-        print "%3.7f   %3.7f" % (enQ, dExciton) 
+        print("%3.7f   %3.7f" % (enQ, dExciton) )
     enQs = np.array(enQs)
     data = np.vstack((enQs, exciton_splittings)).transpose()
 

@@ -41,7 +41,7 @@ def solve_cpks_direct(Grad, verbose=0):
     
     """
     if verbose > 0:
-        print "Solve CPKS equations directly for gradients of MO coefficients"
+        print("Solve CPKS equations directly for gradients of MO coefficients")
     # 
     # Kohn-Sham orbital energies
     en = Grad.dftb.getKSEnergies()
@@ -67,7 +67,7 @@ def solve_cpks_direct(Grad, verbose=0):
     dim = norb*(norb-1)
     # left hand side
     if verbose > 0:
-        print "  build A-matrix with dimension (%d,%d)" % (dim,dim)
+        print("  build A-matrix with dimension (%d,%d)" % (dim,dim))
     A = np.zeros( (dim,dim) )
 
     kl = 0
@@ -101,7 +101,7 @@ def solve_cpks_direct(Grad, verbose=0):
     assert kl == dim
     
     if verbose > 0:
-        print "  build right hand side B"
+        print("  build right hand side B")
     # right hand side
     B = np.zeros( (nnuc,dim) )
     
@@ -136,7 +136,7 @@ def solve_cpks_direct(Grad, verbose=0):
     #
     C = np.zeros((nnuc, norb,norb))
     if verbose > 0:
-        print "  solve A.c = B for each nuclear coordinate"
+        print("  solve A.c = B for each nuclear coordinate")
     # solve for all nuclear coordinates at once, if numpy is parallelized this may
     # run faster than solving for each coordinate individually.
 
@@ -165,14 +165,14 @@ def solve_cpks_direct(Grad, verbose=0):
         assert ij == dim
 
     if verbose > 0:
-        print "  assemble gradients of MO coefficients"
+        print("  assemble gradients of MO coefficients")
     # compute gradients of MO coefficients d(orbs)/dp
     grad_orbs = np.zeros((nnuc,norb,norb))
     for c in range(0, nnuc):
         grad_orbs[c,:,:] = np.dot(orbs, C[c,:,:])
 
     if verbose > 0:
-        print "  assemble gradients of MO energies"
+        print("  assemble gradients of MO energies")
     # compute gradients of energies
     grad_en = np.zeros((nnuc,norb))
     for c in range(0, nnuc):
@@ -227,7 +227,7 @@ def solve_cpks_iterative(Grad, verbose=0):
     
     """
     if verbose > 0:
-        print "Solve CPKS equations iteratively for gradients of MO coefficients"
+        print("Solve CPKS equations iteratively for gradients of MO coefficients")
     # 
     # Kohn-Sham orbital energies
     en = Grad.dftb.getKSEnergies()
@@ -352,7 +352,7 @@ def solve_cpks_iterative(Grad, verbose=0):
     # solve A.C = B for each nuclear coordinate
     for c in range(0, nnuc):
         if verbose > 0:
-            print "(%d of %d) CPKS for nuclear coordinate %d" % (c+1, nnuc, c+1)
+            print("(%d of %d) CPKS for nuclear coordinate %d" % (c+1, nnuc, c+1))
         Bc = np.reshape(Bvec(c), (dim,1))
         Cvec = Solver.Krylov_solver_CPKS(Aop, Adiag, Bc, None, verbose=verbose)
 
@@ -503,7 +503,7 @@ def test_dftb_eigenvector_derivative():
     (options,args) = parser.parse_args(DFTB2.__init__)
 
     if len(args) < 1:
-        print usage
+        print(usage)
         exit(-1)
 
     xyz_file = args[0]
@@ -528,12 +528,12 @@ def test_dftb_eigenvector_derivative():
     E = dftb2.getKSEnergies()
     X = dftb2.getKSCoefficients()
     dE_num, dX_num = dftb_numerical_mo_gradients(dftb2, atomlist)
-    print "eigenvalues"
-    print E
-    print "numerical eigenvalue gradients"
-    print dE_num
-    print "analytical eigenvalue gradients"
-    print dE_an
+    print("eigenvalues")
+    print(E)
+    print("numerical eigenvalue gradients")
+    print(dE_num)
+    print("analytical eigenvalue gradients")
+    print(dE_an)
 #    print "numerical eigenvector gradients"
 #    print dX_num
 #    print "analytical eigenvector gradients"
@@ -573,7 +573,7 @@ def test_dftb_charge_derivative():
     (options,args) = parser.parse_args(DFTB2.__init__)
 
     if len(args) < 1:
-        print usage
+        print(usage)
         exit(-1)
 
     xyz_file = args[0]
@@ -596,21 +596,21 @@ def test_dftb_charge_derivative():
     
     dftb2 = tddftb.dftb2
     dQdp_num = dftb_numerical_charge_gradients(dftb2, atomlist)
-    print "partial Mulliken charges"
-    print dftb2.getPartialCharges()
-    print "numerical charge gradients"
-    print dQdp_num
-    print "analytical charge gradients"
-    print dQdp_ana
-    print "difference"
-    print dQdp_num-dQdp_ana
+    print("partial Mulliken charges")
+    print(dftb2.getPartialCharges())
+    print("numerical charge gradients")
+    print(dQdp_num)
+    print("analytical charge gradients")
+    print(dQdp_ana)
+    print("difference")
+    print(dQdp_num-dQdp_ana)
     
     err_dQ = la.norm(dQdp_num-dQdp_ana)
-    print "err(dQdp) = %s" % err_dQ
+    print("err(dQdp) = %s" % err_dQ)
     #assert err_dQ < 1.0e-4, "err(dQdp) = %s" % err_dQ
     
     # show timings
-    print T
+    print(T)
 
 
 if __name__ == "__main__":

@@ -27,7 +27,7 @@ def read_geometry(log_file):
         if l == "":
             break
         if "Input orientation" in l:
-            print "Found geometry"
+            print("Found geometry")
             
             # skip the next three lines
             for i in range(0, 4):
@@ -68,7 +68,7 @@ def read_forces(log_file):
         if l == "":
             break
         if "Forces (Hartrees/Bohr)" in l:
-            print "Found forces"
+            print("Found forces")
             
             # skip the next lines
             for i in range(0, 2):
@@ -147,5 +147,5 @@ def write_input(com_file, atomlist, chk_file="", route="", title="", charge=0, m
 if __name__ == "__main__":
     import sys
     log_file = sys.argv[1]
-    print read_geometry(log_file)
-    print read_forces(log_file)
+    print(read_geometry(log_file))
+    print(read_forces(log_file))

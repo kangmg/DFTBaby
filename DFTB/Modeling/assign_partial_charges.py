@@ -2,8 +2,8 @@ import numpy as np
 import sys
 
 if len(sys.argv) < 4:
-    print "Usage: %s <solvent box .xyz> <partial charges of solv. molecule> <output file>" % sys.argv[0]
-    print "  Assigns partial charges to each solvent molecule in solvent box."
+    print("Usage: %s <solvent box .xyz> <partial charges of solv. molecule> <output file>" % sys.argv[0])
+    print("  Assigns partial charges to each solvent molecule in solvent box.")
     exit(-1)
 
 xyz_in = sys.argv[1]

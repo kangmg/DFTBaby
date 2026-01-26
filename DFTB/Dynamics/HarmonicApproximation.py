@@ -27,9 +27,9 @@ def numerical_hessian_G(grad,x0,h=1.0e-5):
     n = len(x0)
     hess = np.zeros((n,n))
     g0 = grad(x0)
-    print "numerical differentiation of forces requires %d gradient calculations" % (2*n)
+    print("numerical differentiation of forces requires %d gradient calculations" % (2*n))
     for i in range(0, n):
-        print "%s of %d" % (2*(i+1), 2*n)
+        print("%s of %d" % (2*(i+1), 2*n))
         ei = np.zeros(n)
         ei[i] = 1.0
         x_phi = x0 + h*ei
@@ -75,7 +75,7 @@ def expected_zero_modes(x0, masses):
     # In a linear triatomic molecule we have Icc = Ibb > Iaa = 0
     if abs(pmom_abs[2]-pmom_abs[1]) < 1.0e-6 and abs(pmom_abs[0]) < 1.0e-6:
         is_linear = True
-        print "Molecule is linear"
+        print("Molecule is linear")
     if Nat == 1:
         Nrot = 0
     elif is_linear == True or Nat == 2:
@@ -107,9 +107,9 @@ def vibrational_analysis(x0, hess, masses, zero_threshold=1.0e-9, is_molecule=Fa
     """
     # convert Hessian to mass-weighted coordinates
     hess_mwc = hess / np.sqrt(np.outer(masses, masses))
-    print "HESSIAN for mass weighted cartesian coordinates"
-    print "==============================================="
-    print hess_mwc
+    print("HESSIAN for mass weighted cartesian coordinates")
+    print("===============================================")
+    print(hess_mwc)
     # mass weighted coordinates are now qi = sqrt(mi) dxi
     # compute eigen values of hess_mwc
     omega2,modes = la.eigh(hess_mwc)
@@ -122,20 +122,20 @@ def vibrational_analysis(x0, hess, masses, zero_threshold=1.0e-9, is_molecule=Fa
     if is_molecule == True:
         Nzero_expected = expected_zero_modes(x0, masses)
         if Nzero != Nzero_expected:
-            print "WARNING: Expected %d modes with 0 frequency (translation + rotation) but got %d modes!" % (Nzero_expected, Nzero)
+            print("WARNING: Expected %d modes with 0 frequency (translation + rotation) but got %d modes!" % (Nzero_expected, Nzero))
 
     freqs = np.sqrt(omega2*(1.0+0.0j))
-    print "Frequencies"
-    print "==========="
-    print "- Zero modes (should be close to zero)"
+    print("Frequencies")
+    print("===========")
+    print("- Zero modes (should be close to zero)")
     for fr in freqs[zero_modes]:
-        print "   %s    " % (str(fr).ljust(15))
-    print "- Vibrations"
+        print("   %s    " % (str(fr).ljust(15)))
+    print("- Vibrations")
     for fr in freqs[vib_modes].real:
-        print "   %5.7f Hartree      %5.7f cm-1" % (fr, fr*AtomicData.hartree_to_wavenumbers)
-    print ""
+        print("   %5.7f Hartree      %5.7f cm-1" % (fr, fr*AtomicData.hartree_to_wavenumbers))
+    print("")
     en_zp = np.sum(freqs[vib_modes].real)/2.0
-    print "zero-point energy:   %5.7f Hartree      %5.7f cm-1" % (en_zp, en_zp*AtomicData.hartree_to_wavenumbers)
+    print("zero-point energy:   %5.7f Hartree      %5.7f cm-1" % (en_zp, en_zp*AtomicData.hartree_to_wavenumbers))
     return freqs[vib_modes], modes[:,vib_modes]
 #    return freqs, modes
 
@@ -191,7 +191,7 @@ def wigner_distribution(x0, hess, masses, zero_threshold=1.0e-9, is_molecule=Tru
     if is_molecule == True:
         Nzero_expected = expected_zero_modes(x0, masses)
         if Nzero != Nzero_expected:
-            print "WARNING: Expected %d modes with 0 frequency (translation + rotation) but got %d modes!" % (Nzero_expected, Nzero)
+            print("WARNING: Expected %d modes with 0 frequency (translation + rotation) but got %d modes!" % (Nzero_expected, Nzero))
 
     Ndim = len(masses)
     Aq = np.zeros(hess.shape)#, dtype=complex)
@@ -202,14 +202,14 @@ def wigner_distribution(x0, hess, masses, zero_threshold=1.0e-9, is_molecule=Tru
     MsqInv = 1.0/Msq
     Oi = np.sqrt(omega2[vib_modes])
     Li = modes[:,vib_modes]
-    print "Wigner distribution for vibrational modes"
+    print("Wigner distribution for vibrational modes")
     Oii = np.diag(Oi)
     OiiInv = np.diag(1.0/Oi)
     Aq = 2 * np.dot(Li, np.dot(Oii, Li.transpose())) * Msq
     Ap = 2 * np.dot(Li, np.dot(OiiInv, Li.transpose())) * MsqInv
     # constrain zero modes by delta-functions  
     #   delta(Qi)*delta(Pi) ~ lim_(Oconstr->infty) exp(-Oconstr*(Qi^2 + Pi^2))
-    print "delta distribution for zero modes"
+    print("delta distribution for zero modes")
     Oconstr = 1.0e6 * np.eye(len(zero_modes))  # very large number, e.g. 1.0e10
     Li = modes[:,zero_modes]
     Aq += np.dot(Li, np.dot(Oconstr, Li.transpose())) * Msq
@@ -299,7 +299,7 @@ def save_initial_conditions(atomlist, qs, ps, inidir, name, frmt="FISH"):
         fh = open(fname, "w")
         fh.write(txt)
         fh.close()
-    print "Wrote initial conditions %s_%.4d.in to %s_%.4d.in to directory %s" % (name, 0, name, Nsample-1, inidir)
+    print("Wrote initial conditions %s_%.4d.in to %s_%.4d.in to directory %s" % (name, 0, name, Nsample-1, inidir))
 
 if __name__ == "__main__":
     pass

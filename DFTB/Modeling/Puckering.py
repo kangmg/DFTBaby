@@ -7,6 +7,7 @@ ring puckering coordinates as defined in
 """
 from DFTB import XYZ, AtomicData
 from cmath import phase
+from functools import reduce
 
 import numpy as np
 import copy
@@ -104,7 +105,7 @@ class Ring:
             for i in range(0, N):
                 z[i] += np.sqrt(1.0/N)*puck_ampl[-1]*pow(-1,i)
         zold = self.displacements()
-        dz = map(lambda x,y: x-y, z, zold)
+        dz = list(map(lambda x,y: x-y, z, zold))
         """displace the ring atoms by an amount dz along the normal
         to achieve the desired puckering geometry"""
         n = self.ring_plane()
@@ -136,9 +137,9 @@ def test_puckering_coords():
                         ring_atoms = [0,1,2,3,4], units="Angstrom")
     puck_ampl, puck_phase = Furanoid.get_puckering_coords()
     assert(abs(puck_ampl[0]*AtomicData.bohr_to_angs - 0.353) < 0.001)
-    assert(abs(puck_phase[0]+np.pi - 4.627 < 0.001))
-    print "q_2 = %s"  % (puck_ampl[0]*AtomicData.bohr_to_angs)     # should be 0.353
-    print "phi_2 = %s" % (puck_phase[0]+np.pi)       # should be 265.1 deg = 4.627 rad
+    assert(abs(puck_phase[0]+np.pi - 4.627) < 0.001)
+    print("q_2 = %s"  % (puck_ampl[0]*AtomicData.bohr_to_angs))     # should be 0.353
+    print("phi_2 = %s" % (puck_phase[0]+np.pi))       # should be 265.1 deg = 4.627 rad
 
     Furanoid.set_puckering_coords( (puck_ampl, puck_phase) )
     """reproduce puckering for pyranoid ring of sucrose"""
@@ -150,9 +151,9 @@ def test_puckering_coords():
                      (C, (-1.2164, 0.7350,   -0.2133))],
                     ring_atoms = [0,1,2,3,4,5], units="Angstrom")
     puck_ampl, puck_phase = Pyranoid.get_puckering_coords()
-    print "q_2 = %s" % (puck_ampl[0]*AtomicData.bohr_to_angs)       # should be 0.050
-    print "q_3 = %s" % (puck_ampl[1]*AtomicData.bohr_to_angs)       # should be 0.554
-    print "phi_2 = %s" % (puck_phase[0]+2.0*np.pi)    # should be 183.7 deg = 3.2062 rad
+    print("q_2 = %s" % (puck_ampl[0]*AtomicData.bohr_to_angs))       # should be 0.050
+    print("q_3 = %s" % (puck_ampl[1]*AtomicData.bohr_to_angs))       # should be 0.554
+    print("phi_2 = %s" % (puck_phase[0]+2.0*np.pi))    # should be 183.7 deg = 3.2062 rad
 
 if __name__ == "__main__":
     import sys
@@ -179,5 +180,5 @@ if __name__ == "__main__":
 
     xyz_file = "/tmp/furan_puckering.xyz"
     XYZ.write_xyz(xyz_file, puckered_geometries)
-    print "different puckered geometries of furan written to '%s'" % xyz_file
+    print("different puckered geometries of furan written to '%s'" % xyz_file)
 

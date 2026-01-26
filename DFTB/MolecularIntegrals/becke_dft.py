@@ -13,8 +13,8 @@ import sys
 
 if __name__ == "__main__":
     if len(sys.argv) < 4:
-        print "Usage: %s xyz-file  rfac  Lmax" % os.path.basename(sys.argv[0])
-        print "  compute DFT ground state"
+        print("Usage: %s xyz-file  rfac  Lmax" % os.path.basename(sys.argv[0]))
+        print("  compute DFT ground state")
         exit(-1)
 
     # load geometry

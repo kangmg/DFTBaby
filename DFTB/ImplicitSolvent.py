@@ -390,22 +390,22 @@ def check_analytic_gradients(atomlist0):
                 return gamma_solvent[i,j]
             grad_num[:,i,j] = utils.numerical_gradient(f,x0)
 
-    print "analytical gradient"
-    print np.round(grad_ana, 6)
-    print "numerical gradient"
-    print np.round(grad_num, 6)
+    print("analytical gradient")
+    print(np.round(grad_ana, 6))
+    print("numerical gradient")
+    print(np.round(grad_num, 6))
     
     err = la.norm(grad_ana-grad_num)
-    print "|(grad g_solvent)_num - (grad g_solvent)_ana|= %e" % err
+    print("|(grad g_solvent)_num - (grad g_solvent)_ana|= %e" % err)
     assert err < 1.0e-5
     
             
 def check_surface_area(atomlist):
     # check convergence of surface area as a function of the
     # number of points
-    print "# order      points        area    "
-    print "#          per sphere      Ang^2   "
-    print "# ---------------------------------"
+    print("# order      points        area    ")
+    print("#          per sphere      Ang^2   ")
+    print("# ---------------------------------")
     for io,order in enumerate(Lebedev_L2max):
         # number of points per sphere
         nr_points = Lebedev_Npts[io]
@@ -414,9 +414,9 @@ def check_surface_area(atomlist):
         area = cavity.getSurfaceArea()
         cavity.constructCOSMO()
         cavity.constructCOSMOgradient()
-        print "    %4.1d      %4.1d       %8.4f    " % (order, nr_points, area * AtomicData.bohr_to_angs**2)
+        print("    %4.1d      %4.1d       %8.4f    " % (order, nr_points, area * AtomicData.bohr_to_angs**2))
 
-    print ""
+    print("")
 
 ###########################################################################
 # Surface area of intersecting spheres
@@ -497,7 +497,7 @@ def surface_areas_spheres(centers, radii, nr_slices=10, debug=0):
         # surface area (circumference * height) of k-th slice
         for k in range(0, nr_slices):
             if debug:
-                print " ==> cut plane k=%d <== " % k
+                print(" ==> cut plane k=%d <== " % k)
             # radius of circle i (intersection of i-th sphere with k-th cut plane)
             radius_ik = radii[i]*sin_slice[k]
             # global z-coordinate of k-th cut plane
@@ -528,14 +528,14 @@ def surface_areas_spheres(centers, radii, nr_slices=10, debug=0):
 
                 if (d + radius_jk < radius_ik):
                     if debug:
-                        print "case 1: circle %d lies inside circle %d" % (j,i)
+                        print("case 1: circle %d lies inside circle %d" % (j,i))
                     # case 1:
                     #   circle j is fully contained in circle i => all area is accessible
                     phi_start = 0.0
                     phi_end   = 0.0
                 elif (d + radius_ik < radius_jk):
                     if debug:
-                        print "case 2: circle %d lies inside circle %d" % (i,j)
+                        print("case 2: circle %d lies inside circle %d" % (i,j))
                     # case 2:
                     #   circle i is fully contained in circle j => no accessible surface area
                     phi_start = 0.0
@@ -543,14 +543,14 @@ def surface_areas_spheres(centers, radii, nr_slices=10, debug=0):
                     phi_end   = 2.0*np.pi - 1.0e-12
                 elif (radius_ik + radius_jk < d):
                     if debug:
-                        print "case 3: circle %d and %d do not intersect" % (i,j)
+                        print("case 3: circle %d and %d do not intersect" % (i,j))
                     # case 3:
                     #   circles do not intersect => all area of i is accessible
                     phi_start = 0.0
                     phi_end   = 0.0
                 else:
                     if debug:
-                        print "case 4: circles %d and %d intersect" % (i,j)
+                        print("case 4: circles %d and %d intersect" % (i,j))
                     # case 4:
                     #   circles intersect 
                     # angle between vector from center i to center j and the x-axis
@@ -564,9 +564,9 @@ def surface_areas_spheres(centers, radii, nr_slices=10, debug=0):
                     phi_end   = phi0 + dphi
                     
                 if debug:
-                    print "angles of crossing points of sphere %d and sphere %d (relative to center of sphere %d)" % (j,i,i)
-                    print "  phi_start          = %s" % phi_start
-                    print "  phi_end            = %s" % phi_end
+                    print("angles of crossing points of sphere %d and sphere %d (relative to center of sphere %d)" % (j,i,i))
+                    print("  phi_start          = %s" % phi_start)
+                    print("  phi_end            = %s" % phi_end)
 
                 # Multiplies of 2*pi can be added to angles without changing them.
                 # Make sure all angles are > 0
@@ -593,7 +593,7 @@ def surface_areas_spheres(centers, radii, nr_slices=10, debug=0):
                 assert phi_start <= phi_end
                 total_angle += phi_end - phi_start
             if debug:
-                print "Exposed angle of sphere i=%d in cut plane k=%d  :  %s rad" % (i,k,total_angle)
+                print("Exposed angle of sphere i=%d in cut plane k=%d  :  %s rad" % (i,k,total_angle))
 
             # The area of the exposed surface of this slice is computed as
             # d(Area) =          d(Height)     x    d(Length)
@@ -677,7 +677,7 @@ def merge_overlapping_intervals(intervals):
     if len(intervals) == 0:
         return intervals
     # sort intervals by starting point
-    sorted_intervals = sorted(intervals, key=lambda (start,end): start)
+    sorted_intervals = sorted(intervals, key=lambda start,end: start)
     #
     merged_intervals = []
     # current interval
@@ -797,11 +797,11 @@ def exposed_angle(intervals):
 
 def test_interval_merging():
     intervals = [(1,2), (-5,1.5), (2,5), (-2,3), (10,12), (11,13)]
-    print intervals
+    print(intervals)
     merged = merge_overlapping_intervals(intervals)
-    print merged
+    print(merged)
     complementary = complementary_intervals(merged, vmin=-20, vmax=20)
-    print complementary
+    print(complementary)
     
 def circumference_2d():
     """
@@ -847,7 +847,7 @@ def circumference_2d():
     exposed_lengths = []
     for i in range(0, n):
         xi,yi = centers[i,:]
-        print "sphere %d at (%s,%s)" % (i,xi,yi)
+        print("sphere %d at (%s,%s)" % (i,xi,yi))
         # find length of arcs of i occluded by sphere j
         # An arc of a circle is defined by the angle of the first point
         # with the x-axis (phi_state) and the angle of the last point (phi_end).
@@ -857,7 +857,7 @@ def circumference_2d():
                 continue
             # distance between spheres i and j
             xj,yj = centers[j,:]
-            print "sphere j at (%s,%s)" % (xj,yj)
+            print("sphere j at (%s,%s)" % (xj,yj))
             # vector between centers of circles in the xy-plane
             dx = xj-xi
             dy = yj-yi
@@ -866,26 +866,26 @@ def circumference_2d():
             d = np.sqrt(d2)
 
             if (d + radii[j] < radii[i]):
-                print "case 1: sphere %d lies inside sphere %d" % (j,i)
+                print("case 1: sphere %d lies inside sphere %d" % (j,i))
                 # case 1:
                 #  sphere j is fully contained in sphere i => all area is accessible
                 phi_start = 0.0
                 phi_end   = 0.0
             elif (d + radii[i] < radii[j]):
-                print "case 2: sphere %d lies inside sphere %d" % (i,j)
+                print("case 2: sphere %d lies inside sphere %d" % (i,j))
                 # case 2:
                 #  sphere i is fully contained in sphere j => no accessible surface area
                 phi_start = 0.0
                 # We have to subtract an infinitesimal angle, since otherwise 0 rad = 2*pi rad
                 phi_end   = 2.0*np.pi - 1.0e-12
             elif (d > radii[i] + radii[j]):
-                print "case 3: spheres %d and %d do not intersect" % (i,j)
+                print("case 3: spheres %d and %d do not intersect" % (i,j))
                 # case 3:
                 # spheres do not intersect => all area of i is accessible
                 phi_start = 0.0
                 phi_end   = 0.0
             else:
-                print "case 4: sphere %d and %d intersect" % (i,j)
+                print("case 4: sphere %d and %d intersect" % (i,j))
                 # case 4:
                 # spheres intersect 
                 # angle between vector from center i to center j and the x-axis
@@ -899,9 +899,9 @@ def circumference_2d():
                 phi_end   = phi0 + dphi
 
 
-            print "angles of crossing points of sphere %d and sphere %d (relative to center of sphere %d)" % (j,i,i)
-            print "  phi_start          = %s" % phi_start
-            print "  phi_end            = %s" % phi_end
+            print("angles of crossing points of sphere %d and sphere %d (relative to center of sphere %d)" % (j,i,i))
+            print("  phi_start          = %s" % phi_start)
+            print("  phi_end            = %s" % phi_end)
 
             #assert phi_start <= phi_end
             # Multiplies of 2*pi can be added to angles without changing them.
@@ -926,10 +926,10 @@ def circumference_2d():
         vmin = min([phi_start for (phi_start, phi_end) in inside_merged_arcs], 0.0)
         outside_arcs = complementary_intervals(inside_merged_arcs, vmin=vmin, vmax=vmin+2.0*np.pi)
 
-        print " occluded_arcs         = %s" % occluded_arcs
-        print " wrapped_occluded arcs = %s" % wrapped_occluded_arcs
-        print " inside_merged_arcs    = %s" % inside_merged_arcs
-        print " outside_arcs          = %s" % outside_arcs
+        print(" occluded_arcs         = %s" % occluded_arcs)
+        print(" wrapped_occluded arcs = %s" % wrapped_occluded_arcs)
+        print(" inside_merged_arcs    = %s" % inside_merged_arcs)
+        print(" outside_arcs          = %s" % outside_arcs)
         
         # plot exposed surface of sphere i
         for (phi_start, phi_end) in outside_arcs:
@@ -946,11 +946,11 @@ def circumference_2d():
         #  L = radius * angle
         total_length_i = radii[i]*total_angle
 
-        print "length of exposed circumference of sphere %d  :  %s" % (i, total_length_i)
+        print("length of exposed circumference of sphere %d  :  %s" % (i, total_length_i))
 
         exposed_lengths.append( total_length_i )
 
-    print "circumference of intersecting disks: %s" % np.sum(exposed_lengths)
+    print("circumference of intersecting disks: %s" % np.sum(exposed_lengths))
     
     ax.set_aspect('equal')
     plt.xlim((-2.0, 4.0))
@@ -984,21 +984,21 @@ def test_surface_areas_spheres():
     radii = np.array([1.0])
     """
     
-    print "exposed surface areas"
-    print "  nr. slices            areas "
+    print("exposed surface areas")
+    print("  nr. slices            areas ")
     for nr_slices in range(5, 50):
         areas = surface_areas_spheres(centers.transpose(), radii, nr_slices=nr_slices, debug=0)
-        print "   %4.d        %s" % (nr_slices, areas)
+        print("   %4.d        %s" % (nr_slices, areas))
 
-    print "4 pi r**2 = %s" % (4.0 * np.pi * radii**2)
+    print("4 pi r**2 = %s" % (4.0 * np.pi * radii**2))
 
 
 def test_vdw_surface_area():
     import sys
     import os.path
     if len(sys.argv) < 2:
-        print "Usage: %s input.xyz" % os.path.basename(sys.argv[0])
-        print "  compute area of van der Waals surface of a molecule"
+        print("Usage: %s input.xyz" % os.path.basename(sys.argv[0]))
+        print("  compute area of van der Waals surface of a molecule")
         exit(-1)
 
     # load geometry
@@ -1007,7 +1007,7 @@ def test_vdw_surface_area():
     # compute vdW area
     area = vdW_surface_area(atomlist)
 
-    print "van der Waals area: %s bohr^2  %s Ang^2" % (area, area*AtomicData.bohr_to_angs**2)
+    print("van der Waals area: %s bohr^2  %s Ang^2" % (area, area*AtomicData.bohr_to_angs**2))
     
 if __name__ == "__main__":
     import sys

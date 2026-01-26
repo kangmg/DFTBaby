@@ -48,9 +48,9 @@ class QMMM:
         inner_indeces = list(set(inner_indeces))  # remove duplicate indeces
         inner_indeces.sort()
         if verbose > 0:
-            print "Indeces of QM atoms:"
-            print inner_indeces
-            print "number of QM atoms: %d" % len(inner_indeces)
+            print("Indeces of QM atoms:")
+            print(inner_indeces)
+            print("number of QM atoms: %d" % len(inner_indeces))
         # counting in the partitioning file starts at 1
         inner_indeces = np.asarray(inner_indeces, dtype=int)-1
 
@@ -77,7 +77,7 @@ class QMMM:
         else:
             # load definitions for periodic force field
             if verbose > 0:
-                print "periodic MM calculations with DREIDING"
+                print("periodic MM calculations with DREIDING")
             atomlist_full_ff, atomtypes_full, charges_full, lattice_vectors = read_force_field(pff_file)
             atomtypes_inner = [atomtypes_full[i] for i in self.inner_indeces]
             charges_inner = [charges_full[i] for i in self.inner_indeces]

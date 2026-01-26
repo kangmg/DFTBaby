@@ -49,11 +49,11 @@ class reconstruct_metadynamics(meta.metadynamics):
                 if animate:
                     self.animate_2dvg(vg, x, h, w, self.cvs, ngauss, stride)
             else:
-                print "Plotting the metadynamics potential is only supported for up to 2 CVs"
+                print("Plotting the metadynamics potential is only supported for up to 2 CVs")
         np.save("vg_grid.npy", x)
-        print "Grid written to vg_grid.npy"
+        print("Grid written to vg_grid.npy")
         np.save("vg_values.npy", vg)
-        print "Metadynamics potential written to vg_values.npy"
+        print("Metadynamics potential written to vg_values.npy")
 
     def gauss(self, x, g, w):
         return np.exp(-(x-g)**2/2/w**2)

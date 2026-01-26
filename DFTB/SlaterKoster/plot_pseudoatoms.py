@@ -30,15 +30,15 @@ def plot_pseudoatom(atom, pngfile, elmfile=None):
     cla()
     title("Z = %s, Nelec = %s" % (atom.Z, atom.Nelec))
     xlabel("r / bohr", fontsize=15)
-    print "Atom %s" % AtomicData.atom_names[atom.Z-1]
-    print "========"
+    print("Atom %s" % AtomicData.atom_names[atom.Z-1])
+    print("========")
     for i,orb_name in enumerate(atom.orbital_names):
-        print "Orbital %s:  %s  %s" % (orb_name, \
+        print("Orbital %s:  %s  %s" % (orb_name, )
                          ("%2.5f Hartree" % atom.energies[i]).rjust(15), \
                          ("%2.5f eV" % (atom.energies[i]*AtomicData.hartree_to_eV)).rjust(20))
         plot(atom.r, atom.radial_wavefunctions[i], lw=2.5, label="%s en=%s" % (orb_name, atom.energies[i]))
         # compare with hotbit
-        if elmfile != None and hbdata.has_key("radial_wavefunction_%s" % orb_name):
+        if elmfile != None and "radial_wavefunction_%s" % orb_name in hbdata:
             ru = hbdata["radial_wavefunction_%s" % orb_name]
             en = hbdata["orbital_energy_%s" % orb_name]
             plot(ru[:,0], ru[:,1], ls="-.", label="%s en=%s (unconfined)" % (orb_name, en))
@@ -48,8 +48,8 @@ def plot_pseudoatom(atom, pngfile, elmfile=None):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: python %s <pseudo atom module>.py [<.elm file for comparison>]" % sys.argv[0]
-        print "Plots the atomic orbitals of a pseudo atom."
+        print("Usage: python %s <pseudo atom module>.py [<.elm file for comparison>]" % sys.argv[0])
+        print("Plots the atomic orbitals of a pseudo atom.")
         exit(-1)
     modfile = sys.argv[1]
     if len(sys.argv) > 2:
@@ -57,5 +57,5 @@ if __name__ == "__main__":
     else:
         elmfile = None
     mod = utils.dotdic()
-    execfile(modfile, mod)
+    exec(open(modfile).read(), mod)
     plot_pseudoatom(mod, "/tmp/%s.png" % AtomicData.atom_names[mod.Z-1], elmfile)

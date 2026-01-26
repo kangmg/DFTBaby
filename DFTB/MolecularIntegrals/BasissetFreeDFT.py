@@ -107,13 +107,13 @@ def total_charge(atomlist, rho, verbose=1):
     qtot = qnuc + qelec
 
     if verbose > 0:
-        print ""
-        print "  Charges"
-        print "  ======="
-        print "  nuclear charge     qnuc  = %+e" % qnuc
-        print "  electronic charge  qelec = %+e   (-1) x integrated electron density" % qelec
-        print "  total charge       qtot  = %+e" % qtot
-        print ""
+        print("")
+        print("  Charges")
+        print("  =======")
+        print("  nuclear charge     qnuc  = %+e" % qnuc)
+        print("  electronic charge  qelec = %+e   (-1) x integrated electron density" % qelec)
+        print("  total charge       qtot  = %+e" % qtot)
+        print("")
     
     return qnuc, qelec, qtot
 
@@ -210,19 +210,19 @@ def center_of_charge(atomlist, rho,
         center_tot = None
 
     if verbose > 0:
-        print " "
-        print "  Center of Charge"
-        print "  ================"
-        print "  center of nuclear charge density  =  %+e  %+e  %+e" % tuple(center_nuc)
+        print(" ")
+        print("  Center of Charge")
+        print("  ================")
+        print("  center of nuclear charge density  =  %+e  %+e  %+e" % tuple(center_nuc))
         if center_elec is None:
-            print "  center of electronic charge is undefined because nelec = %e" % nelec
+            print("  center of electronic charge is undefined because nelec = %e" % nelec)
         else:
-            print "  center of elec. charge density    =  %+e  %+e  %+e" % tuple(center_elec)
+            print("  center of elec. charge density    =  %+e  %+e  %+e" % tuple(center_elec))
         if center_tot is None:
-            print "  center of total charge is undefined because qtot = qelec + qnuc = %+e " % qtot
+            print("  center of total charge is undefined because qtot = qelec + qnuc = %+e " % qtot)
         else:
-            print "  center of total charge            =  %+e  %+e  %+e" % tuple(center_tot)
-        print " "
+            print("  center of total charge            =  %+e  %+e  %+e" % tuple(center_tot))
+        print(" ")
         
     return center_nuc, center_elec, center_tot
     
@@ -257,14 +257,14 @@ def effective_potential_func(atomlist, rho, xc,
     """
     if xc is None:
         if nelec < 2:
-            print "NOTE: One-electron systems are treated exactly (without xc-potential)!"
+            print("NOTE: One-electron systems are treated exactly (without xc-potential)!")
         elif nelec == 2:
-            print "NOTE: Two-electron systems are treated with Hartree-Fock theory!"
+            print("NOTE: Two-electron systems are treated with Hartree-Fock theory!")
         else:
-            print "NOTE: Since no xc-functional was specified, many electron systems"
-            print "      are treated with Hartree theory (no exchange, no correlation)!"
+            print("NOTE: Since no xc-functional was specified, many electron systems")
+            print("      are treated with Hartree theory (no exchange, no correlation)!")
     else:
-        print "NOTE: Many-electron systems are treated with density functional theory!"
+        print("NOTE: Many-electron systems are treated with density functional theory!")
         
     # Bring geometry data into a form understood by the module MolecularIntegrals
     atomic_numbers, atomic_coordinates = atomlist2arrays(atomlist)
@@ -289,7 +289,7 @@ def effective_potential_func(atomlist, rho, xc,
                                       lebedev_order=settings.lebedev_order)
 
     if not nuclear:
-        print "nuclear potential Vnuc is not included in effective potential, Veff = Vcoul + Vxc!"
+        print("nuclear potential Vnuc is not included in effective potential, Veff = Vcoul + Vxc!")
         
     def effective_potential(x,y,z):
         if nuclear:
@@ -733,7 +733,7 @@ def inhomogeneous_schroedinger(atomlist, potential, source, E):
     # Translate molecular geometry into the format understood
     # by the multicenter integration code
     atomic_numbers, atomic_coordinates = atomlist2arrays(atomlist)
-    print "Schroedinger equation ..."
+    print("Schroedinger equation ...")
     dphi = multicenter_inhomogeneous_schroedinger(potential, source,  E,
                                                   atomic_coordinates, atomic_numbers,
                                                   radial_grid_factor=settings.radial_grid_factor,
@@ -801,12 +801,12 @@ def variational_mixture(atomlist, phi, delta_phi, potential):
         a *= -1
         b *= -1
 
-    print "Eigenenergies= %s" % eigvals
+    print("Eigenenergies= %s" % eigvals)
     #print "selected solution isel= %d" % (isel+1)
-    print "Coefficients for mixing old orbital and orbital correction"
-    print "   phi^(new) = a*phi^(old) + b*delta_phi "
-    print "a = %s" % a
-    print "b = %s" % b
+    print("Coefficients for mixing old orbital and orbital correction")
+    print("   phi^(new) = a*phi^(old) + b*delta_phi ")
+    print("a = %s" % a)
+    print("b = %s" % b)
         
     return a,b
 
@@ -1011,18 +1011,18 @@ def total_dft_energy(atomlist, orbitals, xc,
         
     Etot = Eelec + Erep
 
-    print "   DFT Energies"
-    print "   ------------"
-    print "kinetic energy                 Ekin  = %e Hartree" % Ekin
-    print "nuclear attraction energy      Enuc  = %e Hartree" % Enuc
-    print "electron-electron repulsion    Ecoul = %e Hartree" % Ecoul
-    print "exchange-correlation energy    Exc   = %e Hartree" % Exc
-    print ""
-    print "total electronic energy        Eelec = %e Hartree" % Eelec
-    print "nuclear repulsion energy       Erep  = %e Hartree" % Erep
-    print "virial -V/T = %8.5f" % (-(Etot-Ekin)/Ekin)
-    print ""
-    print "total energy                   Etot  = %e Hartree" % Etot
+    print("   DFT Energies")
+    print("   ------------")
+    print("kinetic energy                 Ekin  = %e Hartree" % Ekin)
+    print("nuclear attraction energy      Enuc  = %e Hartree" % Enuc)
+    print("electron-electron repulsion    Ecoul = %e Hartree" % Ecoul)
+    print("exchange-correlation energy    Exc   = %e Hartree" % Exc)
+    print("")
+    print("total electronic energy        Eelec = %e Hartree" % Eelec)
+    print("nuclear repulsion energy       Erep  = %e Hartree" % Erep)
+    print("virial -V/T = %8.5f" % (-(Etot-Ekin)/Ekin))
+    print("")
+    print("total energy                   Etot  = %e Hartree" % Etot)
         
     return Etot
 
@@ -1039,9 +1039,9 @@ def overlap_matrix(atomlist, orbitals):
             S[j,i] = S[i,j]
 
     #
-    print "overlap matrix S"
+    print("overlap matrix S")
     labels = ["orb.  %3.1d" % (i+1) for i in range(0, norb)]
-    print annotated_matrix(S, labels, labels)
+    print(annotated_matrix(S, labels, labels))
 
     return S
 
@@ -1058,9 +1058,9 @@ def hamiltonian_matrix(atomlist, orbitals, potential):
             H[j,i] = H[i,j]
 
     #
-    print "Hamiltonian matrix H"
+    print("Hamiltonian matrix H")
     labels = ["orb.  %3.1d" % (i+1) for i in range(0, norb)]
-    print annotated_matrix(H, labels, labels)
+    print(annotated_matrix(H, labels, labels))
 
     return H
 
@@ -1080,9 +1080,9 @@ def hamiltonian_matrix_ee(atomlist, orbitals, potential_ee):
             H[j,i] = H[i,j]
 
     #
-    print "Hamiltonian matrix H"
+    print("Hamiltonian matrix H")
     labels = ["orb.  %3.1d" % (i+1) for i in range(0, norb)]
-    print annotated_matrix(H, labels, labels)
+    print(annotated_matrix(H, labels, labels))
 
     return H
 
@@ -1158,9 +1158,9 @@ def solve_matrix_schroedinger(atomlist, orbitals, potential):
     orbitals_eig = orbital_transformation(atomlist, orbitals, C) 
 
     # show coefficients of new orbitals MO' in the basis of the old orbitals MO .
-    print "  Orbital coefficients"
-    print "  ===================="
-    print annotated_matrix(np.vstack((E, C)),\
+    print("  Orbital coefficients")
+    print("  ====================")
+    print(annotated_matrix(np.vstack((E, C)),)
                 ["en. (a.u.)", "-"] + ["MO %s" % (i+1) for i in range(0, len(E))],\
                                       ["MO'%s" % (i+1) for i in range(0, len(E))], colwidth=10)
     
@@ -1201,9 +1201,9 @@ def solve_matrix_schroedinger_ee(atomlist, orbitals, potential_ee):
     orbitals_eig = orbital_transformation(atomlist, orbitals, C) 
 
     # show coefficients of new orbitals MO' in the basis of the old orbitals MO .
-    print "  Orbital coefficients"
-    print "  ===================="
-    print annotated_matrix(np.vstack((E, C)),\
+    print("  Orbital coefficients")
+    print("  ====================")
+    print(annotated_matrix(np.vstack((E, C)),)
                 ["en. (a.u.)", "-"] + ["MO %s" % (i+1) for i in range(0, len(E))],\
                                       ["MO'%s" % (i+1) for i in range(0, len(E))], colwidth=10)
     
@@ -1225,14 +1225,14 @@ def orthogonalize_orbitals(atomlist, orbitals):
     norb = len(orbitals)
 
     # perform Loewdin orthogonalization, X = S^{-1/2}
-    print "BEFORE ORTHOGONALIZATION"
+    print("BEFORE ORTHOGONALIZATION")
     S = overlap_matrix(atomlist, orbitals)
     X = sla.sqrtm(sla.inv(S))
     
     orbitals_ortho = orbital_transformation(atomlist, orbitals, X)
 
     # check orthogonalization
-    print "AFTER ORTHOGONALIZATION"
+    print("AFTER ORTHOGONALIZATION")
     S = overlap_matrix(atomlist, orbitals_ortho)
     
     return orbitals_ortho
@@ -1262,10 +1262,10 @@ class BasissetFreeDFT(object):
             # Show some information about the XC functional
             desc_x = xc.func_x.description()
             desc_c = xc.func_c.description()
-            print "XC-Functional    "
-            print "-------------  \n"
-            print desc_x
-            print desc_c
+            print("XC-Functional    ")
+            print("-------------  \n")
+            print(desc_x)
+            print(desc_c)
             """
             ### I think this issue has been fixed, we can compute (grad n)^2 now.
             #
@@ -1329,8 +1329,8 @@ class BasissetFreeDFT(object):
             # for instance in the Li^+ cation.
             valence_orbitals = []
 
-        print "number of core orbitals    : %d" % len(core_orbitals)
-        print "number of valence orbitals : %d" % len(valence_orbitals)
+        print("number of core orbitals    : %d" % len(core_orbitals))
+        print("number of valence orbitals : %d" % len(valence_orbitals))
         
         orbitals = core_orbitals + valence_orbitals
         
@@ -1388,7 +1388,7 @@ class BasissetFreeDFT(object):
         orbitals    :   doubly occupied orbitals, list of callables, orbital[i](x,y,z)
         energies    :   list of Kohn-Sham orbital energies
         """
-        print "initial orbital guess from DFTB calculation"
+        print("initial orbital guess from DFTB calculation")
         orbitals = self.getOrbitalGuess()
         
         norb = len(orbitals)
@@ -1397,13 +1397,13 @@ class BasissetFreeDFT(object):
 
         orbital_energies = np.zeros(norb)
 
-        print "solve Kohn-Sham equations on a multicenter grid"
+        print("solve Kohn-Sham equations on a multicenter grid")
 
         print_grid_summary(self.atomlist,
                            settings.lebedev_order, settings.radial_grid_factor)
         
         for k in range(0, max_iter):
-            print "Iteration k= %3.1d" % k
+            print("Iteration k= %3.1d" % k)
                        
             rho = density_func(orbitals)
             veff_new = effective_potential_func(self.atomlist, rho, self.xc, nelec=nelec)
@@ -1411,7 +1411,7 @@ class BasissetFreeDFT(object):
                 if total_error < 1.0:
                     # The density is only updated if the orbitals have more
                     # or less stabilized.
-                    print "updating effective potential veff[rho^(new)]"
+                    print("updating effective potential veff[rho^(new)]")
 
                     #
                     #  (next)        (old)        (new)
@@ -1436,12 +1436,12 @@ class BasissetFreeDFT(object):
 
                 #
                 nrm2_residual = overlap(self.atomlist, residual, residual)
-                print "residual norm for orbital %d  |(H-E)phi|^2= %e" % (i+1, nrm2_residual)
+                print("residual norm for orbital %d  |(H-E)phi|^2= %e" % (i+1, nrm2_residual))
 
                 if nrm2_residual < thresh**2:
                     # If the residual norm is converged we don't have to
                     # compute the orbital correction for this orbital. 
-                    print "Residual norm for orbital %d CONVERGED" % (i+1)
+                    print("Residual norm for orbital %d CONVERGED" % (i+1))
                     continue
                 
                 # orbital correction
@@ -1449,7 +1449,7 @@ class BasissetFreeDFT(object):
                 nrm2_delta_phi = overlap(self.atomlist, delta_phi, delta_phi)
                 total_error += nrm2_delta_phi
                 
-                print "    orbital i= %d    energy E= %e   delta E= %+e   |dphi|^2= %e" % (i+1, e, delta_e, nrm2_delta_phi)
+                print("    orbital i= %d    energy E= %e   delta E= %+e   |dphi|^2= %e" % (i+1, e, delta_e, nrm2_delta_phi))
                 
                 orbital_corrections.append(delta_phi)
 
@@ -1473,7 +1473,7 @@ class BasissetFreeDFT(object):
                 ###
                 """
                 
-            print "k= %3.1d  error = %e (threshold = %e)" % (k, total_error, thresh)
+            print("k= %3.1d  error = %e (threshold = %e)" % (k, total_error, thresh))
 
             # Since the Kohn-Sham equations are solved separately for
             # each orbital, the orthogonality may be lost, if one orbital
@@ -1491,10 +1491,10 @@ class BasissetFreeDFT(object):
 
             Etot = total_dft_energy(self.atomlist, orbitals, self.xc,
                                     nelec=nelec)
-            print "total DFT energy Etot= %e" % Etot
+            print("total DFT energy Etot= %e" % Etot)
             
             if total_error < thresh:
-                print "SCF cycle CONVERGED"
+                print("SCF cycle CONVERGED")
                 break
         else:
             raise RuntimeError("SCF did not converge in '%s' iterations!" % max_iter)
@@ -1519,7 +1519,7 @@ class BasissetFreeDFT(object):
         orbitals    :   doubly occupied orbitals, list of callables, orbital[i](x,y,z)
         energies    :   list of Kohn-Sham orbital energies
         """
-        print "initial orbital guess from DFTB calculation"
+        print("initial orbital guess from DFTB calculation")
         orbitals = self.getOrbitalGuess()
         
         norb = len(orbitals)
@@ -1528,15 +1528,15 @@ class BasissetFreeDFT(object):
 
         orbital_energies = np.zeros(norb)
 
-        print "solve Kohn-Sham equations on a multicenter grid"
+        print("solve Kohn-Sham equations on a multicenter grid")
         
         for k in range(0, max_iter):
-            print "Iteration k= %3.1d" % k
+            print("Iteration k= %3.1d" % k)
                        
             rho = density_func(orbitals)
             veff_new = effective_potential_func(self.atomlist, rho, self.xc, nelec=nelec)
             if k > 0:
-                print "updating effective potential veff[rho^(new)]"
+                print("updating effective potential veff[rho^(new)]")
 
                 #
                 #  (next)        (old)        (new)
@@ -1575,13 +1575,13 @@ class BasissetFreeDFT(object):
 
                 # check normalization
                 norm2 = overlap(self.atomlist, phi, phi)
-                print "<phi|phi>= %e" % norm2
+                print("<phi|phi>= %e" % norm2)
                 
 
                 
-                print "    orbital i= %d    energy E= %e   delta E= %+e   |dphi|^2= %e" % (i+1, e, delta_e, nrm2_delta_phi)
+                print("    orbital i= %d    energy E= %e   delta E= %+e   |dphi|^2= %e" % (i+1, e, delta_e, nrm2_delta_phi))
                             
-            print "k= %3.1d  error = %e (threshold = %e)" % (k, total_error, thresh)
+            print("k= %3.1d  error = %e (threshold = %e)" % (k, total_error, thresh))
 
             # Since the Kohn-Sham equations are solved separately for
             # each orbital, the orthogonality may be lost, if one orbital
@@ -1591,10 +1591,10 @@ class BasissetFreeDFT(object):
                         
             Etot = total_dft_energy(self.atomlist, orbitals, self.xc,
                                     nelec=nelec)
-            print "total DFT energy Etot= %e" % Etot
+            print("total DFT energy Etot= %e" % Etot)
             
             if total_error < thresh:
-                print "Converged"
+                print("Converged")
                 break
         else:
             raise RuntimeError("SCF did not converge in '%s' iterations!" % max_iter)
@@ -1653,7 +1653,7 @@ class BasissetFreeDFT(object):
         orbitals    :   doubly occupied orbitals, list of callables, orbital[i](x,y,z)
         energies    :   list of Kohn-Sham orbital energies
         """
-        print "initial orbital guess from DFTB calculation"
+        print("initial orbital guess from DFTB calculation")
         orbitals = self.getOrbitalGuess()
         
         norb = len(orbitals)
@@ -1665,13 +1665,13 @@ class BasissetFreeDFT(object):
         # attraction potential between nuclei and electrons
         nuclear_potential = nuclear_potential_func(self.atomlist)
         
-        print "solve Kohn-Sham equations on a multicenter grid"
+        print("solve Kohn-Sham equations on a multicenter grid")
 
         print_grid_summary(self.atomlist,
                            settings.lebedev_order, settings.radial_grid_factor)
 
         for k in range(0, max_iter):
-            print "Iteration k= %3.1d" % k
+            print("Iteration k= %3.1d" % k)
                        
             rho = density_func(orbitals)
             # effective Kohn-Sham potential without nuclear attraction
@@ -1683,7 +1683,7 @@ class BasissetFreeDFT(object):
                 if total_error < 1.0:
                     # The density is only updated if the orbitals have more
                     # or less stabilized.
-                    print "updating effective potential veff[rho^(new)]"
+                    print("updating effective potential veff[rho^(new)]")
 
                     #
                     #  (next)        (old)        (new)
@@ -1712,12 +1712,12 @@ class BasissetFreeDFT(object):
 
                 #
                 nrm2_residual = overlap(self.atomlist, residual, residual)
-                print "residual norm for orbital %d  |(H-E)phi|^2= %e" % (i+1, nrm2_residual)
+                print("residual norm for orbital %d  |(H-E)phi|^2= %e" % (i+1, nrm2_residual))
 
                 if nrm2_residual < thresh**2:
                     # If the residual norm is converged we don't have to
                     # compute the orbital correction for this orbital. 
-                    print "Residual norm for orbital %d CONVERGED" % (i+1)
+                    print("Residual norm for orbital %d CONVERGED" % (i+1))
                     continue
                 
                 # orbital correction
@@ -1725,7 +1725,7 @@ class BasissetFreeDFT(object):
                 nrm2_delta_phi = overlap(self.atomlist, delta_phi, delta_phi)
                 total_error += nrm2_delta_phi
                 
-                print "    orbital i= %d    energy E= %e   delta E= %+e   |dphi|^2= %e" % (i+1, e, delta_e, nrm2_delta_phi)
+                print("    orbital i= %d    energy E= %e   delta E= %+e   |dphi|^2= %e" % (i+1, e, delta_e, nrm2_delta_phi))
                 
                 orbital_corrections.append(delta_phi)
 
@@ -1749,7 +1749,7 @@ class BasissetFreeDFT(object):
                 ###
                 """
                 
-            print "k= %3.1d  error = %e (threshold = %e)" % (k, total_error, thresh)
+            print("k= %3.1d  error = %e (threshold = %e)" % (k, total_error, thresh))
 
             # Since the Kohn-Sham equations are solved separately for
             # each orbital, the orthogonality may be lost, if one orbital
@@ -1767,10 +1767,10 @@ class BasissetFreeDFT(object):
 
             Etot = total_dft_energy(self.atomlist, orbitals, self.xc,
                                     nelec=nelec)
-            print "total DFT energy Etot= %e" % Etot
+            print("total DFT energy Etot= %e" % Etot)
             
             if total_error < thresh:
-                print "SCF cycle CONVERGED"
+                print("SCF cycle CONVERGED")
                 break
         else:
             raise RuntimeError("SCF did not converge in '%s' iterations!" % max_iter)
@@ -1784,7 +1784,7 @@ class BasissetFreeDFT(object):
         """
         
         """
-        print "compute radial wavefunctions and residuals for plotting..."
+        print("compute radial wavefunctions and residuals for plotting...")
         # The radial grid is chosen for the atom with the largest
         # atomic number
         Zmax = max([Z for (Z,pos) in atomlist])
@@ -1814,21 +1814,21 @@ class BasissetFreeDFT(object):
                                         center=center)
 
         # save radial wavefunctions and spherically averaged residual
-        print "# ITERATION k= %d RADIAL_WAVEFUNCTIONS" % k
-        print "# Asymptotic wavefunction:"
-        print "#   charge            Z= %+d" % charge
-        print "#   energy            E= %e  k= %e" % (E, k)
-        print "#   angular momentum  l= %d m= %+d" % (l, m)
-        print "#   phase shift       delta= %e rad" % delta
-        print "# "
-        print "#     R/bohr                 Coulomb               Coulomb           radial wavefunction   spherical avg. residual"
-        print "#                                                  shifted                R_{l,m}(r)           <|(H-E)phi|^2>"
+        print("# ITERATION k= %d RADIAL_WAVEFUNCTIONS" % k)
+        print("# Asymptotic wavefunction:")
+        print("#   charge            Z= %+d" % charge)
+        print("#   energy            E= %e  k= %e" % (E, k))
+        print("#   angular momentum  l= %d m= %+d" % (l, m))
+        print("#   phase shift       delta= %e rad" % delta)
+        print("# ")
+        print("#     R/bohr                 Coulomb               Coulomb           radial wavefunction   spherical avg. residual")
+        print("#                                                  shifted                R_{l,m}(r)           <|(H-E)phi|^2>")
         import sys
         # write table to console
         r = np.linspace(1.0e-3, 100, 1000)
         data = np.vstack((r, phi0_rad(r), Cf_shift_rad(r), phi_rad(r), residual_avg(r))).transpose()
         np.savetxt(sys.stdout, data, fmt="    %+e    ")
-        print "# END"
+        print("# END")
 
         import matplotlib.pyplot as plt
 
@@ -1898,13 +1898,13 @@ class BasissetFreeDFT(object):
         # length of wave vectors
         k = np.sqrt(2*E)
 
-        print " "
-        print "  Asymptotic continuum wavefunction"
-        print "  ================================="
-        print "  energy           E= %e Hartree  ( %e eV )" % (E, E*AtomicData.hartree_to_eV)
-        print "  wavevector       k= %e a.u." % k
-        print "  angular moment   l= %d m= %+d" % (l,m)
-        print " "
+        print(" ")
+        print("  Asymptotic continuum wavefunction")
+        print("  =================================")
+        print("  energy           E= %e Hartree  ( %e eV )" % (E, E*AtomicData.hartree_to_eV))
+        print("  wavevector       k= %e a.u." % k)
+        print("  angular moment   l= %d m= %+d" % (l,m))
+        print(" ")
 
         atomlist = self.atomlist
         atomic_numbers, atomic_coordinates = atomlist2arrays(atomlist)
@@ -1912,7 +1912,7 @@ class BasissetFreeDFT(object):
         print_grid_summary(atomlist,
                            settings.lebedev_order, settings.radial_grid_factor)
         
-        print "total charges..."
+        print("total charges...")
         qnuc, qelec, qtot = total_charge(atomlist, rho)
         # number of electrons from integration
         nelec = int(np.round(-qelec))
@@ -1948,33 +1948,33 @@ class BasissetFreeDFT(object):
         #    r0 = <HOMO|r|HOMO>
         # 
         #
-        print ""
-        print "  Origin"
-        print "  ======"
+        print("")
+        print("  Origin")
+        print("  ======")
         
         if nelec > 1:
             # density of the highest occupied molecular orbital
             def rho_HOMO(x,y,z):
                 return homo(x,y,z)**2
         
-            print "integrals over charge density of HOMO orbital..."
+            print("integrals over charge density of HOMO orbital...")
             center_nuc, center_homo, center_tot = center_of_charge(atomlist, rho_HOMO, verbose=1)
 
-            print "  The center of the electron density in the HOMO"
-            print "  is chosen as the the origin."
+            print("  The center of the electron density in the HOMO")
+            print("  is chosen as the the origin.")
             center = center_homo
         else:
             center_nuc, dummy, dummy = center_of_charge(atomlist, None)
 
-            print "  As there are no other electrons, the center of the nuclear charge"
-            print "  is chosen as the origin."
+            print("  As there are no other electrons, the center of the nuclear charge")
+            print("  is chosen as the origin.")
             center = center_nuc
 
-        print "  The origin of the coordinate system, relative to which"
-        print "  asymptotic solutions are defined, is placed at"
-        print ""
-        print "    center = %+e  %+e  %+e" % tuple(center)
-        print ""
+        print("  The origin of the coordinate system, relative to which")
+        print("  asymptotic solutions are defined, is placed at")
+        print("")
+        print("    center = %+e  %+e  %+e" % tuple(center))
+        print("")
 
         # Asymptotically the effective potential is Coulomb-like -(Q+1)/r . It's strength consists
         # of an electrostatic part (Q=0 for a neutral molecule, Q=+1 for a cation) and an
@@ -1984,10 +1984,10 @@ class BasissetFreeDFT(object):
         if nelec > 1:
             # add charge felt due to exchange
             charge = qtot + 1
-        print " electrostatic charge  qtot = %+e" % qtot
-        print " asymptotic charge          = %+e" % charge
+        print(" electrostatic charge  qtot = %+e" % qtot)
+        print(" asymptotic charge          = %+e" % charge)
     
-        print "effective potential..."
+        print("effective potential...")
         veff = effective_potential_func(atomlist, rho, self.xc, nelec=nelec)
 
         """
@@ -2001,8 +2001,8 @@ class BasissetFreeDFT(object):
         dummy_atom = (int(charge), center)
         # list of real nuclei + dummy atoms
         atomlist = atomlist_nuclei + [dummy_atom]
-        print " "
-        print "  A dummy atom with charge Z=%+d is placed at the center." % (int(charge))
+        print(" ")
+        print("  A dummy atom with charge Z=%+d is placed at the center." % (int(charge)))
         # show size of grid used for dummy atom
         print_grid_summary([dummy_atom],
                            settings.lebedev_order, settings.radial_grid_factor)
@@ -2028,7 +2028,7 @@ class BasissetFreeDFT(object):
         # reset original grid resolution
         settings.radial_grid_factor, settings.lebedev_order = rfac, Lmax
         
-        print "reconstruction error: |Veff-V^(rec))| = %e" % error
+        print("reconstruction error: |Veff-V^(rec))| = %e" % error)
 
         # initial guess for the continuum wavefunction
         
@@ -2083,7 +2083,7 @@ class BasissetFreeDFT(object):
         #
         # for orbital correction dphi
         
-        print "Schroedinger equation..."
+        print("Schroedinger equation...")
         dphi = multicenter_inhomogeneous_schroedinger(u, source,  E,
                                                       atomic_coordinates, atomic_numbers,
                                                       radial_grid_factor=settings.radial_grid_factor,
@@ -2093,7 +2093,7 @@ class BasissetFreeDFT(object):
         #   phi = phi0 + dphi
         phi = add_two_functions(atomlist, phi0, dphi, 1.0, 1.0)
 
-        print "normalization and phase shifts..."
+        print("normalization and phase shifts...")
         delta, phi = phaseshift(atomlist, phi, E, charge, l, m,
                                 center=center)
         
@@ -2102,11 +2102,11 @@ class BasissetFreeDFT(object):
         # should come out correctly by default.
         if nelec > 1:
             olap_hc = overlap(atomlist, homo, phi)
-            print "  overlap  <homo | continuum> = %e" % olap_hc
+            print("  overlap  <homo | continuum> = %e" % olap_hc)
 
         ##### Visualization ##########
         if debug > 0:
-            print "residuals..."
+            print("residuals...")
             # residual for phi0    R0 = (H-E)phi0
             residual0 = residual_func(atomlist, phi0, veff, E)
             # residual for final solution  R = (H-E)phi
@@ -2118,7 +2118,7 @@ class BasissetFreeDFT(object):
             residual_avg = spherical_average_residual_func(dummy_atom, residual)
                 
             ##### table with radial wavefunctions and residual 
-            print "radial wavefunctions..."
+            print("radial wavefunctions...")
             # shifted regular coulomb function
             Cf_shift = regular_coulomb_func(E, charge, l, m, delta,
                                             center=center)
@@ -2134,21 +2134,21 @@ class BasissetFreeDFT(object):
             phi_rad = radial_wave_func(atomlist, phi, l, m,
                                        center=center)
 
-            print "# RADIAL_WAVEFUNCTIONS"
-            print "# Asymptotic wavefunction:"
-            print "#   charge            Z= %+d" % charge
-            print "#   energy            E= %e  k= %e" % (E, k)
-            print "#   angular momentum  l= %d m= %+d" % (l, m)
-            print "#   phase shift       delta= %e rad" % delta
-            print "# "
-            print "#     R/bohr                 Coulomb               Coulomb           radial wavefunction   spherical avg. residual"
-            print "#                                                  shifted                R_{l,m}(r)           <|(H-E)phi|^2>"
+            print("# RADIAL_WAVEFUNCTIONS")
+            print("# Asymptotic wavefunction:")
+            print("#   charge            Z= %+d" % charge)
+            print("#   energy            E= %e  k= %e" % (E, k))
+            print("#   angular momentum  l= %d m= %+d" % (l, m))
+            print("#   phase shift       delta= %e rad" % delta)
+            print("# ")
+            print("#     R/bohr                 Coulomb               Coulomb           radial wavefunction   spherical avg. residual")
+            print("#                                                  shifted                R_{l,m}(r)           <|(H-E)phi|^2>")
             import sys
             # write table to console
             r = np.linspace(1.0e-3, 100.0, 1000)
             data = np.vstack((r, phi0_rad(r), Cf_shift_rad(r), phi_rad(r), residual_avg(r))).transpose()
             np.savetxt(sys.stdout, data, fmt="    %+e    ")
-            print "# END"
+            print("# END")
 
             ##### plot potentials, wavefunctions and residual and an axis 
             import matplotlib.pyplot as plt
@@ -2271,12 +2271,12 @@ class BasissetFreeDFT(object):
         # length of wave vectors
         k = np.sqrt(2*E)
 
-        print " "
-        print "  Asymptotic continuum wavefunction"
-        print "  ================================="
-        print "  energy           E= %e Hartree  ( %e eV )" % (E, E*AtomicData.hartree_to_eV)
-        print "  wavevector       k= %e a.u." % k
-        print " "
+        print(" ")
+        print("  Asymptotic continuum wavefunction")
+        print("  =================================")
+        print("  energy           E= %e Hartree  ( %e eV )" % (E, E*AtomicData.hartree_to_eV))
+        print("  wavevector       k= %e a.u." % k)
+        print(" ")
 
         atomlist = self.atomlist
         atomic_numbers, atomic_coordinates = atomlist2arrays(atomlist)
@@ -2284,7 +2284,7 @@ class BasissetFreeDFT(object):
         print_grid_summary(atomlist,
                            settings.lebedev_order, settings.radial_grid_factor)
         
-        print "total charges..."
+        print("total charges...")
         qnuc, qelec, qtot = total_charge(atomlist, rho)
         # number of electrons from integration
         nelec = int(np.round(-qelec))
@@ -2320,33 +2320,33 @@ class BasissetFreeDFT(object):
         #    r0 = <HOMO|r|HOMO>
         # 
         #
-        print ""
-        print "  Origin"
-        print "  ======"
+        print("")
+        print("  Origin")
+        print("  ======")
         
         if nelec > 1:
             # density of the highest occupied molecular orbital
             def rho_HOMO(x,y,z):
                 return homo(x,y,z)**2
         
-            print "integrals over charge density of HOMO orbital..."
+            print("integrals over charge density of HOMO orbital...")
             center_nuc, center_homo, center_tot = center_of_charge(atomlist, rho_HOMO, verbose=1)
 
-            print "  The center of the electron density in the HOMO"
-            print "  is chosen as the the origin."
+            print("  The center of the electron density in the HOMO")
+            print("  is chosen as the the origin.")
             center = center_homo
         else:
             center_nuc, dummy, dummy = center_of_charge(atomlist, None)
 
-            print "  As there are no other electrons, the center of the nuclear charge"
-            print "  is chosen as the origin."
+            print("  As there are no other electrons, the center of the nuclear charge")
+            print("  is chosen as the origin.")
             center = center_nuc
 
-        print "  The origin of the coordinate system relative to which"
-        print "  asymptotic solutions are defined is placed at"
-        print ""
-        print "    center = %+e  %+e  %+e" % tuple(center)
-        print ""
+        print("  The origin of the coordinate system relative to which")
+        print("  asymptotic solutions are defined is placed at")
+        print("")
+        print("    center = %+e  %+e  %+e" % tuple(center))
+        print("")
 
         # Asymptotically the effective potential is Coulomb-like -(Q+1)/r . It's strength consists
         # of an electrostatic part (Q=0 for a neutral molecule, Q=+1 for a cation) and an
@@ -2356,10 +2356,10 @@ class BasissetFreeDFT(object):
         if nelec > 1:
             # add charge felt due to exchange
             charge = qtot + 1
-        print " electrostatic charge  qtot = %+e" % qtot
-        print " asymptotic charge          = %+e" % charge
+        print(" electrostatic charge  qtot = %+e" % qtot)
+        print(" asymptotic charge          = %+e" % charge)
     
-        print "effective potential..."
+        print("effective potential...")
         veff = effective_potential_func(atomlist, rho, self.xc, nelec=nelec)
 
         # solve S.U = Veff
@@ -2381,14 +2381,14 @@ class BasissetFreeDFT(object):
         # reset original grid resolution
         settings.radial_grid_factor, settings.lebedev_order = rfac, Lmax
         
-        print "reconstruction error: |Veff-V^(rec))| = %e" % error
+        print("reconstruction error: |Veff-V^(rec))| = %e" % error)
             
         #
         #  solve  (T + U - E) phi = 0
         #
         # for for continuum orbital phi
         
-        print "continuum Schroedinger equation..."
+        print("continuum Schroedinger equation...")
         phi = multicenter_continuum_schroedinger(u, E, charge, 
                                                  atomic_coordinates, atomic_numbers,
                                                  radial_grid_factor=settings.radial_grid_factor,
@@ -2404,7 +2404,7 @@ class BasissetFreeDFT(object):
         
         ##### Visualization ##########
         if debug > 0:
-            print "residuals..."
+            print("residuals...")
             # regular coulomb function without phase shift
             phi0 = regular_coulomb_func(E, charge, l, m, 0.0,
                                         center=center)
@@ -2421,7 +2421,7 @@ class BasissetFreeDFT(object):
             residual_avg = spherical_average_residual_func(dummy_atom, residual)
                 
             ##### table with radial wavefunctions and residual 
-            print "radial wavefunctions..."
+            print("radial wavefunctions...")
             # shifted regular coulomb function
             Cf_shift = regular_coulomb_func(E, charge, l, m, delta,
                                             center=center)
@@ -2437,21 +2437,21 @@ class BasissetFreeDFT(object):
             phi_rad = radial_wave_func(atomlist, phi, l, m,
                                        center=center)
 
-            print "# RADIAL_WAVEFUNCTIONS"
-            print "# Asymptotic wavefunction:"
-            print "#   charge            Z= %+d" % charge
-            print "#   energy            E= %e  k= %e" % (E, k)
-            print "#   angular momentum  l= %d m= %+d" % (l, m)
-            print "#   phase shift       delta= %e rad" % delta
-            print "# "
-            print "#     R/bohr                 Coulomb               Coulomb           radial wavefunction   spherical avg. residual"
-            print "#                                                  shifted                R_{l,m}(r)           <|(H-E)phi|^2>"
+            print("# RADIAL_WAVEFUNCTIONS")
+            print("# Asymptotic wavefunction:")
+            print("#   charge            Z= %+d" % charge)
+            print("#   energy            E= %e  k= %e" % (E, k))
+            print("#   angular momentum  l= %d m= %+d" % (l, m))
+            print("#   phase shift       delta= %e rad" % delta)
+            print("# ")
+            print("#     R/bohr                 Coulomb               Coulomb           radial wavefunction   spherical avg. residual")
+            print("#                                                  shifted                R_{l,m}(r)           <|(H-E)phi|^2>")
             import sys
             # write table to console
             r = np.linspace(1.0e-3, 100.0, 1000)
             data = np.vstack((r, phi0_rad(r), Cf_shift_rad(r), phi_rad(r), residual_avg(r))).transpose()
             np.savetxt(sys.stdout, data, fmt="    %+e    ")
-            print "# END"
+            print("# END")
 
             ##### plot potentials, wavefunctions and residual and an axis 
             import matplotlib.pyplot as plt
@@ -2802,7 +2802,7 @@ def phaseshift_lstsq(atomlist, phi, E, Z, l, m, rmin, rmax, Npts,
     # 
     err2 = np.sum(w * (u - scale_opt * coulf(r, delta_opt))**2)
     err = np.sqrt(err2)
-    print "average deviation after matching to Coulomb function err= %e" % err
+    print("average deviation after matching to Coulomb function err= %e" % err)
 
     if debug > 0:
         # Where does the minimum of error2(delta) lie?
@@ -2849,9 +2849,9 @@ def phaseshift_2pts(atomlist, phi, E, Z, l, m, r1, r2,
                   amplitude as the Coulomb wavefunction
     delta      :  phase shift in radians
     """
-    print "continuum and Coulomb wave are matched at the points"
-    print "  r1= %e  bohr" % r1
-    print "  r2= %e  bohr" % r2
+    print("continuum and Coulomb wave are matched at the points")
+    print("  r1= %e  bohr" % r1)
+    print("  r2= %e  bohr" % r2)
     # integrate out the angular part Y_{l,m} of the wavefunction
     wfn_rad = radial_wave_func(atomlist, phi, l, m, center=center)
     # evaluate radial wavefunction at the two sampling points
@@ -2899,7 +2899,7 @@ def phaseshift_2pts(atomlist, phi, E, Z, l, m, r1, r2,
         msg += "       the multicenter grid. If the computed radial wavefunction\n"
         msg += "       is not accurate enough at large radii it can happen that f(delta)\n"
         msg += "       has no roots at all!\n\n"
-        print msg
+        print(msg)
         raise e
 
     # compute scale factor
@@ -2910,9 +2910,9 @@ def phaseshift_2pts(atomlist, phi, E, Z, l, m, r1, r2,
     else:
         scale = u2/c2
         
-    print "Optimized phase shift  delta= %e" % delta_root
-    print "  f(delta)= %e" % f(delta_root)
-    print "scale factor           scale= %e" % scale
+    print("Optimized phase shift  delta= %e" % delta_root)
+    print("  f(delta)= %e" % f(delta_root))
+    print("scale factor           scale= %e" % scale)
 
     if debug > 0:
         # Where are the roots of f(delta)?
@@ -3105,7 +3105,7 @@ def overlaps2phaseshift(E, Z, l, m, olap_0d, olap_dd, rmin, rmax):
     cos = np.sqrt( olap_0d**2 /(olap_dd * 0.5 * k*(rmax-rmin)) )
     assert -1.0 <= cos <= 1.0
     delta_guess = np.arccos(cos)
-    print "Initial guess for phase shift  delta = %e" % delta_guess
+    print("Initial guess for phase shift  delta = %e" % delta_guess)
 
     # find root of f(delta) with Newton's method
     try:
@@ -3115,10 +3115,10 @@ def overlaps2phaseshift(E, Z, l, m, olap_0d, olap_dd, rmin, rmax):
         msg += "       the multicenter grid. If the computed radial wavefunction\n"
         msg += "       is not accurate enough at large radii it can happen that f(delta)\n"
         msg += "       has no roots at all!\n\n"
-        print msg
+        print(msg)
         raise e
         
-    print "Optimized phase shift  delta = %e" % delta_root
+    print("Optimized phase shift  delta = %e" % delta_root)
 
     # If f(delta)=0 then there should be 3 other roots in the interval [0,2*pi], which
     # are equivalent:
@@ -3133,14 +3133,14 @@ def overlaps2phaseshift(E, Z, l, m, olap_0d, olap_dd, rmin, rmax):
     delta_root3 = optimize.newton(f, np.pi+delta_root)
     delta_root4 = optimize.newton(f, 2*np.pi-delta_root)
     #
-    print " "
-    print "All roots of f(delta)"
-    print "====================="
-    print " root 1 delta1 = %e                    " % (delta_root1)
-    print " root 2 delta2 = %e     pi-delta   = %e" % (delta_root2, np.pi-delta_root1)
-    print " root 3 delta3 = %e     pi+delta   = %e" % (delta_root3, np.pi+delta_root1)
-    print " root 4 delta4 = %e     2*pi-delta = %e" % (delta_root4, 2*np.pi-delta_root1)
-    print " "
+    print(" ")
+    print("All roots of f(delta)")
+    print("=====================")
+    print(" root 1 delta1 = %e                    " % (delta_root1))
+    print(" root 2 delta2 = %e     pi-delta   = %e" % (delta_root2, np.pi-delta_root1))
+    print(" root 3 delta3 = %e     pi+delta   = %e" % (delta_root3, np.pi+delta_root1))
+    print(" root 4 delta4 = %e     2*pi-delta = %e" % (delta_root4, 2*np.pi-delta_root1))
+    print(" ")
     
     # compute scale factor
     I_0d_root, I_dd_root = phaseshift2overlaps(E, Z, l, m, delta_root, rmin, rmax)
@@ -3237,9 +3237,9 @@ def phaseshift_olap(atomlist, phi, E, Z, l, m, rmin, rmax,
     shell_volume = integral(atomlist, window)
 
     shell_volume_exact = 4.0/3.0 * np.pi * (rmax**3 - rmin**3)
-    print "numerical volume integral = %e" % shell_volume
-    print "exact volume integral     = %e" % shell_volume_exact
-    print "relative error in volume  = %e %%" % (abs(shell_volume - shell_volume_exact)/shell_volume_exact * 100)
+    print("numerical volume integral = %e" % shell_volume)
+    print("exact volume integral     = %e" % shell_volume_exact)
+    print("relative error in volume  = %e %%" % (abs(shell_volume - shell_volume_exact)/shell_volume_exact * 100))
     
     # overlap between Coulomb function and continuum orbital
     def integrand_0d(x,y,z):
@@ -3248,7 +3248,7 @@ def phaseshift_olap(atomlist, phi, E, Z, l, m, rmin, rmax,
 
     olap_0d = integral(atomlist, integrand_0d)
 
-    print "overlap <Coulomb|continuum> over radial iterval [%s,%s] = %s" % (rmin, rmax, olap_0d)
+    print("overlap <Coulomb|continuum> over radial iterval [%s,%s] = %s" % (rmin, rmax, olap_0d))
 
     # overlap of continuum orbital with itself
     def integrand_dd(x,y,z):
@@ -3257,7 +3257,7 @@ def phaseshift_olap(atomlist, phi, E, Z, l, m, rmin, rmax,
 
     olap_dd = integral(atomlist, integrand_dd)
 
-    print "overlap <continuum|continuum> over radial interval [%s,%s] = %s" % (rmin, rmax, olap_dd)
+    print("overlap <continuum|continuum> over radial interval [%s,%s] = %s" % (rmin, rmax, olap_dd))
 
     # Solve the system of equations
     #    <Couldomb|continuum>  = scale   * I_0d(delta)
@@ -3306,7 +3306,7 @@ def phaseshift(atomlist, phi, E, charge, l, m,
     # length of wave vector
     k = np.sqrt(2*E)
     wavelength = 2.0*np.pi / k
-    print "wavelength = %e" % wavelength
+    print("wavelength = %e" % wavelength)
 
     if method == "olap":
         # The phase shift is determined by integrating over
@@ -3358,8 +3358,8 @@ def phaseshift(atomlist, phi, E, charge, l, m,
         raise ValueError("method for phase matching should be 'olap', 'lstsq' or '2pts'")
         
         
-    print "scale factor (relative to Coulomb wave) = %s" % scale
-    print "phase shift (relative to Coulomb wave) = %e " % delta
+    print("scale factor (relative to Coulomb wave) = %s" % scale)
+    print("phase shift (relative to Coulomb wave) = %e " % delta)
 
     # normalize wavefunction, so that 1/scale phi(x,y,z) approaches
     # asymptotically a phase-shifted Coulomb wave
@@ -3473,19 +3473,19 @@ def solve_spherical_potential(atomlist, potential,
     u            :  callable, u(x,y,z) evaluates the solution of
                         S u = v
     """
-    print "invert multicenter spherical averaging by solving  S.u = v ..."
+    print("invert multicenter spherical averaging by solving  S.u = v ...")
     # By applying the operator (1-S) repeatedly to v, we construct the series
     # v_n and at the same time build up the solution u.
 
-    print " "
-    print "         Convergence of Remainder                                  "
-    print " "
-    print "            v_0 = v                                                "
-    print "            v_n = (1-S) v_{n-1}                                    "
-    print " "
-    print "  Iteration           norm of remainder                  ratio     "
-    print "      n                      |v_n|                |v_{n}|/|v_{n-1}|"
-    print "  -----------------------------------------------------------------"
+    print(" ")
+    print("         Convergence of Remainder                                  ")
+    print(" ")
+    print("            v_0 = v                                                ")
+    print("            v_n = (1-S) v_{n-1}                                    ")
+    print(" ")
+    print("  Iteration           norm of remainder                  ratio     ")
+    print("      n                      |v_n|                |v_{n}|/|v_{n-1}|")
+    print("  -----------------------------------------------------------------")
     
     # u = v0 + ...
     u = potential
@@ -3510,7 +3510,7 @@ def solve_spherical_potential(atomlist, potential,
             if ratio > 1.0:
                 # Show a warning message
                 msg = "(ratio exceeds 1, increase grid resolution!)"
-            print "    %4.1d               %e               %e         %s"            % (n+1, norm_remainder, ratio, msg)
+            print("    %4.1d               %e               %e         %s"            % (n+1, norm_remainder, ratio, msg))
 
             if ratio > 1.0:
                 # If the ratio exceeds 1, there is no reason to continue the iteration,
@@ -3519,7 +3519,7 @@ def solve_spherical_potential(atomlist, potential,
                 # to correct.
                 break
         else:
-            print "    %4.1d               %e"            % (n+1, norm_remainder)
+            print("    %4.1d               %e"            % (n+1, norm_remainder))
 
         # u += v_{n+1} 
         u = add_two_functions(atomlist, u, remainder, 1.0, 1.0)
@@ -3530,7 +3530,7 @@ def solve_spherical_potential(atomlist, potential,
         # keep |v_{n}|
         norm_last_remainder = norm_remainder
         
-    print " "
+    print(" ")
     
     return norm_remainder, u
 
@@ -3596,7 +3596,7 @@ def imaginary_time_propagation(atomlist, phi0, potential, e, t, n):
         x = 0*r
         y = 0*r
         z = r
-        print residual2(x,y,z)
+        print(residual2(x,y,z))
         plt.cla()
         plt.clf()
         plt.plot(r, residual(x,y,z), label="$(H-E) \phi$")
@@ -3605,7 +3605,7 @@ def imaginary_time_propagation(atomlist, phi0, potential, e, t, n):
         plt.show()
         ###
         error = np.sqrt( integral(atomlist, residual2) )
-        print " n= %d   |(H-E)^2 phi(%d)|= %e" % (i,i,error)
+        print(" n= %d   |(H-E)^2 phi(%d)|= %e" % (i,i,error))
         #                       2
         # phi     =  ( 1 - (H-E)  dt ) phi
         #    n+1                          n
@@ -3694,7 +3694,7 @@ def test_hydrogen_molecular_ion():
     ####
 
     Enuc = nuclear_repulsion(atomlist)
-    print "nuclear repulsion energy = %e" % Enuc
+    print("nuclear repulsion energy = %e" % Enuc)
     
     for k in range(0, max_iter):
         rho = density_func(orbitals)
@@ -3739,7 +3739,7 @@ def test_hydrogen_molecular_ion():
             delta_e = energy_correction(atomlist, residual, phi)
             source = source_func(delta_e, phi, residual)
 
-            print "    orbital= %d    energy E= %e   delta E= %e" % (i+1, e, delta_e)
+            print("    orbital= %d    energy E= %e   delta E= %e" % (i+1, e, delta_e))
             
             # orbital correction
             delta_phi = orbital_correction(atomlist, veff, source,  e, delta_e)
@@ -3772,17 +3772,17 @@ def test_hydrogen_molecular_ion():
 
             # check normalization
             norm2 = overlap(atomlist, phi, phi)
-            print "<phi|phi>= %e" % norm2
+            print("<phi|phi>= %e" % norm2)
                 
             orbitals[i] = phi
             
-        print " %3.1d   error = %e (threshold = %e)" % (k, total_error, thresh)
+        print(" %3.1d   error = %e (threshold = %e)" % (k, total_error, thresh))
         
         if total_error < thresh:
-            print "Converged"
+            print("Converged")
             break
 
-    print "final ground state energy E= %e Hartree" % e
+    print("final ground state energy E= %e Hartree" % e)
     
     plt.show()
 
@@ -3830,7 +3830,7 @@ def test_lithium_cation():
         Etot, orbitals, orbital_energies = RDFT.solveKohnSham()
 
         Nr,Nang = grid_sizes[0]
-        print "GRID= %d x %d        total energy = %e" % (Nr,Nang, Etot)
+        print("GRID= %d x %d        total energy = %e" % (Nr,Nang, Etot))
 
         
     
@@ -4072,13 +4072,13 @@ def test_scattering_solution():
 
     # We integrate over one period, but not more than 10 bohr.
     wavelength = min(2.0*np.pi / k, 10.0)
-    print "wavelength = %e" % wavelength
+    print("wavelength = %e" % wavelength)
     rmin = 10.0 
     rmax = rmin + wavelength
 
     scale, delta = phaseshift_olap(atomlist, phi, E, Z, l, m, rmin, rmax)
-    print "scale factor (relative to Coulomb wave) = %s" % scale
-    print "phase shift (relative to Coulomb wave) = %e " % delta
+    print("scale factor (relative to Coulomb wave) = %s" % scale)
+    print("phase shift (relative to Coulomb wave) = %e " % delta)
     
     # normalize wavefunction, so that 1/scale phi(x,y,z) approaches
     # asymptotically a phase-shifted Coulomb wave
@@ -4166,7 +4166,7 @@ def test_phaseshift_overlap():
 
     # We integrate over one period, but not more than 10 bohr.
     wavelength = min(2.0*np.pi / k, 10.0)
-    print "wavelength = %e" % wavelength
+    print("wavelength = %e" % wavelength)
     rmin = 10.0 
     rmax = rmin + wavelength
     
@@ -4191,21 +4191,21 @@ def test_phaseshift_overlap():
 
     I_0d_ana, I_dd_ana = phaseshift2overlaps(E, Z, l,m, delta_l, rmin, rmax)
 
-    print "Numerical overlaps"
-    print " I_0d = %s" % I_0d
-    print " I_dd = %s" % I_dd
-    print "Analytical overlaps"
-    print " I_0d = %s" % I_0d_ana
-    print " I_dd = %s" % I_dd_ana
+    print("Numerical overlaps")
+    print(" I_0d = %s" % I_0d)
+    print(" I_dd = %s" % I_dd)
+    print("Analytical overlaps")
+    print(" I_0d = %s" % I_0d_ana)
+    print(" I_dd = %s" % I_dd_ana)
 
     # recover scaling and phas shift from overlaps
     scale0, delta0 = overlaps2phaseshift(E, Z, l, m, I_0d, I_dd, rmin, rmax)
 
-    print " scale factor = %s" % scale0
-    print " phase shift = %s" % delta0
+    print(" scale factor = %s" % scale0)
+    print(" phase shift = %s" % delta0)
     
-    print " expected scale factor = %s" % scale
-    print " expected phase shift  = %s" % delta_l
+    print(" expected scale factor = %s" % scale)
+    print(" expected phase shift  = %s" % delta_l)
 
 def test_asymptotic_regular_coulomb():
     """
@@ -4311,7 +4311,7 @@ def test_improved_asymptotic_regular_coulomb():
     """
     # test Pochhammer symbols
     for n in range(0, 10):
-        print "%s   %s" % (special.poch(0.3, n), poch(0.3, n))
+        print("%s   %s" % (special.poch(0.3, n), poch(0.3, n)))
     """
  
     def coulombf(rho):
@@ -4403,11 +4403,11 @@ def test1_lithium_scattering_solution():
     print_grid_summary(atomlist,
                        settings.lebedev_order, settings.radial_grid_factor)
     
-    print "electron density..."
+    print("electron density...")
     # electron density of two electrons in the 1s core orbital
     rho = density_func(bound_orbitals)
 
-    print "total charges..."
+    print("total charges...")
     qnuc, qelec, qtot = total_charge(atomlist, rho)
     # number of electrons from integration
     nelec = int(np.round(-qelec))
@@ -4443,9 +4443,9 @@ def test1_lithium_scattering_solution():
     #    r0 = <HOMO|r|HOMO>
     # 
     #
-    print ""
-    print "  Origin"
-    print "  ======"
+    print("")
+    print("  Origin")
+    print("  ======")
     
     if nelec > 0:
         homo = bound_orbitals[-1]
@@ -4453,28 +4453,28 @@ def test1_lithium_scattering_solution():
         def rho_HOMO(x,y,z):
             return homo(x,y,z)**2
         
-        print "integrals over charge density of HOMO orbital..."
+        print("integrals over charge density of HOMO orbital...")
         center_nuc, center_homo, center_tot = center_of_charge(atomlist, rho_HOMO, verbose=0)
 
-        print "  The center of the electron density in the HOMO"
-        print "  is chosen as the the origin."
+        print("  The center of the electron density in the HOMO")
+        print("  is chosen as the the origin.")
         center = center_homo
     else:
         center_nuc, dummy, dummy = center_of_charge(atomlist, None)
 
-        print "  As there are no electrons, the center of the nuclear charge"
-        print "  is chosen as the origin."
+        print("  As there are no electrons, the center of the nuclear charge")
+        print("  is chosen as the origin.")
         center = center_nuc
 
-    print "  The origin of the coordinate system relative to which"
-    print "  asymptotic solutions are defined is placed at"
-    print ""
-    print "    center = %+e  %+e  %+e" % tuple(center)
-    print ""
+    print("  The origin of the coordinate system relative to which")
+    print("  asymptotic solutions are defined is placed at")
+    print("")
+    print("    center = %+e  %+e  %+e" % tuple(center))
+    print("")
     
-    print "NOTE: Two-electron systems are treated with Hartree-Fock theory."
-    print "      For Li+ the effective HF potential goes as -2/r for large r!"
-    print "      Therefore the continuum electron sees a core with charge +2."
+    print("NOTE: Two-electron systems are treated with Hartree-Fock theory.")
+    print("      For Li+ the effective HF potential goes as -2/r for large r!")
+    print("      Therefore the continuum electron sees a core with charge +2.")
     xc = None
     # THIS IS WEIRD, so the continuum electron sees Li^(2+) instead of Li^+???
     # It looks strange, but makes perfect sense:
@@ -4496,10 +4496,10 @@ def test1_lithium_scattering_solution():
     if nelec > 0:
         # add charge felt due to exchange
         charge = qtot + 1
-    print " electrostatic charge  qtot = %+e" % qtot
-    print " asymptotic charge          = %+e" % charge
+    print(" electrostatic charge  qtot = %+e" % qtot)
+    print(" asymptotic charge          = %+e" % charge)
     
-    print "effective potential..."
+    print("effective potential...")
     # potential energy for Li nucleus and 2 core electrons
     potential = effective_potential_func(atomlist, rho, xc, nelec=2)
 
@@ -4529,13 +4529,13 @@ def test1_lithium_scattering_solution():
     l = 1
     m = +1
 
-    print " "
-    print "  Asymptotic continuum wavefunction"
-    print "  ================================="
-    print "  energy           E= %e Hartree  ( %e eV )" % (E, E*AtomicData.hartree_to_eV)
-    print "  wavevector       k= %e a.u." % k
-    print "  angular moment   l= %d m= %+d" % (l,m)
-    print " "
+    print(" ")
+    print("  Asymptotic continuum wavefunction")
+    print("  =================================")
+    print("  energy           E= %e Hartree  ( %e eV )" % (E, E*AtomicData.hartree_to_eV))
+    print("  wavevector       k= %e a.u." % k)
+    print("  angular moment   l= %d m= %+d" % (l,m))
+    print(" ")
     
     # asymptotically correct solution for V0 = -1/r (hydrogen)
     Cf = regular_coulomb_func(E, charge, l, m, 0.0,
@@ -4552,7 +4552,7 @@ def test1_lithium_scattering_solution():
 
     atomic_numbers, atomic_coordinates = atomlist2arrays(atomlist)
 
-    print "Schroedinger equation ..."
+    print("Schroedinger equation ...")
     dphi = multicenter_inhomogeneous_schroedinger(potential, source,  E,
                                                   atomic_coordinates, atomic_numbers,
                                                   radial_grid_factor=settings.radial_grid_factor,
@@ -4562,7 +4562,7 @@ def test1_lithium_scattering_solution():
     #   phi = phi0 + dphi
     phi = add_two_functions(atomlist, phi0, dphi, 1.0, 1.0)
 
-    print "residuals (H-E)phi ..."
+    print("residuals (H-E)phi ...")
     # residual for phi0    R0 = (H-E)phi0
     residual0 = residual_func(atomlist, phi0, potential, E)
     # residual for final solution  R = (H-E)phi
@@ -4586,7 +4586,7 @@ def test1_lithium_scattering_solution():
     ###
     """
 
-    print "phase shifts..."
+    print("phase shifts...")
     # Which algorithm should be used for matching the continuum solution
     # to the Coulomb wave to determine the phase shift and scaling factor?
     phase_matching = "2pts" # "2pts" "olap" "lstsq"  
@@ -4602,7 +4602,7 @@ def test1_lithium_scattering_solution():
 
         # We integrate over several periods, but not more than 30 bohr.
         wavelength = 2.0*np.pi / k
-        print "wavelength = %e" % wavelength
+        print("wavelength = %e" % wavelength)
         rmin = 70.0 
         rmax = rmin + max(10*wavelength, 30.0)
         
@@ -4622,7 +4622,7 @@ def test1_lithium_scattering_solution():
         # The matching points are spread over several periods,
         # but not more than 30 bohr.
         wavelength = 2.0*np.pi / k
-        print "wavelength = %e" % wavelength
+        print("wavelength = %e" % wavelength)
         rmin = 70.0 
         rmax = rmin + max(10*wavelength, 30.0)
         Npts = 100
@@ -4636,7 +4636,7 @@ def test1_lithium_scattering_solution():
         # The phase shift is determined from matching the radial wavefunction
         # to a shifted and scaled Coulomb function at two points r1 and r2.
         wavelength = 2.0*np.pi / k
-        print "wavelength = %e" % wavelength
+        print("wavelength = %e" % wavelength)
 
         r1 = 50.0
         r2 = r1 + 0.001*wavelength
@@ -4646,8 +4646,8 @@ def test1_lithium_scattering_solution():
 
         
         
-    print "scale factor (relative to Coulomb wave) = %s" % scale
-    print "phase shift (relative to Coulomb wave) = %e " % delta
+    print("scale factor (relative to Coulomb wave) = %s" % scale)
+    print("phase shift (relative to Coulomb wave) = %e " % delta)
 
     # normalize wavefunction, so that 1/scale phi(x,y,z) approaches
     # asymptotically a phase-shifted Coulomb wave
@@ -4659,13 +4659,13 @@ def test1_lithium_scattering_solution():
     # The continuum orbital should be orthogonal to the bound
     # orbitals belonging to the same Hamiltonian. I think this
     # should come out correctly by default.
-    print " "
-    print "  Overlaps between bound orbitals and continuum orbital"
-    print "  ====================================================="
+    print(" ")
+    print("  Overlaps between bound orbitals and continuum orbital")
+    print("  =====================================================")
     for ib,bound_orbital in enumerate(bound_orbitals):
         olap_bc = overlap(atomlist, bound_orbital, phi_norm)
-        print "  <bound %d| continuum> = %e" % (ib+1, olap_bc)
-    print ""
+        print("  <bound %d| continuum> = %e" % (ib+1, olap_bc))
+    print("")
 
     # shifted regular coulomb function
     Cf_shift = regular_coulomb_func(E, charge, l, m, delta,
@@ -4682,21 +4682,21 @@ def test1_lithium_scattering_solution():
     phi_norm_rad = radial_wave_func(atomlist, phi_norm, l, m,
                                     center=center)
 
-    print "# RADIAL_WAVEFUNCTIONS"
-    print "# Asymptotic wavefunction:"
-    print "#   charge            Z= %+d" % charge
-    print "#   energy            E= %e  k= %e" % (E, k)
-    print "#   angular momentum  l= %d m= %+d" % (l, m)
-    print "#   phase shift       delta= %e rad" % delta
-    print "# "
-    print "#     R/bohr                 Coulomb               Coulomb           radial wavefunction   spherical avg. residual"
-    print "#                                                  shifted                R_{l,m}(r)           <|(H-E)phi|^2>"
+    print("# RADIAL_WAVEFUNCTIONS")
+    print("# Asymptotic wavefunction:")
+    print("#   charge            Z= %+d" % charge)
+    print("#   energy            E= %e  k= %e" % (E, k))
+    print("#   angular momentum  l= %d m= %+d" % (l, m))
+    print("#   phase shift       delta= %e rad" % delta)
+    print("# ")
+    print("#     R/bohr                 Coulomb               Coulomb           radial wavefunction   spherical avg. residual")
+    print("#                                                  shifted                R_{l,m}(r)           <|(H-E)phi|^2>")
     import sys
     # write table to console
     r = np.linspace(1.0e-3, 100, 1000)
     data = np.vstack((r, phi0_rad(r), Cf_shift_rad(r), phi_norm_rad(r), residual_avg(r))).transpose()
     np.savetxt(sys.stdout, data, fmt="    %+e    ")
-    print "# END"
+    print("# END")
 
 
     
@@ -4822,7 +4822,7 @@ def test1_spherical_remainder():
     
     rho = None
     xc = None
-    print "effective potential..."
+    print("effective potential...")
     potential = effective_potential_func(atomlist, rho, xc, nelec=0)
 
     # Because v0 has a singularity at the origin, we have to add
@@ -4846,7 +4846,7 @@ def test1_spherical_remainder():
 
     nmax = 5
     for n in range(0, nmax):
-        print "V_{%d} = V_{%d} - V^(sph)_{%d}" % (n+1,n,n)
+        print("V_{%d} = V_{%d} - V^(sph)_{%d}" % (n+1,n,n))
         spherical, remainder = spherical_remainder(atomlist_grid, potential)
         # check that spherical and remainder add up to the original potential
         #  V = V^(sph) + (1-V^(sph))
@@ -4935,7 +4935,7 @@ def test2_spherical_remainder():
     
     rho = None
     xc = None
-    print "effective potential..."
+    print("effective potential...")
     potential = effective_potential_func(atomlist, rho, xc, nelec=0)
     
     # add a grid around the origin by placing a dummy atom there
@@ -4967,17 +4967,17 @@ def test2_spherical_remainder():
 
         errors[i] = np.sqrt( integral(atomlist, lambda x,y,z: deviation(x,y,z)**2) )
         
-        print ""
-        print "resolution of angular grid:            Lmax = %d" % Lmax
-        print "reconstruction error: |V-(V^(sph)+V^(rem))| = %e" % errors[i]
+        print("")
+        print("resolution of angular grid:            Lmax = %d" % Lmax)
+        print("reconstruction error: |V-(V^(sph)+V^(rem))| = %e" % errors[i])
 
-    print "#"
-    print "# resolution of radial grid: rfac= %d" % rfac
-    print "# "
-    print "#   Lmax       nr. of points            reconstruction"
-    print "#             in angular grid               error     "
+    print("#")
+    print("# resolution of radial grid: rfac= %d" % rfac)
+    print("# ")
+    print("#   Lmax       nr. of points            reconstruction")
+    print("#             in angular grid               error     ")
     for Lmax,Npts,err in zip(Lebedev_Lmax, Lebedev_Npts, errors):
-        print "  %6.1d      %6.1d                 %e       " % (Lmax,Npts,err)
+        print("  %6.1d      %6.1d                 %e       " % (Lmax,Npts,err))
 
 
     import matplotlib.pyplot as plt
@@ -5021,7 +5021,7 @@ def test_solve_spherical_potential_hmi():
     
     rho = None
     xc = None
-    print "effective potential..."
+    print("effective potential...")
     potential = effective_potential_func(atomlist_nuclei, rho, xc, nelec=0)
 
     # We can add a grid around the origin by placing a dummy atom there.
@@ -5097,13 +5097,13 @@ def test_solve_spherical_potential_water():
     orbitals = RDFT.getOrbitalGuess()
     
     # total electron density
-    print "electron density..."
+    print("electron density...")
     rho = density_func(orbitals)
 
-    print "total charge..."
+    print("total charge...")
     qnuc, qelec, qtot = total_charge(atomlist, rho)
 
-    print "effective potential..."
+    print("effective potential...")
     potential = effective_potential_func(atomlist, rho, xc)
 
     v = potential
@@ -5129,7 +5129,7 @@ def test_solve_spherical_potential_water():
     cube_file = "/tmp/water_lda_vmissing.cube"
     Cube.function_to_cubefile(atomlist, v_missing, filename=cube_file,
                               ppb=5.0)
-    print "deviation V - V_rec saved to cube file '%s'" % cube_file
+    print("deviation V - V_rec saved to cube file '%s'" % cube_file)
 
     
     # save tables with cuts along the y-axis of V, V^(rec) and U
@@ -5147,7 +5147,7 @@ def test_solve_spherical_potential_water():
         print>>fh, "# R/bohr    V/Hartree       V^(rec)/Hartree      U/Hartree"
         np.savetxt(fh, data, fmt="%+10.8e")
         print>>fh, " "
-    print "tables with V, V^(rec)=S.U and U=S^(-1).V  written to '%s'" % dat_file
+    print("tables with V, V^(rec)=S.U and U=S^(-1).V  written to '%s'" % dat_file)
     fh.close()
 
 def test_solve_spherical_potential_water_dummy():
@@ -5194,13 +5194,13 @@ def test_solve_spherical_potential_water_dummy():
     orbitals = RDFT.getOrbitalGuess()
     
     # total electron density
-    print "electron density..."
+    print("electron density...")
     rho = density_func(orbitals)
 
-    print "total charge..."
+    print("total charge...")
     qnuc, qelec, qtot = total_charge(atomlist_nuclei, rho)
 
-    print "effective potential..."
+    print("effective potential...")
     potential = effective_potential_func(atomlist_nuclei, rho, xc)
 
     v = potential
@@ -5226,7 +5226,7 @@ def test_solve_spherical_potential_water_dummy():
     cube_file = "/tmp/water+dummy_lda_vmissing.cube"
     Cube.function_to_cubefile(atomlist, v_missing, filename=cube_file,
                               ppb=5.0)
-    print "deviation V - V_rec saved to cube file '%s'" % cube_file
+    print("deviation V - V_rec saved to cube file '%s'" % cube_file)
 
     
     # save tables with cuts along the y-axis of V, V^(rec) and U
@@ -5244,7 +5244,7 @@ def test_solve_spherical_potential_water_dummy():
         print>>fh, "# R/bohr    V/Hartree       V^(rec)/Hartree      U/Hartree"
         np.savetxt(fh, data, fmt="%+10.8e")
         print>>fh, " "
-    print "tables with V, V^(rec)=S.U and U=S^(-1).V  written to '%s'" % dat_file
+    print("tables with V, V^(rec)=S.U and U=S^(-1).V  written to '%s'" % dat_file)
     fh.close()
 
     
@@ -5288,7 +5288,7 @@ def test_solver_grid_dependence_hmi():
         
         rho = None
         xc = None
-        print "effective potential..."
+        print("effective potential...")
         potential = effective_potential_func(atomlist, rho, xc, nelec=0)
 
         # solve S.u = v
@@ -5306,7 +5306,7 @@ def test_solver_grid_dependence_hmi():
         error = np.sqrt(
             integral(atomlist, lambda x,y,z: (v(x,y,z) - v_rec(x,y,z))**2 ) )
 
-        print "reconstruction error:  rfac= %d  Lmax= %d  error= %e" % (rfac, Lmax, error)
+        print("reconstruction error:  rfac= %d  Lmax= %d  error= %e" % (rfac, Lmax, error))
 
 def test_solver_grid_dependence_water():
     """
@@ -5348,12 +5348,12 @@ def test_solver_grid_dependence_water():
         orbitals = RDFT.getOrbitalGuess()
 
         # total electron density
-        print "electron density..."
+        print("electron density...")
         rho = density_func(orbitals)
 
         qnuc, qelec, qtot = total_charge(atomlist, rho)
         
-        print "effective potential..."
+        print("effective potential...")
         potential = effective_potential_func(atomlist, rho, xc)
 
         # solve S.u = v
@@ -5371,7 +5371,7 @@ def test_solver_grid_dependence_water():
         error = np.sqrt(
             integral(atomlist, lambda x,y,z: (v(x,y,z) - v_rec(x,y,z))**2 ) )
 
-        print "reconstruction error:  rfac= %d  Lmax= %d  error= %e" % (rfac, Lmax, error)
+        print("reconstruction error:  rfac= %d  Lmax= %d  error= %e" % (rfac, Lmax, error))
 
         
 def test_iterative_inhomogeneous(): # NOT WORKING, THERE IS A CONCEPTUAL MISTAKE 
@@ -5475,7 +5475,7 @@ def test_iterative_inhomogeneous(): # NOT WORKING, THERE IS A CONCEPTUAL MISTAKE
     
     rho = None
     xc = None
-    print "effective potential..."
+    print("effective potential...")
     potential_full = effective_potential_func(atomlist_nuclei, rho, xc, nelec=0)
 
     # energy of continuum orbital (in Hartree)
@@ -5520,7 +5520,7 @@ def test_iterative_inhomogeneous(): # NOT WORKING, THERE IS A CONCEPTUAL MISTAKE
     
     max_iter = 3
     for k in range(1, max_iter):
-        print "Iteration k= %d" % k
+        print("Iteration k= %d" % k)
         spherical, remainder = spherical_remainder(atomlist, remainder)
         potential = add_two_functions(atomlist, potential, spherical, 1.0, 1.0)
 
@@ -5576,7 +5576,7 @@ def test1_hmi_scattering():
     cf2 = regular_coulomb_func(E, charge, l, m, 0.0,
                                center=posH1)
 
-    print "initial guess for continuum orbital..."
+    print("initial guess for continuum orbital...")
     phi0 = add_two_functions(atomlist, cf1, cf2, 1.0/np.sqrt(2), 1.0/np.sqrt(2))
     """
     # The initial guess for the continuum orbital is a Coulomb
@@ -5586,7 +5586,7 @@ def test1_hmi_scattering():
 
     rho = None
     xc = None
-    print "effective potential..."
+    print("effective potential...")
     potential = effective_potential_func(atomlist, rho, xc, nelec=0)
     
     # origin of Coulomb waves and V0
@@ -5616,7 +5616,7 @@ def test1_hmi_scattering():
                      (3, posH2)]
     atomic_numbers, atomic_coordinates = atomlist2arrays(atomlist_grid)
 
-    print "Schroedinger equation ..."
+    print("Schroedinger equation ...")
     dphi = multicenter_inhomogeneous_schroedinger(potential, source,  E,
                                                   atomic_coordinates, atomic_numbers,
                                                   radial_grid_factor=settings.radial_grid_factor,
@@ -5632,23 +5632,23 @@ def test1_hmi_scattering():
                             center=center)
     
     # residual (H-E)phi0
-    print "residual (H-E)phi0..."
+    print("residual (H-E)phi0...")
     residual0 = residual_func(atomlist_grid, phi0, potential, E)
 
     # residual (H-E)phi1
-    print "residual (H-E)phi1..."
+    print("residual (H-E)phi1...")
     residual1 = residual_func(atomlist_grid, phi1, potential, E)
 
     # improve orbital
     delta_e = 0.0
     source = source_func(delta_e, phi1, residual1)
-    print "orbital correction..."
+    print("orbital correction...")
     dphi = orbital_correction(atomlist_grid, potential, source,  E, delta_e)
-    print "residual (H-E)dphi..."
+    print("residual (H-E)dphi...")
     residual_dphi = residual_func(atomlist_grid, dphi, potential, E)
 
     #
-    print "build matrix (H-E)^2 in basis {phi,dphi} ..."
+    print("build matrix (H-E)^2 in basis {phi,dphi} ...")
     R2 = np.zeros((2,2))
     R2[0,0] = overlap(atomlist_grid, residual1, residual1)                                   #  <phi|(H-E)^2|phi>
     R2[0,1] = overlap(atomlist, residual1, residual_dphi)      #  <phi|(H-E)^2|delta_phi>
@@ -5658,14 +5658,14 @@ def test1_hmi_scattering():
     # diagonalize R^2
     eigvals, eigvecs = sla.eigh(R2)
     
-    print "matrix R^2"
+    print("matrix R^2")
     labels = ["phi", "delta phi"]
-    print annotated_matrix(R2, labels, labels)
+    print(annotated_matrix(R2, labels, labels))
     
     # and choose the solution with the lowest 
     # eigenvalue, I think all eigenvalues should be positive
     
-    print "Eigenvalues: %s" % eigvals
+    print("Eigenvalues: %s" % eigvals)
     a,b = eigvecs[:,0]
     
     # Sign of an eigenvector is arbitrary. We choose
@@ -5674,16 +5674,16 @@ def test1_hmi_scattering():
         a *= -1
         b *= -1
         
-    print "Coefficients for mixing old orbital and orbital correction"
-    print "   phi^(new) = a*phi^(old) + b*delta_phi "
-    print "a = %s" % a
-    print "b = %s" % b
+    print("Coefficients for mixing old orbital and orbital correction")
+    print("   phi^(new) = a*phi^(old) + b*delta_phi ")
+    print("a = %s" % a)
+    print("b = %s" % b)
 
     phi2 = add_two_functions(atomlist_grid, phi1, dphi, a,b)
     # normalize continuum orbital
     delta, phi2 = phaseshift(atomlist_grid, phi2, E, charge, l, m,
                             center=center)
-    print "residual (H-E)phi2 ..."
+    print("residual (H-E)phi2 ...")
     residual2 = residual_func(atomlist_grid, phi2, potential, E)
 
     
@@ -5724,7 +5724,7 @@ def test1_hmi_scattering():
     max_iter = 10
     for k in range(0, max_iter):
         delta_e = energy_correction(atomlist, residual, phi, method="Becke")
-        print "delta_e = %e" % delta_e
+        print("delta_e = %e" % delta_e)
         delta_e = 0.0
         source = source_func(delta_e, phi, residual)
         delta_phi = orbital_correction(atomlist, potential, source, E, delta_e)
@@ -5732,7 +5732,7 @@ def test1_hmi_scattering():
         phi = add_two_functions(atomlist, phi, delta_phi, 1.0/np.sqrt(2), 1.0/np.sqrt(2))
         residual = residual_func(atomlist, phi, potential, E)
         nrm2_residual = overlap(atomlist, residual, residual)
-        print "total error  |(H-E)phi|^2= %e" % nrm2_residual
+        print("total error  |(H-E)phi|^2= %e" % nrm2_residual)
         
         
         plt.plot(r, potential(0*r,0*r,r), label=r"$v_{eff}(0,0,z)$")
@@ -5813,7 +5813,7 @@ def test_imaginary_time_propagation():
 
     # initial guess
     atomic_numbers, atomic_coordinates = atomlist2arrays(atomlist)
-    print "continuum Schroedinger equation..."
+    print("continuum Schroedinger equation...")
     phi0 = multicenter_continuum_schroedinger(potential, E, +1, 
                                              atomic_coordinates, atomic_numbers,
                                              radial_grid_factor=settings.radial_grid_factor,
@@ -5843,7 +5843,7 @@ def test_imaginary_time_propagation():
     plt.legend()
     plt.show()
     
-    print "residual of initial guess..."
+    print("residual of initial guess...")
     residual0 = residual_func(atomlist, phi0, potential, E)
 
     plt.plot(r, residual0(x,y,z), ls="--", label=r"residual $(H-E)\phi_0$")
@@ -5856,7 +5856,7 @@ def test_imaginary_time_propagation():
     
     phi = phi0
     for i in range(0, 3):
-        print "imaginary time propagation  exp(-(H-E)^2 t) phi0 ..."
+        print("imaginary time propagation  exp(-(H-E)^2 t) phi0 ...")
         phi = imaginary_time_propagation(atomlist, phi, potential, E, time, nsteps)
 
         plt.plot(r, phi(x,y,z), ls="-.", label="$\phi_{%d}$" % (i+1))
@@ -5920,13 +5920,13 @@ def test_xc_functional():
     # exchange-correlation energy
     Exc = exchange_correlation_energy(atomlist, rho, xc)
 
-    print "exchange-correlation energy (multicenter grid)   = %e" % Exc
-    print "exchange-correlction energy (atomic calculation) = %e" % atom.Exc
+    print("exchange-correlation energy (multicenter grid)   = %e" % Exc)
+    print("exchange-correlction energy (atomic calculation) = %e" % atom.Exc)
 
     # classical Coulomb energy
     Ecoul = coulomb_energy(atomlist, rho)
-    print "Coulomb energy (multicenter grid)   = %e" % Ecoul
-    print "Coulomb energy (atomic calculation) = %e" % atom.Ecoul
+    print("Coulomb energy (multicenter grid)   = %e" % Ecoul)
+    print("Coulomb energy (atomic calculation) = %e" % atom.Ecoul)
 
     
 if __name__ == "__main__":

@@ -9,15 +9,18 @@ The latest version of DFTBaby and a short manual can be found on the following w
 
 Dependencies
 ============
- - python 2.7
- - numpy 1.8.2 or newer
- - scipy 0.14.0 or newer
- - f2py for compiling the Fortran extensions
- - matplotlib 2.0.0 or newer
- - mpmath 0.19 or newer
- - sympy 1.0 or newer
+ - Python 3.12 or newer
+ - NumPy 2.0.0 or newer
+ - SciPy 1.14.0 or newer
+ - f2py (included with numpy) for compiling the Fortran extensions
+ - Matplotlib 3.9.0 or newer
+ - mpmath 1.3.0 or newer
+ - sympy 1.13 or newer
  - BLAS and LAPACK
  - libxc 3.0.0 (optional, only needed for atomic calculations of pseudoorbitals)
+
+Note: This project has been fully migrated to Python 3.12+ and NumPy 2.0+.
+See PYTHON3_MIGRATION.md for complete migration details and test results.
 
 
 DFTBaby makes extensive use of numpy and scipy for performing linear algebra operations.
@@ -36,18 +39,30 @@ may use up to 300% CPU, instead of the expected 100%. However setting those to
 Installation
 ============
 
+Modern installation (recommended):
+----------------------------------
+
   tar -xvf DFTBaby-###.tar.gz
   cd DFTBaby-###/
 
+  # Install using pip (uses pyproject.toml)
+  pip install .
+
+  # Or for development mode
+  pip install -e .
+
+This will install the python libraries and executables.
+
+Legacy installation:
+-------------------
+
   python setup.py install --user
 
-This will install the python libraries in $HOME/.local/lib/python2.7 and the executables
+This will install the python libraries in $HOME/.local/lib/python3.12 and the executables
 in $HOME/.local/bin. These paths should be added to the environment variables PYTHONPATH
 and PATH, respectively.
-In some cases, you might have to edit the setup.py script. For instance, if the optimal
-BLAS or LAPACK library is not in a default location, this can be fixed by editing the
-`extra_link_args` options. Also, if you wish to use the Intel compiler instead of the
-GNU compiler, you have to uncomment the relevant section in setup.py.
+
+Note: setup.py is maintained for backward compatibility. Modern installations should use pip.
 
 Alternatively, DFTBaby can be installed by adding the folder DFTBaby-#### to the PYTHONPATH
 environment variable. The subfolders DFTB/, DFTB/Analyse, DFTB/Modeling, DFTB/Formats, DFTB/Dynamics,

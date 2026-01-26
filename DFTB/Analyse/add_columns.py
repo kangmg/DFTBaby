@@ -8,7 +8,7 @@ import numpy as np
 if __name__ == "__main__":
     columns = []
     if len(sys.argv) < 2:
-        print "Usage: python %s <files whose columns should be added>" % sys.argv[0]
+        print("Usage: python %s <files whose columns should be added>" % sys.argv[0])
         exit(-1)
     for data_file in sys.argv[1:]:
         data = np.loadtxt(data_file)
@@ -24,5 +24,5 @@ if __name__ == "__main__":
     colsum = np.sum(columns,axis=0)
 
     for r in colsum:
-        print "%s" % r
+        print("%s" % r)
 

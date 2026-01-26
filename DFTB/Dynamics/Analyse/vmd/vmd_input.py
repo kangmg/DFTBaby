@@ -34,7 +34,7 @@ if __name__ == "__main__":
     (options,args) = parser.parse_args()
 
     # QM/MM partitioning
-    if options.has_key("qmmm_partitioning"):
+    if "qmmm_partitioning" in options:
         qm_indeces = eval(options["qmmm_partitioning"])
         qm_selection = "{" + "or".join(map(str, [" index %d " % (i-1) for i in qm_indeces])) + "}"
     else:
@@ -101,4 +101,4 @@ proc renderMovie {} {
     fh.write(vmd_commands)
     fh.close()
 
-    print "VMD input script written to %s" % vmd_input
+    print("VMD input script written to %s" % vmd_input)

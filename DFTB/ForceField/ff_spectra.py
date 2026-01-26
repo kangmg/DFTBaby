@@ -28,7 +28,7 @@ if __name__ == "__main__":
     
     (opts,args) = parser.parse_args()
     if len(args) < 1:
-        print usage
+        print(usage)
         exit(-1)
 
     ff_file = args[0]  #"h2.ff" #"ethene.ff" #"pyrene_crystal_expanded.ff" #
@@ -44,8 +44,8 @@ if __name__ == "__main__":
 
     # evaluate force field once
     energy, grad = pff.getEnergyAndGradient(coords, state=opts.state)
-    print "Total energy: %s" % energy
-    print "|gradient|  : %s" % la.norm(grad)  
+    print("Total energy: %s" % energy)
+    print("|gradient|  : %s" % la.norm(grad)  )
     # compute exciton spectrum
     en, T, M = pff.getTransitionDipoles(verbose=1)
     save_exciton_spectrum(opts.spectrum_file, en, T, M)

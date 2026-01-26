@@ -32,7 +32,7 @@ if __name__ == "__main__":
     usage += "  converts and xyz-file to the gen-format expected by Seifert's DFTB program\n"
 
     if len(sys.argv) < 3:
-        print usage
+        print(usage)
         exit(-1)
     xyz_in = sys.argv[1]
     gen_out = sys.argv[2]

@@ -54,7 +54,7 @@ if __name__ == "__main__":
         
         """ %  os.path.basename(sys.argv[0])
 
-        print usage
+        print(usage)
         exit(-1)
 
     l = int(args[0])

@@ -66,7 +66,7 @@ class metadynamics:
 #            lines = f.readlines()
             for line in f:
                 lines += line.split("#")[0]
-        print lines
+        print(lines)
         
 
     def set_pes_object(self, pes):
@@ -270,7 +270,7 @@ class cv_cn(cv):
             self.d = list(np.array(cfg["d"])/au2ang)
         elif type(cfg["d"]) == type(0.0):  # if float is parsed, use it for all atom pairs
             self.d = len(self.ref)*[cfg["d"]/au2ang]
-        print "d: ", self.d
+        print("d: ", self.d)
         self.x = np.linspace(0., 1., 200)
         self.ticks = None
 
@@ -282,8 +282,8 @@ class cv_cn(cv):
 
     def check_parameters(self):
         if self.d == "auto":
-            atom1 = raw_input("Please enter the first atom type: ").capitalize()
-            atom2 = raw_input("Please enter the second atom type: ").capitalize()
+            atom1 = input("Please enter the first atom type: ").capitalize()
+            atom2 = input("Please enter the second atom type: ").capitalize()
             d = cvf.get_d([atom1, atom2], 0, 1)
             plt.title(r"%s-%s ($d = %.2f \:\AA$)" % (atom1, atom2, d*au2ang))
         else:
@@ -345,8 +345,8 @@ class cv_mullcharge(cv):
             pool.join()
             dcharge = (np.sum(charges_h[:, self.atoms], axis=1).reshape(nat, 3)-charge)/h
             np.save(self.tmp, charges_h)
-            print "charge: ", charge
-            print "dcharge:\n", dcharge
+            print("charge: ", charge)
+            print("dcharge:\n", dcharge)
         return charge, dcharge
 
     def convert_units(self, s):

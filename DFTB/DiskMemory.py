@@ -19,7 +19,7 @@ def memory_usage():
     finds the amount of memory in MB used by the python process
     """
     mem = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1000.0
-    print "Memory used: %s MB" % mem
+    print("Memory used: %s MB" % mem)
     return mem
 
 class DiskMemory:
@@ -36,7 +36,7 @@ class DiskMemory:
             if self._tmpdir == None:
                 return func(*args, **kwds)
             else:
-                print "Numpy arrays inside function %s will be mapped to hard disk" % func.__name__
+                print("Numpy arrays inside function %s will be mapped to hard disk" % func.__name__)
                 memory_usage()
                 self.tmp_files[func.__name__] = []
                 # The np-module imported in the namespace of the function definition
@@ -60,7 +60,7 @@ class DiskMemory:
                             r = np.asarray(r)
                         res_nd.append( r )
                 else:
-                    if type(res) == np.core.memmap:
+                    if type(res) == np.memmap:
                         res_nd = np.asarray(res)
                     else:
                         res_nd = res
@@ -89,7 +89,7 @@ class DiskMemory:
         return arr
     def asarray_memmap(self, a, dtype=None, order=None):
         # if a is already a memmap object, nothing should be done
-        if type(a) == _np.core.memmap:
+        if type(a) == _np.memmap:
             return a
         arr_nd = self.np_old["asarray"](a, dtype=dtype, order=order)
         fh = tempfile.TemporaryFile(dir=self._tmpdir, prefix="dftbaby_memmap")
@@ -124,7 +124,7 @@ if __name__ == "__main__":
             arrays.append( Z )
             memory_usage()
         for i in range(0, imax):
-            print np.sum(arrays[i][:])
+            print(np.sum(arrays[i][:]))
             memory_usage()
         
             

@@ -34,11 +34,11 @@ def filter_fragments(atomlist_full, selected_fragments=[], filter_mode="keep"):
     atomlist_filtered = []
     #
     unique_labels = set(fragment_labels)
-    print "The following fragments were found:"
-    print "==================================="
+    print("The following fragments were found:")
+    print("===================================")
     for flabel in unique_labels:
-        print " %s" % flabel
-    print ""
+        print(" %s" % flabel)
+    print("")
     #
     for frag,flabel in zip(fragments, fragment_labels):
         if flabel in selected_fragments:
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
     (opts,args) = parser.parse_args()
     if len(args) < 1:
-        print usage
+        print(usage)
         exit(-1)
     xyz_in = args[0]
     selected_fragments = args[1:]
@@ -74,4 +74,4 @@ if __name__ == "__main__":
 
     if len(selected_fragments) > 0:
         XYZ.write_xyz(opts.out_xyz, [atomlist_filtered])
-        print "filtered geometry written to %s" % opts.out_xyz
+        print("filtered geometry written to %s" % opts.out_xyz)

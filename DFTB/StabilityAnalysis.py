@@ -24,7 +24,7 @@ import scipy.sparse.linalg as sla
 def check_stability(gamma, gamma_lr,
                     qtrans_oo, qtrans_vv, qtrans_ov,
                     omega, nocc, nvirt):
-    print "Stability of closed-shell DFTB ground state"
+    print("Stability of closed-shell DFTB ground state")
 
     # Coulomb integrals
     # (ij|ab)
@@ -47,10 +47,10 @@ def check_stability(gamma, gamma_lr,
 
     # The restricted ground state is stable if the R matrix is positive semidefinite
     w, v = sla.eigsh(R, which='SA', k=min(6, nocc*nvirt))
-    print w
-    print "  lowest eigenvalue of restricted/unrestricted stability matrix R: %e" % w[0]
+    print(w)
+    print("  lowest eigenvalue of restricted/unrestricted stability matrix R: %e" % w[0])
     if (w[0] < 0.0):
-        print "   !!! restricted/unrestricted instability detected !!!"
+        print("   !!! restricted/unrestricted instability detected !!!")
 
 
     

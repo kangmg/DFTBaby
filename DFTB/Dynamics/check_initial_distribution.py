@@ -18,7 +18,7 @@ def plot_histogram(T):
     
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: python %s <pattern for initial conditions, e.g. structure_>" % sys.argv[0]
+        print("Usage: python %s <pattern for initial conditions, e.g. structure_>" % sys.argv[0])
         sys.exit(-1)
     infiles = glob.glob(sys.argv[1] + "*.in")
     ekins = []
@@ -41,10 +41,10 @@ if __name__ == "__main__":
         nvib = 1
     elif nat > 2:
         nvib = 3*nat-6
-    print "number of atoms: %s" % nat
-    print "number of vibrational modes: %s" % nvib
+    print("number of atoms: %s" % nat)
+    print("number of vibrational modes: %s" % nvib)
     T = ekins / (0.5 * nvib * AtomicData.kBoltzmann)
-    print "average temperature: %.5f K" % np.mean(T)
-    print "standard deviation:  %.5f K" % np.std(T)
+    print("average temperature: %.5f K" % np.mean(T))
+    print("standard deviation:  %.5f K" % np.std(T))
     # make a histogram
     plot_histogram(T)

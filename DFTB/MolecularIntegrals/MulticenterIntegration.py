@@ -60,8 +60,7 @@ def select_angular_grid(lebedev_order):
     n_lebedev = abs(np.array(Lebedev_Lmax) - lebedev_order).argmin()
     Lmax = Lebedev_Lmax[n_lebedev]
     if lebedev_order != Lmax:
-        print "No grid for order %s, using grid which integrates up to Lmax = %s exactly instead." \
-            % (lebedev_order, Lmax)
+        print("No grid for order %s, using grid which integrates up to Lmax = %s exactly instead." ) % (lebedev_order, Lmax)
     # angular grid
     th,ph,angular_weights = np.array(LebedevGridPoints[Lebedev_Npts[n_lebedev]]).transpose()
     
@@ -70,7 +69,7 @@ def select_angular_grid(lebedev_order):
 def print_grid_summary(atomlist,
                        lebedev_order=23, radial_grid_factor=1):
     """
-    print a table with number of radial and angular grid points
+    print(a table with number of radial and angular grid points)
     for each atom. The total number of grid points in all overlapping
     grids is also shown.
 
@@ -91,11 +90,11 @@ def print_grid_summary(atomlist,
                          each atom
     
     """
-    print " "
-    print "   Size of grids"
-    print " "
-    print " Atom      #    radial points    angular points     radial x angular"
-    print " -------------------------------------------------------------------"
+    print(" ")
+    print("   Size of grids")
+    print(" ")
+    print(" Atom      #    radial points    angular points     radial x angular")
+    print(" -------------------------------------------------------------------")
     Ntot = 0
     grid_sizes = []
     for i,(Z,pos) in enumerate(atomlist):
@@ -110,11 +109,11 @@ def print_grid_summary(atomlist,
         
         grid_sizes.append( (Nr,Nang) )
         
-        print " %2s      %3.1d      %7.1d           %7.1d           %10.1d" % (atom_names[Z-1], i+1, Nr, Nang, Nr*Nang)
+        print(" %2s      %3.1d      %7.1d           %7.1d           %10.1d" % (atom_names[Z-1], i+1, Nr, Nang, Nr*Nang))
 
-    print " -------------------------------------------------------------------"
-    print " Total                                                %10.1d" % Ntot
-    print ""
+    print(" -------------------------------------------------------------------")
+    print(" Total                                                %10.1d" % Ntot)
+    print("")
     
     return grid_sizes
     
@@ -214,8 +213,7 @@ def multicenter_integration(f, atomic_coordinates, atomic_numbers, lebedev_order
         # distance between grid points and atom i
         dist = np.zeros((Npts, Nat))
         for i in range(0, Nat):
-            dist[:,i] = np.sqrt(    (x - atomic_coordinates[0,i])**2   \
-                                   +(y - atomic_coordinates[1,i])**2   \
+            dist[:,i] = np.sqrt(    (x - atomic_coordinates[0,i])**2 +(y - atomic_coordinates[1,i])**2   \
                                    +(z - atomic_coordinates[2,i])**2 )
 
         # P_i(r) as defined in eqn. (13)
@@ -328,8 +326,7 @@ def multicenter_poisson(f, atomic_coordinates, atomic_numbers, lebedev_order=23,
         # distance between grid points and atom i
         dist = np.zeros((Nr,Nang, Nat))
         for i in range(0, Nat):
-            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2   \
-                                   +(y - atomic_coordinates[1,i])**2   \
+            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2 +(y - atomic_coordinates[1,i])**2   \
                                    +(z - atomic_coordinates[2,i])**2 )
 
         # P_i(r) as defined in eqn. (13)
@@ -439,8 +436,7 @@ def multicenter_poisson(f, atomic_coordinates, atomic_numbers, lebedev_order=23,
                 
                 spline_lm_real, spline_lm_imag = radial_potentials[I][(l,m)]
                 # interpolate
-                VI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                        + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                VI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
                 V += VI_lm*Ylm
 
                 if m == -(Lmax-1)/2:
@@ -647,8 +643,7 @@ def multicenter_laplacian_OLD(f, atomic_coordinates, atomic_numbers, lebedev_ord
         # distance between grid points and atom i
         dist = np.zeros((Nr,Nang, Nat))
         for i in range(0, Nat):
-            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2   \
-                                   +(y - atomic_coordinates[1,i])**2   \
+            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2 +(y - atomic_coordinates[1,i])**2   \
                                    +(z - atomic_coordinates[2,i])**2 )
 
         # P_i(r) as defined in eqn. (13)
@@ -753,8 +748,7 @@ def multicenter_laplacian_OLD(f, atomic_coordinates, atomic_numbers, lebedev_ord
                 
                 spline_lm_real, spline_lm_imag = radial_laplacians[I][(l,m)]
                 # interpolate
-                LuI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                        + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                LuI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
 
                 lapI_lm = LuI_lm/rI
                 lap += lapI_lm*Ylm
@@ -967,8 +961,7 @@ def multicenter_laplacian(f, atomic_coordinates, atomic_numbers,
         # distance between grid points and atom i
         dist = np.zeros((Nr,Nang, Nat))
         for i in range(0, Nat):
-            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2   \
-                                   +(y - atomic_coordinates[1,i])**2   \
+            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2 +(y - atomic_coordinates[1,i])**2   \
                                    +(z - atomic_coordinates[2,i])**2 )
 
         # P_i(r) as defined in eqn. (13)
@@ -1094,8 +1087,7 @@ def multicenter_laplacian(f, atomic_coordinates, atomic_numbers,
                 
                 spline_lm_real, spline_lm_imag = radial_laplacians[I][(l,m)]
                 # interpolate
-                LuI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                        + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                LuI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
                 lapI_lm = LuI_lm/rI
                 lap += lapI_lm*Ylm
                 
@@ -1295,8 +1287,7 @@ def multicenter_laplacian_SMOOTH(f, atomic_coordinates, atomic_numbers, lebedev_
         # distance between grid points and atom i
         dist = np.zeros((Nr,Nang, Nat))
         for i in range(0, Nat):
-            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2   \
-                                   +(y - atomic_coordinates[1,i])**2   \
+            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2 +(y - atomic_coordinates[1,i])**2   \
                                    +(z - atomic_coordinates[2,i])**2 )
 
         # P_i(r) as defined in eqn. (13)
@@ -1451,8 +1442,7 @@ def multicenter_laplacian_SMOOTH(f, atomic_coordinates, atomic_numbers, lebedev_
                 spline_lm_real, spline_lm_imag = radial_laplacians[I][(l,m)]
 
                 # interpolate
-                lapI_lm =       interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                         + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                lapI_lm =       interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
                 """
                 lapI_lm_real_func, lapI_lm_imag_func = radial_laplacians[I][(l,m)]
                 lapI_lm = lapI_lm_real_func(rI) + 1.0j*lapI_lm_imag_func(rI)
@@ -1501,11 +1491,9 @@ def radial_laplacian_spline(r, u, l):
     spl_re = interpolate.splrep(r, u.real, s=0, k=5)
     spl_im = interpolate.splrep(r, u.imag, s=0, k=5)
     # compute d^2u/dr^2 using spline
-    d2udr2 =        interpolate.splev(r, spl_re, der=2, ext=0) \
-             + 1.0j*interpolate.splev(r, spl_im, der=2, ext=0)
+    d2udr2 =        interpolate.splev(r, spl_re, der=2, ext=0) + 1.0j*interpolate.splev(r, spl_im, der=2, ext=0)
     # compute d^3u/dr^3(r=0) using spline
-    d3udr3_0 =  interpolate.splev([0.0], spl_re, der=3, ext=0) \
-         + 1.0j*interpolate.splev([0.0], spl_im, der=3, ext=0)
+    d3udr3_0 =  interpolate.splev([0.0], spl_re, der=3, ext=0) + 1.0j*interpolate.splev([0.0], spl_im, der=3, ext=0)
     
     #Lu = d2udr2 - l*(l+1)/r**2 * u
     if l == 0:
@@ -1522,8 +1510,7 @@ def radial_laplacian_spline(r, u, l):
     plt.cla()
     plt.clf()
     
-    d3udr3 =  interpolate.splev(r, spl_re, der=3, ext=0) \
-              + 1.0j*interpolate.splev(r, spl_im, der=3, ext=0)
+    d3udr3 =  interpolate.splev(r, spl_re, der=3, ext=0) + 1.0j*interpolate.splev(r, spl_im, der=3, ext=0)
 
     
     plt.plot(r, lap.real, label="l=%d" % l)
@@ -1580,7 +1567,7 @@ def analyze_cusp(r, u, Lu):
     #          i=1  i
     # `polyfit` returns the coefficient vector in the wrong order.
     C  = np.polyfit(r[r < rs],   u[r < rs], 3)[::-1].real
-    print "C = %s" % C
+    print("C = %s" % C)
     # In the Taylor expansion of u(r) there must be no constant
     # term, for if there were a constant term, i.e.
     #   u(r) = u0 + C1 r + ...
@@ -1591,7 +1578,7 @@ def analyze_cusp(r, u, Lu):
     #  u(r) sum    D  r
     #          i=0  i
     D  = np.polyfit(r[r < rs],  Lu[r < rs], 3)[::-1].real
-    print "D = %s" % D
+    print("D = %s" % D)
     # Substituting these expansions for u and L.u into eqn. (2)
     # leads to the
     #
@@ -1604,8 +1591,8 @@ def analyze_cusp(r, u, Lu):
     # local energy
     E = 1.0/(2*C[1]) * ( C[2]/C[1] * D[0] - D[1] )
 
-    print "nuclear charge  Z= %e" % Z
-    print "local energy    E= %e" % E
+    print("nuclear charge  Z= %e" % Z)
+    print("local energy    E= %e" % E)
     
     return Z, E
 
@@ -1731,8 +1718,7 @@ def multicenter_residual(f, potential_ee, e,
         # distance between grid points and atom i
         dist = np.zeros((Nr,Nang, Nat))
         for i in range(0, Nat):
-            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2   \
-                                   +(y - atomic_coordinates[1,i])**2   \
+            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2 +(y - atomic_coordinates[1,i])**2   \
                                    +(z - atomic_coordinates[2,i])**2 )
 
         # P_i(r) as defined in eqn. (13)
@@ -1850,8 +1836,7 @@ def multicenter_residual(f, potential_ee, e,
                 # sum    -1/2 (\/  - ---- ) fI(x,y,z)
                 #    I                rI
                 spline_lm_real, spline_lm_imag = radial_hamiltonians[I][(l,m)]
-                HuI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                        + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                HuI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
 
                 res += HuI_lm/rI * Ylm
 
@@ -1861,8 +1846,7 @@ def multicenter_residual(f, potential_ee, e,
                 #
                 spline_lm_real, spline_lm_imag = radial_functions[I][(l,m)]
                 # interpolate
-                fI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                        + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                fI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
 
                 # nuclear potential without atom I
                 Vnuc = 0*x
@@ -1981,8 +1965,7 @@ def multicenter_inhomogeneous_schroedinger(potential, source, energy,
         # distance between grid points and atom i
         dist = np.zeros((Nr,Nang, Nat))
         for i in range(0, Nat):
-            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2   \
-                                   +(y - atomic_coordinates[1,i])**2   \
+            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2 +(y - atomic_coordinates[1,i])**2   \
                                    +(z - atomic_coordinates[2,i])**2 )
 
         # P_i(r) as defined in eqn. (13)
@@ -2107,8 +2090,7 @@ def multicenter_inhomogeneous_schroedinger(potential, source, energy,
                 
                 spline_lm_real, spline_lm_imag = radial_wavefunctions[I][(l,m)]
                 # interpolate
-                psiI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                        + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                psiI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
                 psi += psiI_lm*Ylm
 
                 if m == -(Lmax-1)/2:
@@ -2235,8 +2217,7 @@ def multicenter_continuum_schroedinger(potential, energy, charge,
         # distance between grid points and atom i
         dist = np.zeros((Nr,Nang, Nat))
         for i in range(0, Nat):
-            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2   \
-                                   +(y - atomic_coordinates[1,i])**2   \
+            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2 +(y - atomic_coordinates[1,i])**2   \
                                    +(z - atomic_coordinates[2,i])**2 )
         
         # P_i(r) as defined in eqn. (13)
@@ -2275,7 +2256,7 @@ def multicenter_continuum_schroedinger(potential, energy, charge,
 
         """
         ### DEBUG
-        print "atom I=%d" % I
+        print("atom I=%d" % I)
         import matplotlib.pyplot as plt
         # 
         plt.plot(r, v_sph, ls="-", label=r"$V^{(sph)}_{%d}$" % I)
@@ -2415,9 +2396,9 @@ def multicenter_continuum_schroedinger(potential, energy, charge,
 
             ### DEBUG
             if l == 0:
-                print "scale_fac= %s" % scale_fac
-                print u_l[1]/r[1]
-                print Rl_splined(np.array([r[0], r[1], r[2]]))
+                print("scale_fac= %s" % scale_fac)
+                print(u_l[1]/r[1])
+                print(Rl_splined(np.array([r[0], r[1], r[2]])))
                 import matplotlib.pyplot as plt
                 plt.cla()
                 plt.clf()
@@ -2728,8 +2709,7 @@ def multicenter_spherical_remainder(potential,
         # distance between grid points and atom i
         dist = np.zeros((Nr,Nang, Nat))
         for i in range(0, Nat):
-            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2   \
-                                   +(y - atomic_coordinates[1,i])**2   \
+            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2 +(y - atomic_coordinates[1,i])**2   \
                                    +(z - atomic_coordinates[2,i])**2 )
 
         # P_i(r) as defined in eqn. (13)
@@ -2798,8 +2778,7 @@ def multicenter_spherical_remainder(potential,
                     # only (0,0) component in V^(sph)
                     spline_lm_real, spline_lm_imag = radial_spherical[I][(l,m)]
                     # interpolate
-                    vsphI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                               + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                    vsphI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
                     vsph += vsphI_lm*Ylm
 
                     break
@@ -2833,8 +2812,7 @@ def multicenter_spherical_remainder(potential,
                 
                 spline_lm_real, spline_lm_imag = radial_remainder[I][(l,m)]
                 # interpolate
-                vremI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                        + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                vremI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
                 vrem += vremI_lm*Ylm
 
                 if m == -(Lmax-1)/2:
@@ -2955,8 +2933,7 @@ def multicenter_operation(fs, op,
         # distance between grid points and atom i
         dist = np.zeros((Nr,Nang, Nat))
         for i in range(0, Nat):
-            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2   \
-                                   +(y - atomic_coordinates[1,i])**2   \
+            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2 +(y - atomic_coordinates[1,i])**2   \
                                    +(z - atomic_coordinates[2,i])**2 )
 
         # P_i(r) as defined in eqn. (13)
@@ -3020,8 +2997,7 @@ def multicenter_operation(fs, op,
                 
                 spline_lm_real, spline_lm_imag = radial_functions[I][(l,m)]
                 # interpolate
-                hI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                        + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                hI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
                 h += hI_lm*Ylm
 
                 if m == -(Lmax-1)/2:
@@ -3235,8 +3211,7 @@ def multicenter_gradient2(f,
         # distance between grid points and atom i
         dist = np.zeros((Nr,Nang, Nat))
         for i in range(0, Nat):
-            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2   \
-                                   +(y - atomic_coordinates[1,i])**2   \
+            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2 +(y - atomic_coordinates[1,i])**2   \
                                    +(z - atomic_coordinates[2,i])**2 )
 
         # P_i(r) as defined in eqn. (13)
@@ -3382,13 +3357,11 @@ def multicenter_gradient2(f,
                 
                 # interpolate fI_{l,m}(x,y,z)
                 spline_lm_real, spline_lm_imag = radial_functions_f[I][(l,m)]
-                fI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                        + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                fI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
 
                 # interpolate dfI_{l,m}/dr(x,y,z)
                 spline_lm_real, spline_lm_imag = radial_functions_dfdr[I][(l,m)]
-                dfIdr_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                        + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                dfIdr_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
 
                 # compute g_r = df/dr(x,y,z) = sum_{l,m} dfIdr_{l,m}(r) Y_{l,m}(th,ph)
                 grad_r = dfIdr_lm * Ylm
@@ -3421,8 +3394,7 @@ def multicenter_gradient2(f,
                 if -l+1 <= m:
                     # interpolate fI_{l,m-1}
                     spline_lm_real, spline_lm_imag = radial_functions_f[I][(l,m-1)]
-                    fI_lmm1 = interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                            + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                    fI_lmm1 = interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
 
                     grad_th += 1.0/rI * fI_lmm1 * np.sqrt((l-m+1)*(l+m)) * np.exp(-1.0j*phI) * sinI * Ylm
                 # Those elements where division by sin(th) would lead to NaN are set to zero. 
@@ -3638,8 +3610,7 @@ def multicenter_gradient_product(f1, f2,
         # distance between grid points and atom i
         dist = np.zeros((Nr,Nang, Nat))
         for i in range(0, Nat):
-            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2   \
-                                   +(y - atomic_coordinates[1,i])**2   \
+            dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2 +(y - atomic_coordinates[1,i])**2   \
                                    +(z - atomic_coordinates[2,i])**2 )
 
         # P_i(r) as defined in eqn. (13)
@@ -3813,13 +3784,11 @@ def multicenter_gradient_product(f1, f2,
                 ############ for f1 ######################################################
                 # interpolate fI_{l,m}(x,y,z)
                 spline_lm_real, spline_lm_imag = radial_functions_f1[I][(l,m)]
-                fI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                        + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                fI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
 
                 # interpolate dfI_{l,m}/dr(x,y,z)
                 spline_lm_real, spline_lm_imag = radial_functions_df1dr[I][(l,m)]
-                dfIdr_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                        + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                dfIdr_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
 
                 # compute g_r = df/dr(x,y,z) = sum_{l,m} dfIdr_{l,m}(r) Y_{l,m}(th,ph)
                 grad_r = dfIdr_lm * Ylm
@@ -3851,8 +3820,7 @@ def multicenter_gradient_product(f1, f2,
                 if -l+1 <= m:
                     # interpolate fI_{l,m-1}
                     spline_lm_real, spline_lm_imag = radial_functions_f1[I][(l,m-1)]
-                    fI_lmm1 = interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                            + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                    fI_lmm1 = interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
 
                     grad_th += 1.0/rI * fI_lmm1 * np.sqrt((l-m+1)*(l+m)) * np.exp(-1.0j*phI) * sinI * Ylm
                 # Those elements where division by sin(th) would lead to NaN are set to zero. 
@@ -3877,13 +3845,11 @@ def multicenter_gradient_product(f1, f2,
                 ##########################################################################
                 # interpolate fI_{l,m}(x,y,z)
                 spline_lm_real, spline_lm_imag = radial_functions_f2[I][(l,m)]
-                fI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                        + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                fI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
 
                 # interpolate dfI_{l,m}/dr(x,y,z)
                 spline_lm_real, spline_lm_imag = radial_functions_df2dr[I][(l,m)]
-                dfIdr_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                        + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                dfIdr_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
 
                 # compute g_r = df/dr(x,y,z) = sum_{l,m} dfIdr_{l,m}(r) Y_{l,m}(th,ph)
                 grad_r = dfIdr_lm * Ylm
@@ -3916,8 +3882,7 @@ def multicenter_gradient_product(f1, f2,
                 if -l+1 <= m:
                     # interpolate fI_{l,m-1}
                     spline_lm_real, spline_lm_imag = radial_functions_f2[I][(l,m-1)]
-                    fI_lmm1 = interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                            + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                    fI_lmm1 = interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
 
                     grad_th += 1.0/rI * fI_lmm1 * np.sqrt((l-m+1)*(l+m)) * np.exp(-1.0j*phI) * sinI * Ylm
                 # Those elements where division by sin(th) would lead to NaN are set to zero. 
@@ -4025,8 +3990,7 @@ def spherical_average_func(atom, f,
         xr = (r-rm)/(r+rm)
         zr = np.arccos(xr) / np.pi
 
-        avg00 =        interpolate.splev(zr, spline_00_real, der=0, ext=0) \
-               + 1.0j*interpolate.splev(zr, spline_00_imag, der=0, ext=0)
+        avg00 =        interpolate.splev(zr, spline_00_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_00_imag, der=0, ext=0)
         # avg00 is the projection of f onto Y_00 = 1/sqrt(4*pi)
         # To average over the solid angle, another factor of
         # 1/sqrt(4*pi) is missing.
@@ -4256,8 +4220,7 @@ def multicenter_grids(atomlist,
         # distance between grid points and atom i
         dist = np.zeros((Npts, Nat))
         for i in range(0, Nat):
-            dist[:,i] = np.sqrt(    (x - atomic_coordinates[0,i])**2   \
-                                   +(y - atomic_coordinates[1,i])**2   \
+            dist[:,i] = np.sqrt(    (x - atomic_coordinates[0,i])**2 +(y - atomic_coordinates[1,i])**2   \
                                    +(z - atomic_coordinates[2,i])**2 )
 
         # P_i(r) as defined in eqn. (13)
@@ -4426,8 +4389,7 @@ def multicenter_interpolation(grid_values,
             # distance between grid points and atom i
             dist = np.zeros((Nr,Nang, Nat))
             for i in range(0, Nat):
-                dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2   \
-                                        +(y - atomic_coordinates[1,i])**2   \
+                dist[:,:,i] = np.sqrt(  (x - atomic_coordinates[0,i])**2 +(y - atomic_coordinates[1,i])**2   \
                                         +(z - atomic_coordinates[2,i])**2 )
 
             # P_i(r) as defined in eqn. (13)
@@ -4484,8 +4446,7 @@ def multicenter_interpolation(grid_values,
                 
                 spline_lm_real, spline_lm_imag = radial_functions[I][(l,m)]
                 # interpolate
-                fI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) \
-                        + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
+                fI_lm = interpolate.splev(zr, spline_lm_real, der=0, ext=0) + 1.0j*interpolate.splev(zr, spline_lm_imag, der=0, ext=0)
                 
                 f += fI_lm*Ylm
 
@@ -4531,10 +4492,10 @@ def test_radial_integration():
     def f(r):
         return np.exp(-r**2)
 
-    print "Nr        I"
+    print("Nr        I")
     for Nr in range(10,100):
-        print "%d        %e" % (Nr, radial_integration(f, 1.0, Nr))
-    print "exact       %e" % (np.sqrt(np.pi)/4.0)
+        print("%d        %e" % (Nr, radial_integration(f, 1.0, Nr)))
+    print("exact       %e" % (np.sqrt(np.pi)/4.0))
 
 
 def electron_density_function(orbs_alpha, orbs_beta, nelec_alpha, nelec_beta, basis):
@@ -4571,18 +4532,18 @@ def test_charge_from_numerical_integration(res):
     exact_charge, density = electron_density_function(res.orbs_alpha, res.orbs_beta,
                                         res.nelec_alpha, res.nelec_beta, res.basis)
 
-    print ""
-    print "Lebedev order    radial grid factor         integrated charge"
-    print "-------------------------------------------------------------"
+    print("")
+    print("Lebedev order    radial grid factor         integrated charge")
+    print("-------------------------------------------------------------")
 
     for radial_grid_factor in [1,2,3,4]:
         for lebedev_order in [11, 17, 23]:
             integrated_charge = multicenter_integration(density, res.coordinates, res.atomic_numbers,
                                                         radial_grid_factor=radial_grid_factor,
                                                         lebedev_order=lebedev_order)
-            print "    %2.d                  %2.d                    %e" % (lebedev_order, radial_grid_factor, integrated_charge)
+            print("    %2.d                  %2.d                    %e" % (lebedev_order, radial_grid_factor, integrated_charge))
 
-    print "        exact                                 %e" % exact_charge
+    print("        exact                                 %e" % exact_charge)
     
 def test_coulomb_integral_from_numerical_integration(res):
     """
@@ -4603,9 +4564,9 @@ def test_coulomb_integral_from_numerical_integration(res):
     exact_charge, density = electron_density_function(res.orbs_alpha, res.orbs_beta,
                                         res.nelec_alpha, res.nelec_beta, res.basis)
 
-    print ""
-    print "Lebedev order    radial grid factor       classical Coulomb energy   "
-    print "---------------------------------------------------------------------"
+    print("")
+    print("Lebedev order    radial grid factor       classical Coulomb energy   ")
+    print("---------------------------------------------------------------------")
 
     for radial_grid_factor in [1,2,3,4]:
         for lebedev_order in [11, 17, 23]:
@@ -4619,7 +4580,7 @@ def test_coulomb_integral_from_numerical_integration(res):
             en_elec = multicenter_integration(elec_energy_func, res.coordinates, res.atomic_numbers,
                                               radial_grid_factor=radial_grid_factor,
                                               lebedev_order=lebedev_order)
-            print "    %2.d                  %2.d                    %e" % (lebedev_order, radial_grid_factor, en_elec)
+            print("    %2.d                  %2.d                    %e" % (lebedev_order, radial_grid_factor, en_elec))
     #
     # compute classical Coulomb energy from basis functions using analytical formulae
     # for electron repulsion integrals
@@ -4652,7 +4613,7 @@ def test_coulomb_integral_from_numerical_integration(res):
                                              basis.centers[:,d], norms[d], basis.powers[:,d], basis.exponents[d])
                     I += 0.5 * P[a,b] * abcd * P[c,d]
 
-    print "          exact                               %e" % I
+    print("          exact                               %e" % I)
 
     
 def test_h2_coulomb_exchange_integrals():
@@ -4695,13 +4656,13 @@ def test_h2_coulomb_exchange_integrals():
 
     normA = multicenter_integration(rhoAA, atomic_coordinates, atomic_numbers,
                                     radial_grid_factor=rfac, lebedev_order=Lmax)
-    print "normalization (a|a)= %s" % normA
+    print("normalization (a|a)= %s" % normA)
 
-    print "hydrogen molecule H2"
-    print ""
-    print "         Integration Mesh                                                          "
-    print "Lebedev order    radial grid factor       Coulomb (aa|bb)      Exchange (ab|ab)    "
-    print "-----------------------------------------------------------------------------------"
+    print("hydrogen molecule H2")
+    print("")
+    print("         Integration Mesh                                                          ")
+    print("Lebedev order    radial grid factor       Coulomb (aa|bb)      Exchange (ab|ab)    ")
+    print("-----------------------------------------------------------------------------------")
 
     for radial_grid_factor in [1,2,3,4]:
         for lebedev_order in [11, 17, 23]:
@@ -4725,8 +4686,8 @@ def test_h2_coulomb_exchange_integrals():
                                             radial_grid_factor=radial_grid_factor,
                                             lebedev_order=lebedev_order)
 
-            print "    %2.d                  %2.d                  %.8f         %.8f" % (lebedev_order, radial_grid_factor, Iaabb, Iabab)
-    print "         exact                              %.8f         %.8f" % (0.50352093, 0.32329114)
+            print("    %2.d                  %2.d                  %.8f         %.8f" % (lebedev_order, radial_grid_factor, Iaabb, Iabab))
+    print("         exact                              %.8f         %.8f" % (0.50352093, 0.32329114))
 
     
 def test_hydrogen_1s_electrostatic_potential():
@@ -4912,7 +4873,7 @@ def test_multicenter_operations():
     z = np.random.rand(Npts)
 
     err = la.norm( h(x,y,z) - h_test(x,y,z) )
-    print "error |h - h_test|= %e" % err
+    print("error |h - h_test|= %e" % err)
     assert err < 1.0e-3
 
 def test1_multicenter_gradient2():
@@ -4994,22 +4955,22 @@ def test1_multicenter_gradient2():
     s12 = sigma12(x,y,z)
     s_test = sigma_test(x,y,z)
 
-    print "square of gradient (multicenter grid)"
-    print s
-    print "product of gradient with itself (multicenter grid)"
-    print s12
-    print "square of gradient (analytical)"
-    print s_test
-    print "difference s-s_test"
-    print s-s_test
-    print "difference s12-s_test"
-    print s12-s_test
+    print("square of gradient (multicenter grid)")
+    print(s)
+    print("product of gradient with itself (multicenter grid)")
+    print(s12)
+    print("square of gradient (analytical)")
+    print(s_test)
+    print("difference s-s_test")
+    print(s-s_test)
+    print("difference s12-s_test")
+    print(s12-s_test)
     
     err = la.norm(s-s_test)
     err12 = la.norm(s12-s_test)
-    print "|(grad f)^2 (approx.) - (grad f)^2 (exact)|= %e" % err
+    print("|(grad f)^2 (approx.) - (grad f)^2 (exact)|= %e" % err)
     assert err < 5.0e-3
-    print "|(grad f).(grad f) (approx.) - (grad f)^2 (exact)|= %e" % err
+    print("|(grad f).(grad f) (approx.) - (grad f)^2 (exact)|= %e" % err)
     assert err12 < 5.0e-3
 
 def test2_multicenter_gradient2():
@@ -5098,15 +5059,15 @@ def test2_multicenter_gradient2():
     s = sigma(x,y,z)
     s_test = sigma_test(x,y,z)
 
-    print "square of gradient (multicenter grid)"
-    print s
-    print "square of gradient (analytical)"
-    print s_test
-    print "difference s-s_test"
-    print s-s_test
+    print("square of gradient (multicenter grid)")
+    print(s)
+    print("square of gradient (analytical)")
+    print(s_test)
+    print("difference s-s_test")
+    print(s-s_test)
     
     err = la.norm(s-s_test)
-    print "|(grad f)^2 (approx.) - (grad f)^2 (exact)|= %e" % err
+    print("|(grad f)^2 (approx.) - (grad f)^2 (exact)|= %e" % err)
     assert err < 5.0e-3
 
 
@@ -5209,15 +5170,15 @@ def test_multicenter_gradient_product():
     s12 = sigma12(x,y,z)
     s12_test = sigma12_test(x,y,z)
 
-    print "product of gradients (multicenter grid)"
-    print s12
-    print "product of gradients (analytical)"
-    print s12_test
-    print "difference s12-s12_test"
-    print s12-s12_test
+    print("product of gradients (multicenter grid)")
+    print(s12)
+    print("product of gradients (analytical)")
+    print(s12_test)
+    print("difference s12-s12_test")
+    print(s12-s12_test)
     
     err12 = la.norm(s12-s12_test)
-    print "|(grad f1).(grad f2) (approx.) - (grad f1).(grad f2) (exact)|= %e" % err12
+    print("|(grad f1).(grad f2) (approx.) - (grad f1).(grad f2) (exact)|= %e" % err12)
     assert err12 < 1.0e-2
 
     
@@ -5380,7 +5341,7 @@ def test_spherical_average():
     # compare avg() and avg_exact() for some points
     r = np.linspace(0.0, 20.0, 1000)
     err = la.norm(avg(r) - avg_exact(r))
-    print "|avg(numerical)-avg(analytical)|= %e" % err
+    print("|avg(numerical)-avg(analytical)|= %e" % err)
     
     import matplotlib.pyplot as plt
     plt.plot(r, avg(r),       label="numerical spherical average")
@@ -5409,7 +5370,7 @@ def test_radial_component_func():
     # compare avg() and avg_exact() for some points
     r = np.linspace(0.0, 20.0, 1000)
     err = la.norm(f_00(r)/np.sqrt(4.0*np.pi) - avg_exact(r))
-    print "|avg(numerical)-avg(analytical)|= %e" % err
+    print("|avg(numerical)-avg(analytical)|= %e" % err)
     
     import matplotlib.pyplot as plt
     plt.plot(r, f_00(r)/np.sqrt(4.0*np.pi), label="numerical spherical average")
@@ -5563,7 +5524,7 @@ def test_multicenter_residual():
 
     # check normalization (integral of density should equal 2.0)
     nelec = Ints1e.integral(atomlist, rho)
-    print "number of electrons  int rho(r) dr = %e" % nelec
+    print("number of electrons  int rho(r) dr = %e" % nelec)
     
     # effective potential (without nuclear attraction)
     # The keyword nuclear=False removes the nuclear potential from Veff
@@ -5601,7 +5562,7 @@ def test_multicenter_residual():
     # expectation value of energy
     from DFTB.MolecularIntegrals.BasissetFreeDFT import energy
     en = energy(atomlist, psi_sigma, psi_sigma, potential)
-    print "energy expectation value  <psi|H|psi> = %e" % en
+    print("energy expectation value  <psi|H|psi> = %e" % en)
     
     # compute residual on the grid treating kinetic energy and nuclear
     # attraction together to minimize numerical errors
@@ -5626,8 +5587,8 @@ def test_multicenter_residual():
             abs(res_sigma_separate(x,y,z) - res_sigma_exact(x,y,z))**2,
                                          atomic_coordinates, atomic_numbers,
                                          radial_grid_factor=rfac, lebedev_order=Lmax)
-    print "error of residual (separate) = %e" % np.sqrt(err2_together)
-    print "error of residual (together) = %e" % np.sqrt(err2_separate)
+    print("error of residual (separate) = %e" % np.sqrt(err2_together))
+    print("error of residual (together) = %e" % np.sqrt(err2_separate))
     
     # plot residual along the H-H bond (the z-axis)
     import matplotlib.pyplot as plt
@@ -5678,7 +5639,7 @@ def test_join_grids():
     # The 3d Gaussian function should be normalized
     gnorm = np.sum(w * f(x,y,z))
     
-    print "norm of Gaussian = %e" % gnorm
+    print("norm of Gaussian = %e" % gnorm)
     
     
 if __name__ == "__main__":
@@ -5688,8 +5649,8 @@ if __name__ == "__main__":
     test_join_grids()
     
     if len(sys.argv) < 2:
-        print "Usage: %s  <formatted checkpoint file>" % os.path.basename(sys.argv[0])
-        print "  test Becke's multicenter integration scheme for electron density"
+        print("Usage: %s  <formatted checkpoint file>" % os.path.basename(sys.argv[0]))
+        print("  test Becke's multicenter integration scheme for electron density")
         exit(-1)
 
     # Formatted checkpoint files for water at the HF/SV level can be found in

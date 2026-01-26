@@ -100,21 +100,21 @@ class PerturbedGeometries:
 if __name__ == "__main__":
     import sys
     if len(sys.argv) < 2:
-        print usage
+        print(usage)
         exit(-1)
 
     args = sys.argv[1:]
 
     if len(args) < 2:
-        print "Missing arguments:"
-        print "    xyz_input xyz_output"
+        print("Missing arguments:")
+        print("    xyz_input xyz_output")
         exit(-1)
         
     xyz_in = args[0]
     xyz_out = args[1]
 
     if len(args) < 3:
-        print "possible commands: 'scale', 'dislocate'"
+        print("possible commands: 'scale', 'dislocate'")
         exit(-1)
     cmd = args[2]
     # the remaining command line arguments depend
@@ -127,20 +127,20 @@ if __name__ == "__main__":
     
     if cmd == "scale":
         if len(cmd_args) < 3:
-            print "Arguments for 'scale':"
-            print "    smin smax N"
+            print("Arguments for 'scale':")
+            print("    smin smax N")
             exit(-1)
         geometries = PG.scale(*cmd_args)
     elif cmd == "dislocate":
         if len(cmd_args) < 4:
-            print "Arguments for 'dislocate':"
-            print "    atom radius nshells N"
+            print("Arguments for 'dislocate':")
+            print("    atom radius nshells N")
             exit(-1)
         geometries = PG.dislocate(*cmd_args)
     else:
         raise ValueError("Command '%s' not understood" % cmd)
 
     XYZ.write_xyz(xyz_out, geometries, title="charge=%d" % kwds.get("charge",0))
-    print "fit path written to '%s'" % xyz_out
+    print("fit path written to '%s'" % xyz_out)
 
     

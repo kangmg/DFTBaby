@@ -35,13 +35,13 @@ class CarbonNanotube:
         circ = la.norm(self.chiral_vector) # circumferance
         self.R = circ/(2.0*np.pi) # radius of nanotube
         if verbose == True:
-            print ""
-            print "Carbon-Nanotube with Cap"
-            print "========================"
-            print "Chirality: (%s,%s)" % (self.n1,self.n2)
-            print "Length:     %7.4f bohr (%7.4f Ang)" % (self.L, self.L*AtomicData.bohr_to_angs)
-            print "Diameter:   %7.4f bohr (%7.4f Ang)" % (2*self.R, 2*self.R*AtomicData.bohr_to_angs)
-            print ""
+            print("")
+            print("Carbon-Nanotube with Cap")
+            print("========================")
+            print("Chirality: (%s,%s)" % (self.n1,self.n2))
+            print("Length:     %7.4f bohr (%7.4f Ang)" % (self.L, self.L*AtomicData.bohr_to_angs))
+            print("Diameter:   %7.4f bohr (%7.4f Ang)" % (2*self.R, 2*self.R*AtomicData.bohr_to_angs))
+            print("")
     def NrCapAtoms(self):
         """
         This method determines the number of carbon atoms that should
@@ -479,16 +479,16 @@ def thomson_energy(x,s,o, R=1.0, Z0=0):
                 continue
             coul += 0.5*pow(r2[i,j], -0.5)
             if r2[i,j] == 0.0:
-                print "i = %s  j = %s" % (i,j)
+                print("i = %s  j = %s" % (i,j))
             # gradient
             for a in range(0, n):
                 if o[a] == 0:
                     continue
                 grad[a,0] -= 1.0/4.0 * pow(r2[i,j],-1.5) * dr2d1[i,j,a]
                 grad[a,1] -= 1.0/4.0 * pow(r2[i,j],-1.5) * dr2d2[i,j,a]
-    print "coul = %s" % coul
+    print("coul = %s" % coul)
 #    print "grad = %s" % grad
-    print "|grad| = %s" % la.norm(grad.ravel())
+    print("|grad| = %s" % la.norm(grad.ravel()))
 
     # compare with Fortran
     err_coul = abs(coul - coul_f)
@@ -558,7 +558,7 @@ def optimize_thomson(x, s, o, R=1.0, callback=None):
     return x,s,o, fmin, d["grad"]
 
 def remove_overlapping_atoms(atomlist, tol=1.0e-4):
-    print "remove overlapping atoms"
+    print("remove overlapping atoms")
     nat = len(atomlist)
     # The i-th atom should be removed if duplicate[i] == 1
     # Fortran
@@ -594,12 +594,12 @@ def check_connectivity(atomlist):
     nr_neighbours = np.sum(Con, axis=1)
     con_min = nr_neighbours.min()
     con_max = nr_neighbours.max()
-    print "nr_neighbours = %s" % nr_neighbours
-    print "%s <= connectivity <= %s" % (con_min, con_max)
+    print("nr_neighbours = %s" % nr_neighbours)
+    print("%s <= connectivity <= %s" % (con_min, con_max))
     if (3 <= con_min) and (con_max <= 3):
         return True
     else:
-        print "Not all C-atoms are connected to 3. There must be a hole somewhere!"
+        print("Not all C-atoms are connected to 3. There must be a hole somewhere!")
         return False
         
 ###############################################################
@@ -619,7 +619,7 @@ def find_best_cap(cnt, Ncap, Ntrial=10, north_south="N"):
     """
     caps = []
     ens = []
-    print "CAP FOR %s-HEMISPHERE" % north_south
+    print("CAP FOR %s-HEMISPHERE" % north_south)
     for n in range(0, Ntrial):
         tp = ThomsonProblem(cnt, Ncap, north_south=north_south)
         en,grad = tp.addCap()
@@ -628,12 +628,12 @@ def find_best_cap(cnt, Ncap, Ntrial=10, north_south="N"):
             atomlist = tp.dual_lattice()
             caps.append(atomlist)
             ens.append(en)
-            print "Trial %s (%s points)   => cap with Coulomb en = %s" % (n,Ncap,en)
+            print("Trial %s (%s points)   => cap with Coulomb en = %s" % (n,Ncap,en))
             break
         else:
-            print "Trial %s (%s points)   optimization did not converge, |grad| = %s" % (n,Ncap,grad_nrm)
+            print("Trial %s (%s points)   optimization did not converge, |grad| = %s" % (n,Ncap,grad_nrm))
     nmin = np.argmin(ens)
-    print "I select cap %s" % nmin
+    print("I select cap %s" % nmin)
     return caps[nmin]
 
 def capped_nanotube(cnt,NcapN, NcapS):
@@ -653,9 +653,9 @@ def capped_uff_nanotube(cnt,NcapN=0, NcapS=0, optimize_uff=1, out_xyz="/tmp/cnt.
     build capped nanotube and optimize it with UFF
     """
     nC,nT = cnt.NrCapAtoms()
-    print "Expected number of Thomson points nT = %s" % nT
-    print "If the caps have holes or very close atoms, you should try increasing"
-    print "or reducing the number of Thomson points (by changing the options NcapN or NcapS)"
+    print("Expected number of Thomson points nT = %s" % nT)
+    print("If the caps have holes or very close atoms, you should try increasing")
+    print("or reducing the number of Thomson points (by changing the options NcapN or NcapS)")
     if NcapN == 0:
         NcapN = nT
     if NcapS == 0:
@@ -674,13 +674,13 @@ def capped_uff_nanotube(cnt,NcapN=0, NcapS=0, optimize_uff=1, out_xyz="/tmp/cnt.
             # try for 5 times
             for n in range(0, ntrial):
                 dcap.append( (dnN,dnS) )
-    dcap = sorted(dcap, key=lambda (a,b): abs(a)+abs(b))
+    dcap = sorted(dcap, key=lambda a,b: abs(a)+abs(b))
 
     for (dnN,dnS) in dcap:
-        print "north cap: %s points, south cap: %s points" % (NcapN+dnN,NcapS+dnS)
+        print("north cap: %s points, south cap: %s points" % (NcapN+dnN,NcapS+dnS))
         atomlist_carbons = capped_nanotube(cnt,NcapN+dnN,NcapS+dnS)
         if optimize_uff == 1:
-            print "CNT will be optimized further with the Universal Force Field of G09"
+            print("CNT will be optimized further with the Universal Force Field of G09")
             tmp_dir="/tmp"
             com_file = join(tmp_dir, "cnt_uff_opt.com")
             chk_file = join(tmp_dir, "cnt_uff_opt.chk")
@@ -697,17 +697,17 @@ def capped_uff_nanotube(cnt,NcapN=0, NcapS=0, optimize_uff=1, out_xyz="/tmp/cnt.
                 atomlist_uff = XYZ.vector2atomlist(pos, atomlist_carbons)
                 atomlist_carbons = atomlist_uff
             except Gaussian.GaussianError:
-                print "UFF-optimization failed!"
+                print("UFF-optimization failed!")
                 continue
         if check_connectivity(atomlist_carbons) == True:
             # no holes, correct connectivity
             break
         XYZ.write_xyz("/tmp/trials.xyz", [atomlist_carbons], mode="a")
     else:
-        print ""
+        print("")
 
     XYZ.write_xyz(expandvars(expanduser(out_xyz)), [atomlist_carbons])
-    print "Geometry of capped CNT written to %s" % out_xyz
+    print("Geometry of capped CNT written to %s" % out_xyz)
 
 
 if __name__ == "__main__":

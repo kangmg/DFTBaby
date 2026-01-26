@@ -111,7 +111,7 @@ if __name__ == "__main__":
 
     (opts, args) = parser.parse_args()
     if len(args) < 2:
-        print usage
+        print(usage)
         exit(-1)
 
     xyz_file = args[0]
@@ -126,7 +126,7 @@ if __name__ == "__main__":
     ax = fig.gca()
 #    plot_charges(ax, atomlist, charges)
     scale = 1.0/abs(ph_charges).max() * opts.scale
-    print "scale = %s" % scale
+    print("scale = %s" % scale)
     xmin,ymin,xmax,ymax = get_2d_bbox(atomlist)
     sep = 1.2*(ymax - ymin)
     nsep = 0

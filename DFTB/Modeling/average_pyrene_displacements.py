@@ -5,9 +5,9 @@ import numpy as np
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: python %s <list of displacement.dat files>" % sys.argv[0]
-        print "  averages dislacements over all trajectories and writes"
-        print "  the result to the file 'displacements_avg.dat'."
+        print("Usage: python %s <list of displacement.dat files>" % sys.argv[0])
+        print("  averages dislacements over all trajectories and writes")
+        print("  the result to the file 'displacements_avg.dat'.")
         exit(-1)
     displacements = []
     for dat_file in sys.argv[1:]:

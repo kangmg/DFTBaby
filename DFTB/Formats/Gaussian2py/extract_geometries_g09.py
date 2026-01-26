@@ -10,12 +10,12 @@ from DFTB import XYZ
 from DFTB.Formats.Gaussian2py import Gaussian
 
 if len(sys.argv) < 3:
-    print ""
-    print "Usage: %s  log-file  xyz-file" % os.path.basename(sys.argv[0])
-    print ""
-    print "   extract all geometries and SCF energies from Gaussian log-file"
-    print "   and write them to an xyz-file."
-    print ""
+    print("")
+    print("Usage: %s  log-file  xyz-file" % os.path.basename(sys.argv[0]))
+    print("")
+    print("   extract all geometries and SCF energies from Gaussian log-file")
+    print("   and write them to an xyz-file.")
+    print("")
     exit(-1)
 
 # input file
@@ -30,4 +30,4 @@ titles = ["ENERGY= %f" % en for en in energies]
 
 XYZ.write_xyz(xyz_file, atomlists, title=titles)
 
-print "geometries written to '%s'" % xyz_file
+print("geometries written to '%s'" % xyz_file)

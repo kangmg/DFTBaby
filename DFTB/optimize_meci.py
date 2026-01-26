@@ -146,11 +146,11 @@ class MECI:
                        x -> x - step_size * grad
         gtol      :  tolerance for the gradient norm
         """
-        print "optimize MECI by following the gradient"
-        print "  lower state :  %d" % state1
-        print "  upper state :  %d" % state2
-        print "Intermediate geometries are written to 'meci_path.xyz'"
-        print "and a table with energies is written to 'meci_energies.dat'"
+        print("optimize MECI by following the gradient")
+        print("  lower state :  %d" % state1)
+        print("  upper state :  %d" % state2)
+        print("Intermediate geometries are written to 'meci_path.xyz'")
+        print("and a table with energies is written to 'meci_energies.dat'")
 
         # initial geometry
         x = XYZ.atomlist2vector(self.atomlist0)
@@ -178,7 +178,7 @@ class MECI:
             #
             
             gnorm = la.norm(grad)
-            print " %4.1d    e2= %e  e2-e1= %e   |grad|= %e  (tolerance= %e)" % (i, e2, en_gap, gnorm, gtol)
+            print(" %4.1d    e2= %e  e2-e1= %e   |grad|= %e  (tolerance= %e)" % (i, e2, en_gap, gnorm, gtol))
             if gnorm < gtol:
                 break
 
@@ -198,7 +198,7 @@ class MECI:
                 x = self.ic.internal2cartesian(q)
 
         else:
-            print "exceeded maximum number of steps"
+            print("exceeded maximum number of steps")
             
         en_fh.close()
         
@@ -232,7 +232,7 @@ if __name__ == "__main__":
     args = sys.argv[1:]
 
     if len(args) < 3:
-        print usage
+        print(usage)
         exit(-1)
     
     xyz_file = args[0]         # path to xyz-file

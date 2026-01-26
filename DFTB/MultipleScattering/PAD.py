@@ -8,7 +8,6 @@ Initial bound and final continuum orbitals are obtained by the
 multiple scattering (MS) and the continuum multiple scattering 
 (CMS) methods, respectively.
 """
-from __future__ import print_function
 
 from DFTB import AtomicData
 from DFTB.MolecularIntegrals import settings

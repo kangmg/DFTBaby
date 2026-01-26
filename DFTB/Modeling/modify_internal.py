@@ -87,7 +87,7 @@ Example:
         raise ValueError("Format of scan '%s' not understood!" % scan)
 
     # shift indices to programmer's style (starting at 0)
-    IJKL = map(lambda I:I-1, IJKL)
+    IJKL = list(map(lambda I:I-1, IJKL))
     
     IC = InternalValenceCoords(atomlist0, freeze=freeze, verbose=opts.verbose)
     
@@ -108,7 +108,7 @@ Example:
         atomlist1 = XYZ.vector2atomlist(x1, atomlist0)
         scan_geometries.append(atomlist1)
         scan_coords.append(val1)
-        print "step %d  %s = %10.6f" % (i+1, coord_name, val1)
+        print("step %d  %s = %10.6f" % (i+1, coord_name, val1))
         
     XYZ.write_xyz(xyz_out, scan_geometries, mode="w")
-    print "displaced geometries were saved to '%s'" % xyz_out
+    print("displaced geometries were saved to '%s'" % xyz_out)

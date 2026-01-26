@@ -13,7 +13,7 @@ if __name__ == "__main__":
     usage += " The populations are saved to the file 'pop.dat'"
 
     if len(sys.argv) < 2:
-        print usage
+        print(usage)
         exit(-1)
     paths = sys.argv[1:]
 
@@ -31,8 +31,8 @@ if __name__ == "__main__":
         data_list.append(data) 
     Nst = int(Nst)
     Nt = int(Nt)
-    print "%d electronic states" % Nst
-    print "%d time steps between %s and %s" % (Nt, tmin, tmax)
+    print("%d electronic states" % Nst)
+    print("%d time steps between %s and %s" % (Nt, tmin, tmax))
     pop = np.zeros((Nt,Nst+1))
     pop[:,0] = np.linspace(tmin,tmax,Nt) # time axis in fs
     Ntraj = [0 for t in range(0, Nt)]  # count trajectories available at each time step
@@ -40,12 +40,12 @@ if __name__ == "__main__":
         # only consider trajectories that finished nicely
         Nt_i = data.shape[0]
         if Nt_i != Nt:
-            print "Trajectory %d has only %d time steps" % (i,Nt_i)
+            print("Trajectory %d has only %d time steps" % (i,Nt_i))
         for t in range(0, Nt_i):
             st = int(data[t,1])
             pop[t,st+1] += 1
             Ntraj[t] += 1.0
-    print "%s trajectories" % Ntraj[0]
+    print("%s trajectories" % Ntraj[0])
     # divide populations by the number of trajectories
     for t in range(0, Nt):
         pop[t,1:] /= float(Ntraj[t])
@@ -56,5 +56,5 @@ if __name__ == "__main__":
     print>>fh,""
     np.savetxt(fh, pop)
     fh.close()
-    print "Populations saved to file 'pop.dat'"
+    print("Populations saved to file 'pop.dat'")
 

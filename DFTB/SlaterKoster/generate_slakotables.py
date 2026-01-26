@@ -11,17 +11,16 @@ from DFTB.AtomicData import atom_names
 script_dir = os.path.dirname(os.path.realpath(__file__))
 slako_dir = os.path.join(script_dir, "slako_tables/")
 
-print "-load polar two-center grid"
+print("-load polar two-center grid")
 try:
     from slako_tables.double_polar_grid import d, grid
 except ImportError as e:
-    print e
+    print(e)
     raise Exception("Maybe you first have to generate a double polar grid for integration. Try: \n  python DFTB/SlaterKoster/generate_ptcgrid.py")
         
 def slako_table(atom1,atom2):
     """write and plot Slater-Koster table for atom pair"""
-    print "-compute Slater-Koster integrals for atom pair %s-%s" \
-        % (atom_names[atom1.Z-1], atom_names[atom2.Z-1])
+    print("-compute Slater-Koster integrals for atom pair %s-%s" % (atom_names[atom1.Z-1], atom_names[atom2.Z-1]))
     dimer = AtomPair(atom1,atom2)
 
 #    slako_dir = "/tmp/"
@@ -31,12 +30,9 @@ def slako_table(atom1,atom2):
 #    dimer.plotSKIntegrals(slako_dir)
     
 
-from confined_pseudo_atoms import \
-       h,  he,                                            \
-       li, be,                         b, c, n, o, f, ne, \
-       na, mg,                         al,si,p, s, cl,ar, \
-               sc, ti,  fe,  cu,  zn,              br,    \
-                        ru,  ag
+from confined_pseudo_atoms import h,  he,                                            \
+       li, be,                         b, c, n, o, f, ne, na, mg,                         al,si,p, s, cl,ar, \
+               sc, ti,  fe,  cu,  zn,              br, ru,  ag
 
 """
 # generate slako-tables for all possible combinations of pseudo atoms

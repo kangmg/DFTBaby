@@ -155,14 +155,14 @@ class GeometryOptimization:
                 enI = energies[I]
             self.enI = enI
             self.energies = energies
-            print "E = %2.7f     |grad| = %2.7f" % (enI, la.norm(gradI))
+            print("E = %2.7f     |grad| = %2.7f" % (enI, la.norm(gradI)))
             #
             # also save geometries from line searches
             save_xyz(x)
 
             return enI, gradI
 
-        print "Intermediate geometries will be written to %s" % self.xyz_opt
+        print("Intermediate geometries will be written to %s" % self.xyz_opt)
         # This is a callback function that is executed for each optimization step.
         # It appends the current geometry to an xyz-file.
         def save_xyz(x, mode="a"):
@@ -175,13 +175,13 @@ class GeometryOptimization:
         Nat = len(self.atomlist)
 
         if self.coord_system == "cartesian":
-            print "optimization is performed directly in cartesian coordinates"
+            print("optimization is performed directly in cartesian coordinates")
             q0 = x0
             objective_func = f_cart
             save_geometry = save_xyz
             max_steplen = None
         elif self.coord_system == "internal":
-            print "optimization is performed in redundant internal coordinates"
+            print("optimization is performed in redundant internal coordinates")
             # transform cartesian to internal coordinates, x0 ~ q0
             q0 = self.IC.cartesian2internal(x0)
         
@@ -255,7 +255,7 @@ class GeometryOptimization:
         qopt = res.x
         Eopt = res.fun
         xopt = save_geometry(qopt)
-        print "Optimized geometry written to %s" % self.xyz_opt
+        print("Optimized geometry written to %s" % self.xyz_opt)
             
         if self.calc_hessian == 1:
             # COMPUTE HESSIAN AND VIBRATIONAL MODES
@@ -264,7 +264,7 @@ class GeometryOptimization:
             def grad(x):
                 en, grad_cart = f_cart(x)
                 return grad_cart
-            print "Computing Hessian"
+            print("Computing Hessian")
             hess = HarmonicApproximation.numerical_hessian_G(grad, xopt)
             np.savetxt("hessian.dat", hess)
             masses = AtomicData.atomlist2masses(atomlist)
@@ -314,18 +314,18 @@ class GeometryOptimization:
         assert self.coord_system == "internal"
         # freeze scan coordinate at its current value
         self.IC.freeze(IJKL)
-        print "  ============ "
-        print "  RELAXED SCAN "
-        print "  ============ "
-        print "  The internal coordinate defined by the atom indices"
-        print "    IJKL = %s  " % map(lambda I: I+1, IJKL)
-        print "  is scanned in %d steps of size %8.5f %s." % (nsteps, incr*conv_facs[typ], units[typ])
+        print("  ============ ")
+        print("  RELAXED SCAN ")
+        print("  ============ ")
+        print("  The internal coordinate defined by the atom indices")
+        print("    IJKL = %s  " % map(lambda I: I+1, IJKL))
+        print("  is scanned in %d steps of size %8.5f %s." % (nsteps, incr*conv_facs[typ], units[typ]))
         
         def save_step():
             """function is called after each minimization"""
             scan_coord = self.IC.coordinate_value(xi, IJKL)
             
-            print "current value of scan coordinate : %s" % scan_coord
+            print("current value of scan coordinate : %s" % scan_coord)
 
             if i == 0:
                 mode = "w"
@@ -353,7 +353,7 @@ class GeometryOptimization:
             
 
         for i in range(0, nsteps):
-            print "Step %d of relaxed scan" % i
+            print("Step %d of relaxed scan" % i)
             # relax all other coordinates
             self.minimize()
             # optimized geometry of i-th step
@@ -367,8 +367,8 @@ class GeometryOptimization:
             atomlist = XYZ.vector2atomlist(xip1, atomlist)
             self.setGeometry(atomlist, geom_kwds=self.geom_kwds)
 
-        print "Scan geometries were written to %s" % self.xyz_scan
-        print "Table with scan energies was written to %s" % self.dat_scan
+        print("Scan geometries were written to %s" % self.xyz_scan)
+        print("Table with scan energies was written to %s" % self.dat_scan)
         
     def optimize(self):
         """
@@ -423,7 +423,7 @@ if __name__ == "__main__":
     (options,args) = parser.parse_args(GeometryOptimization.__init__)
 
     if len(args) < 1:
-        print usage
+        print(usage)
         exit(-1)
     
     GOpt = GeometryOptimization(**options)
@@ -454,9 +454,9 @@ if __name__ == "__main__":
     # geometry in <molecule>_opt.xyz is the optimized one
     atomlist_opt = GOpt.getGeometry()
 
-    print "final energy: %s Hartree" % GOpt.getEnergy()
+    print("final energy: %s Hartree" % GOpt.getEnergy())
     # timing
-    print T
+    print(T)
     
-    print "FINISHED"
+    print("FINISHED")
     

@@ -11,10 +11,10 @@ import os.path
 
 if __name__ == "__main__":
     if len(sys.argv) < 4:
-        print "Usage: %s <monomer.ff file> <oligomer.xyz file> <oligomer.ff file>" % os.path.basename(sys.argv[0])
-        print "  copy the atom type assignments of the monomer (in monomer.ff) to all"
-        print "  monomeric units in oligomer.xyz and save the result to <oligomer.ff>"
-        print ""
+        print("Usage: %s <monomer.ff file> <oligomer.xyz file> <oligomer.ff file>" % os.path.basename(sys.argv[0]))
+        print("  copy the atom type assignments of the monomer (in monomer.ff) to all")
+        print("  monomeric units in oligomer.xyz and save the result to <oligomer.ff>")
+        print("")
         exit(-1)
 
     # input files

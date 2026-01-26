@@ -33,7 +33,7 @@ if __name__ == "__main__":
     
     (opts, args) = parser.parse_args()
     if len(args) < 1:
-        print usage
+        print(usage)
         exit(-1)
     paths = args
 
@@ -54,18 +54,18 @@ if __name__ == "__main__":
                     redirect = " 2> /dev/null"
                 else:
                     redirect = ""
-                print "Optimizing geometries in %s with UFF force field => %s" % (dynamic_file, opt_file)
+                print("Optimizing geometries in %s with UFF force field => %s" % (dynamic_file, opt_file))
                 ret = os.system("obminimize -ff UFF %s %s | sed -e \"/^WARNING:/ d\" >  %s" % (dynamic_file, redirect, opt_file))
                 assert ret == 0, "Optimization with obminimize failed!"
             else:
-                print "found optimized %s" % opt_file
+                print("found optimized %s" % opt_file)
             dynamic_file = opt_file
         
-        print "Identifying and classifying fragments in %s" % dynamic_file
+        print("Identifying and classifying fragments in %s" % dynamic_file)
         try:
             geometries = XYZ.read_xyz(dynamic_file)
         except IOError:
-            print "WARNING: could not open %s. - skipped" % dynamic_file
+            print("WARNING: could not open %s. - skipped" % dynamic_file)
             continue
         geometries = [ geometries[-1] ]
         fragtraj, fragdic = MolecularGraph.fragment_trajectory( geometries )
@@ -78,12 +78,12 @@ if __name__ == "__main__":
             ntraj = np.hstack((ntraj, np.zeros(nadd)))
         ntraj[:len(fragtraj)] += 1
         # fragments
-        for k,fracs in fragment_fractions.iteritems():
+        for k,fracs in fragment_fractions.items():
             if len(fracs) < nt:
                 nadd = nt-len(fracs)
                 fragment_fractions[k] = np.hstack((fracs, np.zeros(nadd)))
         # channels
-        for k,fracs in channel_fractions.iteritems():
+        for k,fracs in channel_fractions.items():
             if len(fracs) < nt:
                 nadd = nt-len(fracs)
                 channel_fractions[k] = np.hstack((fracs, np.zeros(nadd)))
@@ -94,7 +94,7 @@ if __name__ == "__main__":
             # fragments
             w = 1.0/len(frags)
             for f in frags:
-                if fragment_fractions.has_key(f):
+                if f in fragment_fractions:
                     fragment_fractions[f][t] += w
                 else:
                     fracs = np.zeros(nt)
@@ -103,7 +103,7 @@ if __name__ == "__main__":
             # channels
             frags.sort()
             channel = "+".join(tuple(frags))
-            if channel_fractions.has_key(channel):
+            if channel in channel_fractions:
                 channel_fractions[channel][t] += 1
             else:
                 fracs = np.zeros(nt)
@@ -118,7 +118,7 @@ if __name__ == "__main__":
                 time = data[:,0]
                 dt_fs = time[1]-time[0] # time step in fs
             except (IOError, IndexError) as e:
-                print e
+                print(e)
                 dt_fs = 0.1 # assume a time step of 0.1 fs
 
     time = np.array(range(0,len(ntraj)))*dt_fs
@@ -127,7 +127,7 @@ if __name__ == "__main__":
     # and a table with the final fragment distribution at the last time step.
     data = [time]
     col_titles = "# TIME  "
-    for k,f in fragment_fractions.iteritems():
+    for k,f in fragment_fractions.items():
         col_titles += "%s  " % k
         data += [f]
     data = np.vstack(data).transpose()
@@ -140,22 +140,22 @@ if __name__ == "__main__":
     print>>fh, col_titles
     np.savetxt(fh, data)
     fh.close()
-    print "Fragment fractions written to fragments.dat"
+    print("Fragment fractions written to fragments.dat")
 
-    print "          Final Fragment Distribution"
-    print "          ==========================="
+    print("          Final Fragment Distribution")
+    print("          ===========================")
     final_fragment_distribution = []
-    for k,v in fragment_fractions.iteritems():
+    for k,v in fragment_fractions.items():
         final_fragment_distribution.append( (k,v[-1]) )
     # sort distribution in descending order
-    final_fragment_distribution.sort(key=lambda (k,v): -v)
+    final_fragment_distribution.sort(key=lambda k,v: -v)
     for (k,v) in final_fragment_distribution:
-        print " %20.20s        %5.5f" % (k, v)
+        print(" %20.20s        %5.5f" % (k, v))
 
     # CHANNELS 
     data = [time]
     col_titles = "# TIME  "
-    for k,f in channel_fractions.iteritems():
+    for k,f in channel_fractions.items():
         col_titles += "%s  " % k
         data += [f]
     data = np.vstack(data).transpose()
@@ -168,17 +168,17 @@ if __name__ == "__main__":
     print>>fh, col_titles
     np.savetxt(fh, data)
     fh.close()
-    print "Channel fractions written to channels.dat"
+    print("Channel fractions written to channels.dat")
 
-    print "         Final Channel Distribution"
-    print "         =========================="
+    print("         Final Channel Distribution")
+    print("         ==========================")
     final_channel_distribution = []
-    for k,v in channel_fractions.iteritems():
+    for k,v in channel_fractions.items():
         final_channel_distribution.append( (k,v[-1]) )
     # sort distribution in descending order
-    final_channel_distribution.sort(key=lambda (k,v): -v)
+    final_channel_distribution.sort(key=lambda k,v: -v)
     for (k,v) in final_channel_distribution:
-        print " %20.20s        %5.5f" % (k, v)
+        print(" %20.20s        %5.5f" % (k, v))
 
     if opts.save_fragments == 1:
         # generate png images of fragments
@@ -190,7 +190,7 @@ if __name__ == "__main__":
             XYZ.write_xyz(frag_file, [frag_geom], title="%s (%6.3f)" % (k, fragment_fractions[k][-1]))
             ret = os.system("obabel -ixyz %s -opng -O %s" % (frag_file, png_file))
             assert ret == 0
-            print "saved png-file for fragment %s to %s" % (k, png_file)
+            print("saved png-file for fragment %s to %s" % (k, png_file))
             png_files_str += " %s" % png_file
         # use image magick to create a map between the labels and the formulae
         os.system("montage -mode concatenate -tile 4x4 %s map_fragments.png" % png_files_str)
@@ -202,7 +202,7 @@ if __name__ == "__main__":
         plt.xlabel("time / fs")
         plt.ylabel("numbers of trajectories")
         vsum = None
-        for k,v in fragment_fractions.iteritems():
+        for k,v in fragment_fractions.items():
             if v[-1] > 0.0:
                 plt.plot(time, v, lw=2, label=k)
             if vsum == None:
@@ -216,7 +216,7 @@ if __name__ == "__main__":
 
         # plot channel fractions
         vsum = None
-        for k,v in channel_fractions.iteritems():
+        for k,v in channel_fractions.items():
             if v[-1] > 0.0:
                 plt.plot(time, v, lw=2, label=k)
             if vsum == None:

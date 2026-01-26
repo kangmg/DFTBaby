@@ -74,6 +74,6 @@ if __name__ == "__main__":
     en_ref  *= AtomicData.hartree_to_kcalmol
     en_dftb *= AtomicData.hartree_to_kcalmol
 
-    print "%40.40s         %+15.1f       %+15.1f" % (reaction_str, en_ref, en_dftb)
+    print("%40.40s         %+15.1f       %+15.1f" % (reaction_str, en_ref, en_dftb))
     
 

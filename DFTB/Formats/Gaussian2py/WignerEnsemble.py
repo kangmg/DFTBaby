@@ -34,7 +34,7 @@ def tensor_of_inertia(pos, masses):
     of a rigid body: L = I*w
     """
     I = np.zeros((3,3))
-    for i in xrange(0, len(pos)/3):
+    for i in range(0, len(pos)/3):
         xi,yi,zi = pos[3*i:3*i+3]
         ri2 = xi*xi+yi*yi+zi*zi
         mi = masses[3*i]
@@ -55,7 +55,7 @@ def shift_to_com(pos,masses):
     """
     com = center_of_mass(pos, masses)
     pos_shifted = np.zeros(pos.shape)
-    for i in xrange(0, len(pos)/3):
+    for i in range(0, len(pos)/3):
         pos_shifted[3*i:3*i+3] = pos[3*i:3*i+3] - com
     return pos_shifted
 
@@ -89,7 +89,7 @@ def expected_zero_modes(x0, masses):
     # In a linear triatomic molecule we have Icc = Ibb > Iaa = 0
     if abs(pmom_abs[2]-pmom_abs[1]) < 1.0e-6 and abs(pmom_abs[0]) < 1.0e-6:
         is_linear = True
-        print "Molecule is linear"
+        print("Molecule is linear")
     if Nat == 1:
         Nrot = 0
     elif is_linear == True or Nat == 2:
@@ -120,9 +120,9 @@ def vibrational_analysis(hess, masses, zero_threshold=1.0e-9, is_molecule=False)
     """
     # convert Hessian to mass-weighted coordinates
     hess_mwc = hess / np.sqrt(np.outer(masses, masses))
-    print "HESSIAN for mass weighted cartesian coordinates"
-    print "==============================================="
-    print hess_mwc
+    print("HESSIAN for mass weighted cartesian coordinates")
+    print("===============================================")
+    print(hess_mwc)
     # mass weighted coordinates are now qi = sqrt(mi) dxi
     # compute eigen values of hess_mwc
     omega2,modes = la.eigh(hess_mwc)
@@ -138,14 +138,14 @@ def vibrational_analysis(hess, masses, zero_threshold=1.0e-9, is_molecule=False)
             raise Exception("Expected %d modes with 0 frequency (translation + rotation) but got %d modes" % (Nzero_expected, Nzero))
 
     freqs = np.sqrt(omega2*(1.0+0.0j))
-    print "Frequencies"
-    print "==========="
-    print "- Zero modes (should be close to zero)"
+    print("Frequencies")
+    print("===========")
+    print("- Zero modes (should be close to zero)")
     for fr in freqs[zero_modes]:
-        print "   %s    " % (str(fr).ljust(15))
-    print "- Vibrations"
+        print("   %s    " % (str(fr).ljust(15)))
+    print("- Vibrations")
     for fr in freqs[vib_modes].real:
-        print "   %5.7f Hartree      %5.7f cm-1" % (fr, fr*AtomicData.hartree_to_wavenumbers)
+        print("   %5.7f Hartree      %5.7f cm-1" % (fr, fr*AtomicData.hartree_to_wavenumbers))
 
     return freqs[vib_modes], modes[:,vib_modes]
 
@@ -191,14 +191,14 @@ def wigner_distribution(x0, hess, masses, zero_threshold=1.0e-9, is_molecule=Fal
     MsqInv = 1.0/Msq
     Oi = np.sqrt(omega2[vib_modes])
     Li = modes[:,vib_modes]
-    print "Wigner distribution for vibrational modes"
+    print("Wigner distribution for vibrational modes")
     Oii = np.diag(Oi)
     OiiInv = np.diag(1.0/Oi)
     Aq = 2 * np.dot(Li, np.dot(Oii, Li.transpose())) * Msq
     Ap = 2 * np.dot(Li, np.dot(OiiInv, Li.transpose())) * MsqInv
     # constrain zero modes by delta-functions  
     #   delta(Qi)*delta(Pi) ~ lim_(Oconstr->infty) exp(-Oconstr*(Qi^2 + Pi^2))
-    print "delta distribution for zero modes"
+    print("delta distribution for zero modes")
     Oconstr = 1.0e6 * np.eye(len(zero_modes))  # very large number, e.g. 1.0e10
     Li = modes[:,zero_modes]
     Aq += np.dot(Li, np.dot(Oconstr, Li.transpose())) * Msq
@@ -223,12 +223,12 @@ def wigner_from_G09_hessian(g09_file, Nsample=100, zero_threshold=1.0e-9):
     """
     suffix = g09_file.split(".")[-1]
     if suffix in ["out", "log"]:
-        print "Reading Gaussian 09 log file %s" % g09_file
+        print("Reading Gaussian 09 log file %s" % g09_file)
         atomlist = Gaussian.read_geometry(g09_file)
         forces = Gaussian.read_forces(g09_file)
         hess = Gaussian.read_force_constants(g09_file)
     elif suffix in ["fchk"]:
-        print "Reading formatted Gaussian 09 checkpoint file %s" % g09_file
+        print("Reading formatted Gaussian 09 checkpoint file %s" % g09_file)
         Data = Checkpoint.parseCheckpointFile(g09_file)
         # cartesian coordinates
         pos = Data["_Current_cartesian_coordinates"]
@@ -251,7 +251,7 @@ def wigner_from_G09_hessian(g09_file, Nsample=100, zero_threshold=1.0e-9):
     grad = -XYZ.atomlist2vector(forces)
     
     grad_nrm = la.norm(grad)
-    print "  gradient norm = %s" % grad_nrm
+    print("  gradient norm = %s" % grad_nrm)
 #    assert grad_nrm < 1.0e-3, "Gradient norm too large for minimum!"
     vib_freq, vib_modes = vibrational_analysis(hess, masses, zero_threshold=zero_threshold)
     Aw,Bw = wigner_distribution(x0, hess, masses, zero_threshold=zero_threshold)
@@ -259,7 +259,7 @@ def wigner_from_G09_hessian(g09_file, Nsample=100, zero_threshold=1.0e-9):
     qs, ps = gw.sample(Nsample)
     mx = np.outer(masses, np.ones(Nsample)) * qs
     avg_com = np.mean(np.sum(mx[::3,:], axis=0)), np.mean(np.sum(mx[1::3,:], axis=0)), np.mean(np.sum(mx[2::3,:], axis=0))
-    print avg_com
+    print(avg_com)
 
     geometries = [XYZ.vector2atomlist(qs[:,i], atomlist) for i in range(0, Nsample)]
 
@@ -279,11 +279,11 @@ if __name__ == "__main__":
 
     (opts, args) = parser.parse_args()
     if len(args) < 2:
-        print usage
+        print(usage)
         exit(-1)
     g09_file = args[0]
     wigner_xyz = args[1]
     geometries = wigner_from_G09_hessian(g09_file, Nsample=opts.Nsample)
 
     XYZ.write_xyz(wigner_xyz, geometries)
-    print "Wigner ensemble written to file %s" % wigner_xyz
+    print("Wigner ensemble written to file %s" % wigner_xyz)

@@ -67,7 +67,7 @@ def natural_transition_orbitals(T, orbs, occs, virts):
     # 4) \        wu(i) = 1
     #    /_i=0
     sum_rule = np.sum(wu)
-    print "sum of NTO eigenvalues: %s  (should be approximately 1.0)" % sum_rule
+    print("sum of NTO eigenvalues: %s  (should be approximately 1.0)" % sum_rule)
 
     nao,nmo = orbs.shape
     orbs_nto = np.zeros((nao,nocc+nvirt))

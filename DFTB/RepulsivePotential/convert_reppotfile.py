@@ -18,10 +18,10 @@ parser.add_option("--scaling", dest="scaling", type=float, default=1.0, help="Sc
 
 (opts, args) = parser.parse_args()
 if len(args) < 2:
-    print usage
+    print(usage)
     exit(-1)
 
-print "CAUTION: You cannot reuse repulsive potentials unless they are based on the same parametrization of the electronic part (same r0, same Hubbard U, same xc potential) as the Slater-Koster tables."
+print("CAUTION: You cannot reuse repulsive potentials unless they are based on the same parametrization of the electronic part (same r0, same Hubbard U, same xc potential) as the Slater-Koster tables.")
 mod = read_repulsive_potential(sys.argv[1])
 # scale d-axis
 mod.d *= opts.scaling

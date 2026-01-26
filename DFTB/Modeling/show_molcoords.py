@@ -64,7 +64,7 @@ if __name__ == "__main__":
     (opts,args) = parser.parse_args()
     
     if len(args) == 0:
-        print usage
+        print(usage)
         exit(-1)
 
     # extract list of xyz-files from the command line
@@ -80,7 +80,7 @@ if __name__ == "__main__":
             xyz_files.append(arg)
 
     if len(xyz_files) < 1:
-        print "At least one xyz-file should be specified!"
+        print("At least one xyz-file should be specified!")
         exit(-1)
     coords_trajs = []
     for f in xyz_files:
@@ -103,10 +103,10 @@ if __name__ == "__main__":
     coords_avg = np.sum(coords_data, axis=0) / float(ntrajs)
     # write header unless suppressed
     if opts.print_header == True:
-        print "#",
+        print("#", end=" ")
         for atom_ids in coord_specs:
             coord_str = "-".join(map(str,np.array(atom_ids)+1))
             print ("   %s  " % coord_str).ljust(24),
-        print ""
+        print("")
     np.savetxt(sys.stdout, coords_avg)
     

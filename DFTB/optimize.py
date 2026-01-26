@@ -28,16 +28,16 @@ if __name__ == "__main__":
     from scipy import optimize
 
     if len(sys.argv) < 3:
-        print "Usage: %s <xyz-file> I [H]" % sys.argv[0]
-        print "  optimize geometry on the I-th electronic state"
-        print "  and compute the hessian if the optional 3rd command line argument is H"
-        print "  Type --help to see all options."
-        print "  To reduce the amount of output add the option --verbose=0."
-        print "  Examples:"
-        print "      optimize.py molecule.xyz 0 H"
-        print "  optimizes the molecule on the ground state and computes the Hessian."
-        print "      optimize.py molecule.xyz 1"
-        print "  finds the minimum on the 1st excited state."
+        print("Usage: %s <xyz-file> I [H]" % sys.argv[0])
+        print("  optimize geometry on the I-th electronic state")
+        print("  and compute the hessian if the optional 3rd command line argument is H")
+        print("  Type --help to see all options.")
+        print("  To reduce the amount of output add the option --verbose=0.")
+        print("  Examples:")
+        print("      optimize.py molecule.xyz 0 H")
+        print("  optimizes the molecule on the ground state and computes the Hessian.")
+        print("      optimize.py molecule.xyz 1")
+        print("  finds the minimum on the 1st excited state.")
         exit(-1)
     
     #
@@ -73,7 +73,7 @@ if __name__ == "__main__":
         else:
             energies, gradI = pes.getEnergiesAndGradient(x, I)
             enI = energies[I]
-        print "E = %2.7f     |grad| = %2.7f" % (enI, la.norm(gradI))
+        print("E = %2.7f     |grad| = %2.7f" % (enI, la.norm(gradI)))
         #
         # also save geometries from line searches
         save_xyz(x, info="energy=%s" % enI)
@@ -81,7 +81,7 @@ if __name__ == "__main__":
         return enI, gradI
 
     xyz_opt = xyz_file.replace(".xyz", "_opt.xyz")
-    print "Intermediate geometries will be written to %s" % xyz_opt
+    print("Intermediate geometries will be written to %s" % xyz_opt)
     # This is a callback function that is executed by numpy for each optimization step.
     # It appends the current geometry to an xyz-file.
     def save_xyz(x, mode="a", info=""):
@@ -101,7 +101,7 @@ if __name__ == "__main__":
     xopt = res.x
     Eopt = res.fun
     save_xyz(xopt, info="energy=%s" % Eopt)
-    print "Optimized geometry written to %s" % xyz_opt
+    print("Optimized geometry written to %s" % xyz_opt)
 
     if calc_hessian == True:
         # COMPUTE HESSIAN AND VIBRATIONAL MODES
@@ -113,7 +113,7 @@ if __name__ == "__main__":
             else:
                 energies, gradI = pes.getEnergiesAndGradient(x, I)
             return gradI
-        print "Computing Hessian"
+        print("Computing Hessian")
         hess = HarmonicApproximation.numerical_hessian_G(grad, xopt)
         np.savetxt("hessian.dat", hess)
         masses = AtomicData.atomlist2masses(atomlist)
@@ -138,5 +138,5 @@ if __name__ == "__main__":
         """
 
     # timing
-    print T
+    print(T)
     

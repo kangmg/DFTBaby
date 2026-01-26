@@ -16,7 +16,7 @@ if __name__ == "__main__":
     """ % os.path.basename(sys.argv[0])
 
     if len(sys.argv) < 2:
-        print usage
+        print(usage)
         exit(-1)
         
     paths = sys.argv[1:]
@@ -42,13 +42,13 @@ if __name__ == "__main__":
         # warn about trajectories that did not finish nicely
         Nt_i = data.shape[0]
         if Nt_i != Nt:
-            print "Trajectory %d has only %d time steps" % (i,Nt_i)
+            print("Trajectory %d has only %d time steps" % (i,Nt_i))
         for t in range(0, Nt_i):
             if data[t,1] >= 0.0:
                 #lambda2 < 0 indicates invalid data (lambda2 is undefined on S0)
                 lambda2_avg[t,1] += data[t,1]
                 Ntraj[t] += 1.0
-    print "%s trajectories" % Ntraj[0]
+    print("%s trajectories" % Ntraj[0])
     # divide lambda2_avg by the number of trajectories
     for t in range(0, Nt):
         lambda2_avg[t,1] /= float(Ntraj[t])
@@ -56,5 +56,5 @@ if __name__ == "__main__":
     print>>fh, "# TIME / fs               LAMBDA2"
     np.savetxt(fh, lambda2_avg)
     fh.close()
-    print "Averaged Lambda2 values saved to file 'lambda2_average.dat'"
+    print("Averaged Lambda2 values saved to file 'lambda2_average.dat'")
 

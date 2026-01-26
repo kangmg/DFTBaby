@@ -18,14 +18,14 @@ pseudo_orbital_c = "gga_c_pbe"
 #r0_factor = 1.85 # recommended by hotbit
 r0_factor = 3.0 
 confinement_radii_byZ = dict([(AtomicData.atomic_number(atom), r0_factor*rcov) \
-                                for (atom, rcov) in AtomicData.covalent_radii.iteritems()])
+                                for (atom, rcov) in AtomicData.covalent_radii.items()])
 
 # Hubbard U from experimental ionization energies and electron affinities
 # U = IE-EA (in hartree)
 hubbard_U_byZ = {}
 for atom in AtomicData.ionization_energies_eV.keys():
     IE = AtomicData.ionization_energies_eV[atom]
-    if AtomicData.electron_affinities_eV.has_key(atom):
+    if atom in AtomicData.electron_affinities_eV:
         EA = AtomicData.electron_affinities_eV[atom]
         hubbard_U_byZ[AtomicData.atomic_number(atom)] = (IE-EA)/AtomicData.hartree_to_eV 
 
@@ -75,10 +75,10 @@ def get_hubbard_parameters(parameter_set):
 if __name__ == "__main__":
     import string
     # print default parameters for all atoms
-    print "       DFTB Parameters"
-    print "       ==============="
-    print "Atom | r0/bohr  | U/hartree (eV)"
-    print "-----|----------|-----------------"
+    print("       DFTB Parameters")
+    print("       ===============")
+    print("Atom | r0/bohr  | U/hartree (eV)")
+    print("-----|----------|-----------------")
     for atom in AtomicData.atom_names:
         try:
             r0 = "%.3f" % confinement_radii_byZ[AtomicData.atomic_number(atom)]
@@ -89,4 +89,4 @@ if __name__ == "__main__":
             U = "  %.3f (%2.3f)" % (Uhub, Uhub*AtomicData.hartree_to_eV)
         except KeyError:
             U = "---"
-        print string.center(atom, 5) + "|" + string.center(r0, 10) + "|" + string.center(U,10)
+        print(string.center(atom, 5) + "|" + string.center(r0, 10) + "|" + string.center(U,10))

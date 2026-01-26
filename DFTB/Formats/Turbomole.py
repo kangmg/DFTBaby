@@ -62,7 +62,7 @@ class _eigenpairs_Block(_Block):
         return( (en, eigvecs) )
     def __str__(self):
         text = "eigenpairs-Block"
-        for st in xrange(self.nstates):
+        for st in range(self.nstates):
             text += "Energy = %s\n" % self.energies[st]
             text += "Coefs = %s\n" % (self.vecs[st][0:1] + ["..."] + self.vecs[st][-2:])
         return(text)
@@ -91,13 +91,13 @@ def order_excs(nocc, nvirt, maxvirts=10e10):
     """
     excs_a = []
     """excitations with spin-up"""
-    for o in xrange(nocc[0]):
-        for v in xrange(nocc[0], min(maxvirts, nocc[0]+nvirt[0])):
+    for o in range(nocc[0]):
+        for v in range(nocc[0], min(maxvirts, nocc[0]+nvirt[0])):
             excs_a.append( [(0, o, v)] )
     excs_b = []
     """excitations with spin-down"""
-    for o in xrange(nocc[1]):
-        for v in xrange(nocc[1], min(maxvirts, nocc[1]+nvirt[1])):
+    for o in range(nocc[1]):
+        for v in range(nocc[1], min(maxvirts, nocc[1]+nvirt[1])):
             excs_b.append( [(1, o, v)] )
     excitations = excs_a + excs_b
     return(excitations)
@@ -171,7 +171,7 @@ class _basis_Block(_Block):
         """In Turbomole basis file the shells are not alway sorted in the order s,p,d,f"""
         symorder = {'S': 0, 'P': 1, 'D': 2, 'F': 3}
         """order of orbitals, first s then p, d, f"""
-        for atno,contr in self.basis_data.iteritems():
+        for atno,contr in self.basis_data.items():
             contr.sort(cmp=lambda x,y: symorder[x[0]]-symorder[y[0]])
         return(self.basis_data)
     def __str__(self):
@@ -303,7 +303,7 @@ class _HashBlock(_Block):
     def tm_repr(self):
         block_type = self.__class__.__name__[1:].replace("_Block","")
         txt = "$%s\n" % block_type
-        for k,v in self.hash.iteritems():
+        for k,v in self.hash.items():
             txt += "\t%s %s\n" % (k,v)
         return txt
 
@@ -492,7 +492,7 @@ def parseTurbomole(filename, convert=True):
     PyData = {}
     if convert == True:
         """convert blocks into format suitable for PyQuante"""
-        for (block_type, block) in Data.iteritems():
+        for (block_type, block) in Data.items():
             PyData[block_type] = block.getPyQ()
         return(PyData)
     else:
@@ -530,11 +530,11 @@ def importTurbomole(tm_dir):
     bs = BasisSet(mol, basis_data = Data["basis"])
     # check for unresticted calculation and determine functional
     Data = parseTurbomole(tm_dir + "/control")
-    if Data.has_key("dft"):
+    if "dft" in Data:
         functional = Data["dft"]["functional"].lower()
     else:
         raise Exception("Can only import data from DFT calculations.")
-    if (not Data.has_key("uhf")):
+    if (not "uhf" in Data):
         """rhf data. In an rhf calculations molecular orbitals
         and CIS coefficients for alpha and beta electrons are the same.
         In order to treat uhf and rhf data with the same functions
@@ -630,7 +630,7 @@ def importTurbomole(tm_dir):
     grst[0] = 1.0
     UCIS[:,0] = grst
     """ground state = (1,0,0,0,...)"""
-    for st in xrange(1,nst+1):
+    for st in range(1,nst+1):
         vec = CIS[:,st-1]
         UCIS[0,st] = 0.0
         """projection on ground state is 0"""
@@ -654,7 +654,7 @@ def readTMorbitals(tm_dir):
     bs = BasisSet(mol, basis_data = Data["basis"])
 
     Data = parseTurbomole(tm_dir + "/control")    
-    if (not Data.has_key("uhf")):
+    if (not "uhf" in Data):
         Data = parseTurbomole(tm_dir + "/mos")
         orbe,orbs = Data["scfmo"]
         orbea, orbeb = orbe, orbe
@@ -747,12 +747,12 @@ def read_spectrum(spectrum_file):
 if __name__ == "__main__":
     import sys
     if (len(sys.argv) < 2):
-        print "Usage: %s <TM directory>" % sys.argv[0]
+        print("Usage: %s <TM directory>" % sys.argv[0])
         exit(-1)
     tm_dir = sys.argv[1]
     (mol,bs,en,nocc,nvirt,orbe,orbs,Ecis,UCIS,excitations) = importTurbomole(tm_dir)
-    print mol
-    print bs
-    print "Occupation: occupied = %s   virtual = %s" % (nocc, nvirt)
-    print "SCF ground state energy = %s" % en
-    print "excitation energies = %s" % Ecis
+    print(mol)
+    print(bs)
+    print("Occupation: occupied = %s   virtual = %s" % (nocc, nvirt))
+    print("SCF ground state energy = %s" % en)
+    print("excitation energies = %s" % Ecis)

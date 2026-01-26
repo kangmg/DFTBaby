@@ -80,7 +80,7 @@ def parseHotbitParameters(filename, convert=True):
     PyData = {}
     if convert == True:
         """convert blocks into format suitable for PyQuante"""
-        for (block_name, block) in Data.iteritems():
+        for (block_name, block) in Data.items():
             PyData[block_name] = block.getData()
         return PyData
     return Data
@@ -185,14 +185,14 @@ def load_hotbit_pseudoatom(elmfile):
             n = int(spectr[0])
             l = int(spectr2l[spectr[1]])
             occnr = AtomicData.valence_occ_numbers[Data["atom_name"]]
-            if occnr.has_key(spectr):
+            if spectr in occnr:
                 atom.orbital_occupation.append(occnr[spectr])
             else:
                 atom.orbital_occupation.append(0)
             atom.valence_orbitals.append(len(atom.valence_orbitals))
             atom.nshell.append(n)
             atom.angular_momenta.append(l)
-            if Data.has_key("radial_wavefunction_%s" % spectr):
+            if "radial_wavefunction_%s" % spectr in Data:
                 atom.r = Data["radial_wavefunction_%s" % spectr][:,0]
                 atom.radial_wavefunctions.append(Data["radial_wavefunction_%s" % spectr][:,1])
             atom.hubbard_U = Data["hubbard_U"]
@@ -202,6 +202,6 @@ if __name__ == "__main__":
     import sys
     parfile = sys.argv[1]
     Data = parseHotbitParameters(parfile)
-    print Data.keys()
+    print(Data.keys())
     if ".elm" in parfile:
-        print load_hotbit_pseudoatom(parfile).__dict__
+        print(load_hotbit_pseudoatom(parfile).__dict__)

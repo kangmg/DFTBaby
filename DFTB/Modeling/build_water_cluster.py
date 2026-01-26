@@ -62,12 +62,12 @@ def build_water_cluster(atomlist_template, orbital_names, phases):
     for i,water in enumerate(fragments):
         # the Euler angles (a,b,g) specify the orientation of the i-th water molecule
         water_std_i, (a,b,g), cm = MolCo.molecular_frame_transformation(water)
-        print "WATER STANDARD"
+        print("WATER STANDARD")
         for (Zi,posi) in water_std:
-            print "  %s   %8.6f  %8.6f  %8.6f" % (Zi, posi[0], posi[1], posi[2])
-        print "WATER STANDARD %d" % i
+            print("  %s   %8.6f  %8.6f  %8.6f" % (Zi, posi[0], posi[1], posi[2]))
+        print("WATER STANDARD %d" % i)
         for (Zi,posi) in water_std_i:
-            print "  %s   %8.6f  %8.6f  %8.6f" % (Zi, posi[0], posi[1], posi[2])
+            print("  %s   %8.6f  %8.6f  %8.6f" % (Zi, posi[0], posi[1], posi[2]))
         # The desired orbital is placed on the i-th water molecule and is
         # rotated to match the orientation of the molecule.
         orb_monomer = monomer_orbitals[orbital_names[i]]
@@ -143,14 +143,14 @@ if __name__ == "__main__":
     orbs[:,0] = orb
     save_dyson_orbitals("/tmp/water_cluster_2.dyson", ["S0->D0"], [-10.0], orbs)
     names, IEs, orbs = load_dyson_orbitals("/tmp/water_cluster_2.dyson")
-    print names
-    print IEs
-    print orbs
+    print(names)
+    print(IEs)
+    print(orbs)
     """
 
     """
     if len(sys.argv) < 2:
-        print "Usage: python %s <.xyz file with template>" % sys.argv[0]
+        print("Usage: python %s <.xyz file with template>" % sys.argv[0])
         exit(-1)
 
     xyz_file = sys.argv[1]
@@ -161,12 +161,12 @@ if __name__ == "__main__":
     fragments_std = []
     for i,atomlist in enumerate(fragments):
         atomlist_std, (a,b,g), cm = MolCo.molecular_frame_transformation(atomlist)
-        print "Fragment %d" % i
-        print "center of mass: %s" % cm
-        print "Euler angles: %s %s %s" % (a,b,g)
-        print "Standard geometry:"
+        print("Fragment %d" % i)
+        print("center of mass: %s" % cm)
+        print("Euler angles: %s %s %s" % (a,b,g))
+        print("Standard geometry:")
         for Zi,posi in atomlist_std:
-            print "   %s   %8.6f %8.6f %8.6f" % (AtomicData.atom_names[Zi-1], posi[0], posi[1], posi[2])
+            print("   %s   %8.6f %8.6f %8.6f" % (AtomicData.atom_names[Zi-1], posi[0], posi[1], posi[2]))
         fragments_std.append(atomlist_std)
         XYZ.write_xyz("/tmp/fragment_std.xyz", [atomlist_std])
     XYZ.write_xyz("/tmp/fragments_water.xyz", fragments_std)

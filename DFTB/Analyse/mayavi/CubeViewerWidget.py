@@ -296,11 +296,11 @@ class ChargeCloudRadii:
         hubbard_U_byZ = Parameters.get_hubbard_parameters("homegrown")
         self.sigmas = {}  # width of Gaussian charge fluctuations F(r)
         self.radii = {}  # radius where, F(r0) = F(0) * isovalue
-        for Z,U in hubbard_U_byZ.iteritems():
+        for Z,U in hubbard_U_byZ.items():
             self.sigmas[Z] = 1.0/(np.sqrt(np.pi)*U)
     def setIsoValue(self, iso):
         logIso = np.log(iso)
-        for Z,sA in self.sigmas.iteritems():
+        for Z,sA in self.sigmas.items():
             r0 = np.sqrt(-2*sA**2 * logIso)
             self.radii[Z] = r0
     def getRadii(self, atomlist):
@@ -409,13 +409,13 @@ class ChargesObject:
             for ifrag,(fragment_indeces, fragment_atomlist, fragment_box) in enumerate(fragments):
                 # compute the charges on fragment 
                 qfrag = np.sum(charges[fragment_indeces])
-                print "Fragment charges: %s" % charges[fragment_indeces]
+                print("Fragment charges: %s" % charges[fragment_indeces])
                 # compute the center of the molecule,
                 pos_frag = XYZ.atomlist2vector(fragment_atomlist)
                 masses_frag = AtomicData.atomlist2masses(fragment_atomlist)
                 com = MolCo.center_of_mass(masses_frag, pos_frag)
                 #
-                print "Fragment %d  charge = %s" % (ifrag, qfrag)
+                print("Fragment %d  charge = %s" % (ifrag, qfrag))
                 txt = "%+2.3f" % qfrag
                 label = mlab.text(com[0],com[1], txt, z=com[2], line_width=0.8, figure=self.scene.mayavi_scene)
                 label.actor.set(text_scale_mode='none', width=0.05, height=0.1)
@@ -482,11 +482,11 @@ class ChargesObject:
             dipole = np.zeros(3)
             for i,q in enumerate(charges):
                 dipole += q * pos[3*i:3*(i+1)]
-            print "Dipole moment  D = %s a.u." % dipole
+            print("Dipole moment  D = %s a.u." % dipole)
             # For plotting the dipole vector is converted to Debye
             dipole *= AtomicData.ebohr_to_debye
-            print "Dipole moment  D = %s Debye" % dipole
-            print "Length of dipole moment |D| = %s Debye" % la.norm(dipole)
+            print("Dipole moment  D = %s Debye" % dipole)
+            print("Length of dipole moment |D| = %s Debye" % la.norm(dipole))
             
             quiver3d = mlab.quiver3d(com[0],com[1],com[2],
                                      dipole[0], dipole[1], dipole[2], line_width=5.0,
@@ -530,7 +530,7 @@ class ChargesObject:
             cavity = ImplicitSolvent.SolventCavity(**solvent_options)
             cavity.constructSAS(atomlist)
             area = cavity.getSurfaceArea()
-            print "solvent accessible surface area: %8.6f bohr^2   %8.6f Ang^2" % (area, area*AtomicData.bohr_to_angs**2)
+            print("solvent accessible surface area: %8.6f bohr^2   %8.6f Ang^2" % (area, area*AtomicData.bohr_to_angs**2))
             points = cavity.getSurfacePoints()
             x,y,z = points[:,0], points[:,1], points[:,2]
             if type(charges) != type(None):
@@ -540,8 +540,7 @@ class ChargesObject:
                 cavity.constructCOSMO()
                 induced_charges = cavity.getInducedCharges(charges)
                 screening_energy = cavity.getScreeningEnergy(charges)
-                print "screening energy: %10.6f Hartree  %10.6f kcal/mol" \
-                    % (screening_energy, screening_energy * AtomicData.hartree_to_kcalmol)
+                print("screening energy: %10.6f Hartree  %10.6f kcal/mol"  % (screening_energy, screening_energy * AtomicData.hartree_to_kcalmol))
                 # The surface points are colored and scaled
                 # according to their charge
                 #  negative -> blue   positive -> red
@@ -614,13 +613,13 @@ class ChargesObject:
             for ifrag,(fragment_indeces, fragment_atomlist) in enumerate(fragments):
                 # compute the charges on fragment 
                 qfrag = np.sum(charges[fragment_indeces])
-                print "Fragment charges: %s" % charges[fragment_indeces]
+                print("Fragment charges: %s" % charges[fragment_indeces])
                 # compute the center of the molecule,
                 pos_frag = XYZ.atomlist2vector(fragment_atomlist)
                 masses_frag = AtomicData.atomlist2masses(fragment_atomlist)
                 com = MolCo.center_of_mass(masses_frag, pos_frag)
                 #
-                print "Fragment %d  charge = %s" % (ifrag, qfrag)
+                print("Fragment %d  charge = %s" % (ifrag, qfrag))
                 txt = "%+2.3f" % qfrag
                 label = self.frag_charge_labels[i]
                 label.remove()
@@ -939,18 +938,18 @@ class QCubeViewerWidget(QtGui.QWidget):
     def toggle_fullscreen(self):
         self.fullscreen = not self.fullscreen
         if self.fullscreen == True:
-            print "fullscreen: ON"
+            print("fullscreen: ON")
             self.setWindowFlags(QtCore.Qt.Window)
             self.setWindowState(QtCore.Qt.WindowFullScreen)
             self.show()
         else:
-            print "fullscreen: OFF"
+            print("fullscreen: OFF")
             self.setWindowState(QtCore.Qt.WindowNoState)
             self.setWindowFlags(QtCore.Qt.Widget)
             self.show()
 
     def getShowOptions(self):
-        for k,v in self.options.iteritems():
+        for k,v in self.options.items():
             if v.isChecked():
                 self.visualization.setFlag(k)
             else:
@@ -1035,11 +1034,11 @@ if __name__ == "__main__":
     import sys
     import os.path
     if len(sys.argv) < 2:
-        print " "
-        print "Usage: %s <list of cube- or xyz-files>" % os.path.basename(sys.argv[0])
-        print " "
-        print "  displays molecular geometries and volumetric data using Mayavi"
-        print " "
+        print(" ")
+        print("Usage: %s <list of cube- or xyz-files>" % os.path.basename(sys.argv[0]))
+        print(" ")
+        print("  displays molecular geometries and volumetric data using Mayavi")
+        print(" ")
         exit(-1)
 
     # Don't create a new QApplication, it would unhook the Events
@@ -1068,7 +1067,7 @@ if __name__ == "__main__":
             molecules.append(atomlist)
             charge_lists.append(charges)
         else:
-            print "Unknown file type: %s" % f
+            print("Unknown file type: %s" % f)
         window.setWindowTitle(window.windowTitle() + " %s " % f)
     viewer.setCubes(cubes)
     viewer.setGeometries(molecules)
@@ -1090,4 +1089,4 @@ if __name__ == "__main__":
     # Start the main event loop.
     app.exec_()
 
-    print "FINISHED"
+    print("FINISHED")

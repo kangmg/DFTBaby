@@ -69,7 +69,7 @@ class InternalValenceCoords:
 
         # insert artificial bonds
         for (I,J) in explicit_bonds:
-            print "explicit bond between atoms %d-%d" % (I+1,J+1)
+            print("explicit bond between atoms %d-%d" % (I+1,J+1))
             conmat[I,J] = 1
 
         # Internal coordinates only work if the molecule does not
@@ -197,8 +197,8 @@ class InternalValenceCoords:
 
         if self.verbose > 0:
             # table with internal coordinates, atom indices and current values
-            print self._table_internal_coords(q)
-            print self._table_Bmatrix(B)
+            print(self._table_internal_coords(q))
+            print(self._table_Bmatrix(B))
 
     def _internal_from_indices(self, IJKL):
         """
@@ -213,7 +213,7 @@ class InternalValenceCoords:
             raise ValueError("The tuple of atom indices %s does not correspond to an existing bond, angle or dihedral!" % [I+1 for I in IJKL])
 
         if self.verbose > 1:
-            print "Atom indices %s correspond to the %d-th internal coordinate, which is of type %s." % (IJKL, k+1, ktype)
+            print("Atom indices %s correspond to the %d-th internal coordinate, which is of type %s." % (IJKL, k+1, ktype))
             
         return k
             
@@ -234,7 +234,7 @@ class InternalValenceCoords:
         k = self._internal_from_indices(IJKL)
 
         if not k in self.active_internals:
-            print "Internal coordinate %d does not belong to the active set"
+            print("Internal coordinate %d does not belong to the active set")
             return
 
         kact = self.active_internals.index(k)
@@ -283,7 +283,7 @@ class InternalValenceCoords:
         q          : redundant internal coordinates of length n >= 3*nat-6
         """
         if self.verbose > 1:
-            print "cartesian -> internal"
+            print("cartesian -> internal")
         x = MolCo.shift_to_com(x, self.masses)
 
         # values of internal coordinates at cartesian position x
@@ -343,19 +343,19 @@ class InternalValenceCoords:
             return self.x0
 
         if self.verbose > 0:
-            print "internal -> cartesian"
-            print " The internal coordinates are iteratively transformed"
-            print " transformed back to cartesian coordinates."
+            print("internal -> cartesian")
+            print(" The internal coordinates are iteratively transformed")
+            print(" transformed back to cartesian coordinates.")
 
         # bending and torsion angles should be in the range [0,2*pi] and
         # inversions in the range [-pi/2,pi/2]
         q = self._wrap_angles(q)
 
         if self.verbose > 1:
-            print "previous internal coordinates q0"
-            print self._table_internal_coords(self.q0)
-            print "current internal coordinates q"
-            print self._table_internal_coords(q)
+            print("previous internal coordinates q0")
+            print(self._table_internal_coords(self.q0))
+            print("current internal coordinates q")
+            print(self._table_internal_coords(q))
 
         # By how much did the internal coordinates change relative
         # to the reference geometry, where we know the transformation
@@ -369,10 +369,10 @@ class InternalValenceCoords:
 
         if self.verbose > 2:
             err_dx = la.norm( np.dot(self.B0, dx) - dq )
-            print "error |B0.dx - (q-q0)|= %e        |dq|= %e" % (err_dx, la.norm(dq))
+            print("error |B0.dx - (q-q0)|= %e        |dq|= %e" % (err_dx, la.norm(dq)))
 
         if self.verbose > 0:
-            print "  Iteration= %4.1d    |dx|= %e   |q-q0|= %e" % (0, la.norm(dx), la.norm(dq))
+            print("  Iteration= %4.1d    |dx|= %e   |q-q0|= %e" % (0, la.norm(dx), la.norm(dq)))
 
         # The initial guess xi is refined iteratively        
         for i in range(0, max_iter):
@@ -381,9 +381,9 @@ class InternalValenceCoords:
             Bi = Bi_prim[self.active_internals,:]
 
             if self.verbose > 2:
-                print "intermediate internal coordinates q(%d)" % (i+1)
-                print self._table_internal_coords(qi)
-                print self._table_Bmatrix(Bi)
+                print("intermediate internal coordinates q(%d)" % (i+1))
+                print(self._table_internal_coords(qi))
+                print(self._table_Bmatrix(Bi))
 
             ddq = q-qi
             # solve B(xi).dx = q-qi for refinement dx
@@ -395,10 +395,10 @@ class InternalValenceCoords:
             err_dx = la.norm( np.dot(Bi, dx) - ddq )
 
             if self.verbose > 2:
-                print "changes in internal coordinates q-q(%d)" % (i+1)
-                print self._table_internal_coords(ddq)
+                print("changes in internal coordinates q-q(%d)" % (i+1))
+                print(self._table_internal_coords(ddq))
             if self.verbose > 0:
-                print "  Iteration= %4.1d   |B.dx-dq|= %e   |dx|= %e   |q-q(%d)|= %e" % (i+1, err_dx, la.norm(dx), i+1, la.norm(ddq))
+                print("  Iteration= %4.1d   |B.dx-dq|= %e   |dx|= %e   |q-q(%d)|= %e" % (i+1, err_dx, la.norm(dx), i+1, la.norm(ddq)))
 
             # If qi has converged to q or the desired accuracy cannot
             # be reached, because the solution of B.dx = q-qi has a
@@ -415,8 +415,8 @@ class InternalValenceCoords:
         else:
             dq_norm = la.norm(q-qi)
             if dq_norm < 0.5:
-                print "WARNING: Internal->cartesian transformation did not converge!"
-                print "         But |dq|= %e is not too large, so we try to continue anyway." % la.norm(q-qi)
+                print("WARNING: Internal->cartesian transformation did not converge!")
+                print("         But |dq|= %e is not too large, so we try to continue anyway." % la.norm(q-qi))
             else:
                 raise NotConvergedError("ERROR: internal->cartesian transformation did not converge! |q-qi|= %e" % dq_norm)
 
@@ -438,8 +438,8 @@ class InternalValenceCoords:
         in a least square sense.
         """
         if self.verbose > 0:
-            print "transform gradient to internal coordinates"
-            print "  dE/dx -> dE/dq"
+            print("transform gradient to internal coordinates")
+            print("  dE/dx -> dE/dq")
         # Since the energy of a molecule depends only on the internal
         # coordinates q it should be possible to transform the cartesian
         # gradient exactly into internal coordinates according to
@@ -475,7 +475,7 @@ class InternalValenceCoords:
         g_intern = ret[0]
 
         if self.verbose > 1:
-            print self._table_gradients(g_cart, g_intern)
+            print(self._table_gradients(g_cart, g_intern))
 
         # check solution
         err = la.norm( np.dot(self.B0.transpose(), g_intern) - g_cart )
@@ -498,7 +498,7 @@ class InternalValenceCoords:
         # operator repeatedly until the components of the frozen
         # internal coordinates have converged to 0.
         if self.verbose > 0:
-            print " apply projector P=G.G- to internal gradient"
+            print(" apply projector P=G.G- to internal gradient")
 
         # The projector is updated everytime cartesian2internal(...)
         # is called.
@@ -510,7 +510,7 @@ class InternalValenceCoords:
             gnorm_frozen = la.norm(g_intern[self.frozen_internals])
             
             if self.verbose > 0:
-                print "  Iteration= %4.1d   |grad(frozen)|= %s" % (i, gnorm_frozen)
+                print("  Iteration= %4.1d   |grad(frozen)|= %s" % (i, gnorm_frozen))
                 
             if gnorm_frozen < 1.0e-10:
                 break
@@ -518,14 +518,14 @@ class InternalValenceCoords:
                 g_intern[self.frozen_internals] = 0.0
         else:
             if gnorm_frozen < 1.0e-5:
-                print "WARNING: Projection of gradient vector in internal coordinates did not converge!"
-                print "         But |grad(frozen)|= %e is not too large, so let's continue anyway." % gnorm_frozen
+                print("WARNING: Projection of gradient vector in internal coordinates did not converge!")
+                print("         But |grad(frozen)|= %e is not too large, so let's continue anyway." % gnorm_frozen)
             else:
                 raise RuntimeError("ERROR: Projection of gradient vector in internal coordinates did not converge! |grad(frozen)|= %e" % gnorm_frozen)
             
         if self.verbose > 1:
-            print "gradients after applying projector (only internal gradient changes)"
-            print self._table_gradients(g_cart, g_intern)
+            print("gradients after applying projector (only internal gradient changes)")
+            print(self._table_gradients(g_cart, g_intern))
         
         return g_intern
 
@@ -588,7 +588,7 @@ class InternalValenceCoords:
                    geometry x0 ~ q0, x1 ~ q0+incr*e_IJKL
         """
         if self.verbose > 0:
-            print "take internal step along coordinate %s" % map(lambda I: I+1, IJKL)
+            print("take internal step along coordinate %s" % map(lambda I: I+1, IJKL))
         # Which internal coordinate should be changed?
         k = self._internal_from_indices(IJKL)
         # 1) transform cartesian to internal coordinates, x0 ~ q0
@@ -609,7 +609,7 @@ class InternalValenceCoords:
         # accomplished by the projection.
         
         if self.verbose > 0:
-            print " apply projector P=G.G- to step dq in internal coordinates"
+            print(" apply projector P=G.G- to step dq in internal coordinates")
 
         # projector onto feasible displacements
         proj = self.P0
@@ -618,25 +618,25 @@ class InternalValenceCoords:
             dq = np.dot(proj, dq)
             ddq = dq[k] - incr
             if self.verbose > 0:
-                print "  Iteration= %4.1d   |dq[k]-incr|= %s" % (i, abs(ddq))
+                print("  Iteration= %4.1d   |dq[k]-incr|= %s" % (i, abs(ddq)))
             if abs(ddq) < 1.0e-10:
                 break
             else:
                 dq[k] = incr
         else:
             if abs(ddq) < 1.0e-6:
-                print "WARNING: Projection of displacement vector in internal coordinates did not converge! |dq[k]-incr|= %e" % abs(ddq)
-                print "         But the deviation is not too large, so let's try to continue anyway."
+                print("WARNING: Projection of displacement vector in internal coordinates did not converge! |dq[k]-incr|= %e" % abs(ddq))
+                print("         But the deviation is not too large, so let's try to continue anyway.")
             else:
                 raise RuntimeError("ERROR: Projection of displacement vector in internal coordinates did not converge! |dq[k]-incr|= %e" % abs(ddq))
 
         q1 = q0 + dq
 
         if self.verbose > 0:
-            print "initial coordinates"
-            print self._table_internal_coords(q0)
-            print "coordinates after step along %d-th coordinate" % (k+1)
-            print self._table_internal_coords(q1)
+            print("initial coordinates")
+            print(self._table_internal_coords(q0))
+            print("coordinates after step along %d-th coordinate" % (k+1))
+            print(self._table_internal_coords(q1))
         
         # 4) transform back x1 ~ q1
         x1 = self.internal2cartesian(q1)
@@ -647,8 +647,8 @@ class InternalValenceCoords:
 #        assert err < 1.0e-10, "|q(x(q)) - q|= %e" % err
 
         if self.verbose > 0:
-            print "coordinates after step (determined from cartesians)"
-            print self._table_internal_coords(q_test)
+            print("coordinates after step (determined from cartesians)")
+            print(self._table_internal_coords(q_test))
         
         return x1
         
@@ -805,8 +805,8 @@ def test_wilson_bmatrix(force_field, x0):
             return q0i[i]
         dqi_dx = utils.numerical_gradient(f,x0)
         err = la.norm(B[i,:] - dqi_dx)
-        print "Internal coordinate %d" % i
-        print " |dqi/dx (numerical) - dqi/dx (analytical)|= %e" % err
+        print("Internal coordinate %d" % i)
+        print(" |dqi/dx (numerical) - dqi/dx (analytical)|= %e" % err)
         assert err < 1.0e-8
     
 

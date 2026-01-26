@@ -35,16 +35,16 @@ def overlap_AB(atomlistA, atomlistB, valorbsA, valorbsB, SKT):
     # compare
     from DFTB import utils
     orb_labels = ["%d" % i for i in range(0, S_f90.shape[0])]
-    print "S F90"
-    print utils.annotated_matrix(S_f90, orb_labels, orb_labels)
-    print "S py"
-    print utils.annotated_matrix(S_py, orb_labels, orb_labels)
+    print("S F90")
+    print(utils.annotated_matrix(S_f90, orb_labels, orb_labels))
+    print("S py")
+    print(utils.annotated_matrix(S_py, orb_labels, orb_labels))
     errS = (abs(S_py-S_f90)).max()
     assert errS < 1.0e-3, "python and Fortran implementations disagree for S, error = %s" % errS
 
-    print "Timing:"
-    print "Fortran: %s seconds" % time_f90
-    print "Python : %s seconds" % time_py
+    print("Timing:")
+    print("Fortran: %s seconds" % time_f90)
+    print("Python : %s seconds" % time_py)
     exit(-1)
     """
     if SLAKO_IMPLEMENTATION == "F90":
@@ -156,8 +156,8 @@ class ScalarCoupling:
         in the same order as in dftb.atomlist
         """
         if self.tddftb.dftb2.verbose > 0:
-            print "Compute CI overlap between TD-DFT 'wavefunctions'"
-            print "Excitations i->a with coefficients |C_ia| < %e will be neglected" % threshold
+            print("Compute CI overlap between TD-DFT 'wavefunctions'")
+            print("Excitations i->a with coefficients |C_ia| < %e will be neglected" % threshold)
         # QM/MM
         qmmm = self.tddftb.dftb2.qmmm
         if qmmm != None:

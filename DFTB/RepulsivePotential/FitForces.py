@@ -90,10 +90,10 @@ class ReppotFitter():
             try:
                 bond_lengths, pair_forces, error = pairwise_decomposition(atomlist, forcelist)
             except LinAlgError:
-                print "LINALG ERROR => do not include this geometry"
+                print("LINALG ERROR => do not include this geometry")
                 continue
             if error > max_error:
-                print "Error (%s) from pairwise decomposition too large (threshold: %s) => do not include this geometry!" % (error, max_error)
+                print("Error (%s) from pairwise decomposition too large (threshold: %s) => do not include this geometry!" % (error, max_error))
                 continue
 
             for (i,j) in bond_lengths.keys():
@@ -113,7 +113,7 @@ class ReppotFitter():
         """
         make a scatter plot of {Ri,V'rep(Ri)}
         """
-        print self.curve_ID
+        print(self.curve_ID)
         
         from matplotlib.pyplot import plot, show, xlabel, ylabel, legend, savefig, title
         
@@ -137,10 +137,10 @@ class ReppotFitter():
         self.R = linspace(0.0, Rcut, 100)
         gradVrep = self._fit_gradient(Rcut, nr_knots)
         self.Vrep = -array([integrate.quad(gradVrep, Ri, Rcut)[0] for Ri in self.R])
-        print "repulsive potential:"
-        print self.Vrep
+        print("repulsive potential:")
+        print(self.Vrep)
         for i,Ri in enumerate(self.R):
-            print "%s %s" % (Ri,self.Vrep[i])
+            print("%s %s" % (Ri,self.Vrep[i]))
         #
         from matplotlib.pyplot import plot, show, xlabel, ylabel, title, legend
         #title("repulsive potential for %s" % self.name_atom_pair)
@@ -167,10 +167,10 @@ class ReppotFitter():
         dVrep = array(self.repulsive_gradient)
         weights = array(self.weights)
         sort_indx = argsort(R)
-        print "weights = "
-        print "weights.max = %s" % weights.max()
-        print "weights.min = %s" % weights.min()
-        print weights
+        print("weights = ")
+        print("weights.max = %s" % weights.max())
+        print("weights.min = %s" % weights.min())
+        print(weights)
         # interior knots
         # should have much less knots than data points
         nr_knots = min(nr_knots, max(1,len(R)/2))
@@ -192,7 +192,7 @@ class ReppotFitter():
 
         errorbar(R[sort_indx]*bohr_to_angs, dVrep[sort_indx]*hartree_to_eV/bohr_to_angs, 1.0/weights[sort_indx]*hartree_to_eV/bohr_to_angs, ls="", color="grey", lw=0.5)
         Rarr = linspace(0.0, R.max(), 1000)
-        print smoothing_spline(Rarr)
+        print(smoothing_spline(Rarr))
         plot(Rarr*bohr_to_angs, smoothing_spline(Rarr)*hartree_to_eV/bohr_to_angs, ls="-.", label="fit (w/ %d knots)" % nr_knots, lw=2, color="black")
         legend(loc='lower right', fontsize=17)
         show()
@@ -257,18 +257,18 @@ if __name__ == "__main__":
     usage = "Usage: %s <element1> <element2>\n" % sys.argv[0]
     usage += "element1 and element2 are the elements in the atom pair for which the repulsive potential should be fitted (e.g. h and c)."
     if len(sys.argv) < 3:
-        print usage
+        print(usage)
         exit(-1)
     parser = utils.OptionParserFuncWrapper(ReppotFitter.fit,usage)
     (options, args) = parser.parse_args()
     Z1, Z2 = atomic_number(args[0]), atomic_number(args[1])
     Fitter = ReppotFitter(Z1,Z2)
 
-    print "Files with geometries and forces are read from stdin."
-    print "Each line should be of the form:"
-    print "<identifier>  <xyz file with geometry> <xyz file with electronic dftb forces> <xyz file with forces from different method> \\"
-    print "                                    weight=<weight, positive float> max_error=<max. error per atom> \\"
-    print "                                            (active_atoms=<list of atoms IDs, e.g. 0,1,2>)"
+    print("Files with geometries and forces are read from stdin.")
+    print("Each line should be of the form:")
+    print("<identifier>  <xyz file with geometry> <xyz file with electronic dftb forces> <xyz file with forces from different method> \\")
+    print("                                    weight=<weight, positive float> max_error=<max. error per atom> \\")
+    print("                                            (active_atoms=<list of atoms IDs, e.g. 0,1,2>)")
     for line in sys.stdin.readlines():
         if line.strip()[0] == "#":
             # ignore comments
@@ -285,12 +285,12 @@ if __name__ == "__main__":
         else:
             active_atoms = map(int, active_atoms_str.split(","))
 
-        print "weight = %s" % weight
-        print "max_error = %s" % max_error
+        print("weight = %s" % weight)
+        print("max_error = %s" % max_error)
         geometries = XYZ.read_xyz(geom_file)
         forces_wo_frep = XYZ.read_xyz(dftb_force_file, units="hartree/bohr")
         forces_with_frep = XYZ.read_xyz(force_file, units="hartree/bohr")
-        print "add geometries from %s" % geom_file
+        print("add geometries from %s" % geom_file)
         Fitter.add_polyatomic_curve(geometries, forces_wo_frep, forces_with_frep, \
                                  curve_name=molname, weight=weight, max_error=max_error, active_atoms=active_atoms)
 #    Fitter.fit(3.0, 30.0)

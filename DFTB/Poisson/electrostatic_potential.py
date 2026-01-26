@@ -49,12 +49,12 @@ def electrostatic_potential_Poisson(atomlist, origin, axes, rho,
         try:
             from DFTB.Poisson.poisson_pspfft import poisson3d
         except ImportError as e:
-            print e
-            print "To be able to use the PSPFFT solver you have to "
-            print "  - install the PSPFFT package from the Computer Physics Communications library"
-            print "  - edit 'DFTB/Poisson/src/Makefile'"
-            print "  - run 'make' inside the folder DFTB/Poisson/src"
-            print ""
+            print(e)
+            print("To be able to use the PSPFFT solver you have to ")
+            print("  - install the PSPFFT package from the Computer Physics Communications library")
+            print("  - edit 'DFTB/Poisson/src/Makefile'")
+            print("  - run 'make' inside the folder DFTB/Poisson/src")
+            print("")
             exit(-1)
     else:
         from DFTB.Poisson.poisson_iterative import poisson3d
@@ -88,30 +88,30 @@ def electrostatic_potential_Poisson(atomlist, origin, axes, rho,
     # total charge
     elec_charge = -np.sum(rho*dV)
     nuc_charge = np.sum([Z for (Z,pos) in atomlist])
-    print "integrated electronic charge: %+7.5f  (core electrons probably missing)" % elec_charge
-    print "sum of nuclear charges      : %+7.5f" % nuc_charge
-    print "effective nuclear charge (screened by core electrons) : %+7.5f" % np.sum(Zeff)
+    print("integrated electronic charge: %+7.5f  (core electrons probably missing)" % elec_charge)
+    print("sum of nuclear charges      : %+7.5f" % nuc_charge)
+    print("effective nuclear charge (screened by core electrons) : %+7.5f" % np.sum(Zeff))
     # electronic dipole
     x,y,z = np.meshgrid(xvec, yvec, zvec, indexing='ij')
     dip_elec_x = -np.sum(x*rho*dV) 
     dip_elec_y = -np.sum(y*rho*dV)
     dip_elec_z = -np.sum(z*rho*dV)
-    print "elec. dipole (in e*bohr)    : %+7.5f  %+7.5f  %+7.5f" % (dip_elec_x, dip_elec_y, dip_elec_z)
+    print("elec. dipole (in e*bohr)    : %+7.5f  %+7.5f  %+7.5f" % (dip_elec_x, dip_elec_y, dip_elec_z))
     # nuclear dipole
     positions = XYZ.atomlist2vector(atomlist)
     nat = len(atomlist)
     dip_nuc_x = np.sum([Zeff[i]*positions[3*i+0] for i in range(0, nat)])
     dip_nuc_y = np.sum([Zeff[i]*positions[3*i+1] for i in range(0, nat)])
     dip_nuc_z = np.sum([Zeff[i]*positions[3*i+2] for i in range(0, nat)])
-    print "nuc. dipole (in e*bohr)     : %+7.5f  %+7.5f  %+7.5f" % (dip_nuc_x, dip_nuc_y, dip_nuc_z)
+    print("nuc. dipole (in e*bohr)     : %+7.5f  %+7.5f  %+7.5f" % (dip_nuc_x, dip_nuc_y, dip_nuc_z))
     # total dipole
     dip_tot_x = dip_elec_x + dip_nuc_x
     dip_tot_y = dip_elec_y + dip_nuc_y
     dip_tot_z = dip_elec_z + dip_nuc_z
-    print "elec+nuc dipole (in e*bohr) : %+7.5f  %+7.5f  %+7.5f" % (dip_tot_x, dip_tot_y, dip_tot_z)
+    print("elec+nuc dipole (in e*bohr) : %+7.5f  %+7.5f  %+7.5f" % (dip_tot_x, dip_tot_y, dip_tot_z))
     # convertsion factor   au -> Debye
     c = AtomicData.ebohr_to_debye
-    print "elec+nuc dipole (in Debye)  : %+7.5f  %+7.5f  %+7.5f" % (c*dip_tot_x, c*dip_tot_y, c*dip_tot_z)
+    print("elec+nuc dipole (in Debye)  : %+7.5f  %+7.5f  %+7.5f" % (c*dip_tot_x, c*dip_tot_y, c*dip_tot_z))
 
 
     # electrostatic potential of ELECTRONS
@@ -119,13 +119,13 @@ def electrostatic_potential_Poisson(atomlist, origin, axes, rho,
     # initial guess
     pot_elec_guess = 0.0*source
 
-    print source.shape
+    print(source.shape)
     pot_elec = poisson3d(xvec,yvec,zvec, source, pot_elec_guess,
                          eps=conv_eps, maxiter=maxiter)
 
     if opts.nuclear_potential > 0:
         # electrostatic potential of NUCLEI
-        print "potential from nuclei IS included"
+        print("potential from nuclei IS included")
         pot_nuc = 0*x
         for i,(Z,pos) in enumerate(atomlist):
             # Z/|r-R|
@@ -133,7 +133,7 @@ def electrostatic_potential_Poisson(atomlist, origin, axes, rho,
             
         pot = -pot_elec  + pot_nuc
     else:
-        print "potential from nuclei is IS NOT included"
+        print("potential from nuclei is IS NOT included")
         pot = -pot_elec    
         
     return pot
@@ -169,21 +169,21 @@ if __name__ == "__main__":
     
     (opts, args) = parser.parse_args()
     if len(args) < 2:
-        print usage
+        print(usage)
         exit(-1)
         
     rho_cube_file = args[0]
     pot_cube_file = args[1]
 
     # load cube file with electronic density
-    print "load density from cube file..."
+    print("load density from cube file...")
     atomlist, origin, axes, rho = Cube.readCube(rho_cube_file)
-    print "compute electrostatic potential..."
+    print("compute electrostatic potential...")
     pot = electrostatic_potential_Poisson(atomlist, origin, axes, rho,
                                           poisson_solver=opts.solver,
                                           conv_eps=opts.conv_eps, maxiter=opts.maxiter,
                                           nuclear_potential=opts.nuclear_potential)
     # save potential
     Cube.writeCube(pot_cube_file, atomlist, origin, axes, pot)
-    print "electrostatic potential saved to '%s'" % pot_cube_file
+    print("electrostatic potential saved to '%s'" % pot_cube_file)
 

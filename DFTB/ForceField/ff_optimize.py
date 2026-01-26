@@ -28,7 +28,7 @@ if __name__ == "__main__":
     
     (opts, args) = parser.parse_args()
     if len(args) < 1:
-        print usage
+        print(usage)
         exit(-1)
 
     
@@ -54,13 +54,13 @@ if __name__ == "__main__":
         #save_xyz(x)
         #
         energy, grad = force_field.getEnergyAndGradient(x, state=opts.state)
-        print "E = %2.7f     |grad| = %2.7f" % (energy, la.norm(grad))
+        print("E = %2.7f     |grad| = %2.7f" % (energy, la.norm(grad)))
         #
         return energy, grad
 
     #xyz_opt = os.path.join("/tmp/", os.path.basename(ff_file).replace(".ff", "_opt.xyz"))
     xyz_opt = ff_file.replace(".ff", "_opt.xyz")
-    print "Intermediate geometries will be written to %s" % xyz_opt
+    print("Intermediate geometries will be written to %s" % xyz_opt)
     # This is a callback function that is executed by numpy for each optimization step.
     # It appends the current geometry to an xyz-file.
     step=0  # count optimization steps
@@ -88,7 +88,7 @@ if __name__ == "__main__":
     xopt = res.x
     step = 0  # reset optimization counter, so that the last step is written independently of `opts.save_every`
     save_xyz(xopt)
-    print "Optimized geometry written to %s" % xyz_opt
+    print("Optimized geometry written to %s" % xyz_opt)
 
     if opts.transition_charges != "":
         # compute exciton spectrum for optimized geometry
