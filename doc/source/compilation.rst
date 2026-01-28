@@ -590,6 +590,22 @@ Simple benchmark for parallelization::
         speedup = baseline / t
         print(f"   {threads:2d}   | {t:7.3f}  | {speedup:6.2f}x")
 
+NumPy 2.0 Migration Issues
+==========================
+
+**IMPORTANT**: If you experience compilation errors, especially after upgrading from NumPy 1.x to 2.0+,
+see the comprehensive troubleshooting guide:
+
+**➜ :doc:`compilation_fixes`**
+
+This includes:
+
+- NumPy 2.0 breaking changes (removed ``-fexternal-blas``, ``numpy.distutils``)
+- Fixed Makefile changes
+- Common error messages and solutions
+- Verified working configurations
+- Step-by-step migration checklist
+
 Further Information
 ===================
 

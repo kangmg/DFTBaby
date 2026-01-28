@@ -27,6 +27,7 @@ Contents:
    usage_guide.rst
    examples.rst
    compilation.rst
+   compilation_fixes.rst
    parametrization.rst
    ground_state.rst
    excited_states.rst
