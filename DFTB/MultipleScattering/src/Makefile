@@ -10,8 +10,8 @@ all: ../Wigner3j.so ../coul90.so ../mod_bessel.so ../sphharm.so ../cms.so ../ms.
 	python3 -m numpy.f2py Wigner3j.f95 -m Wigner3j -h Wigner3j.pyf --overwrite-signature
 	# compile module
 	python3 -m numpy.f2py -c Wigner3j.pyf Wigner3j.f95
-	# move module 
-	mv Wigner3j.so ../
+	# move module (Python 3 generates .cpython-*.so files)
+	mv Wigner3j.*.so ../ || mv Wigner3j.so ../
 
 # Barnett's implementation of Coulomb and spherical Bessel functions
 ../coul90.so: COUL90.FOR coul90_wrapper.f90
@@ -20,7 +20,7 @@ all: ../Wigner3j.so ../coul90.so ../mod_bessel.so ../sphharm.so ../cms.so ../ms.
 	# compile module
 	python3 -m numpy.f2py -c coul90.pyf coul90_wrapper.f90 COUL90.FOR
 	# move module
-	mv coul90.so ../
+	mv coul90.*.so ../ || mv coul90.so ../
 
 # modified spherical Bessel functions of 1st and 2nd kind
 ../mod_bessel.so: mod_bessel.f90
@@ -29,7 +29,7 @@ all: ../Wigner3j.so ../coul90.so ../mod_bessel.so ../sphharm.so ../cms.so ../ms.
 	# compile module
 	python3 -m numpy.f2py -c mod_bessel.pyf mod_bessel.f90 --f90flags="-fbounds-check"
 	# move module
-	mv mod_bessel.so ../
+	mv mod_bessel.*.so ../ || mv mod_bessel.so ../
 
 # spherical harmonics 
 ../sphharm.so: sphharm.f90
@@ -38,7 +38,7 @@ all: ../Wigner3j.so ../coul90.so ../mod_bessel.so ../sphharm.so ../cms.so ../ms.
 	# compile module
 	python3 -m numpy.f2py -c sphharm.pyf sphharm.f90
 	# move module
-	mv sphharm.so ../
+	mv sphharm.*.so ../ || mv sphharm.so ../
 
 # continuum multiple scattering method
 ../cms.so: cms.f90 sphharm.f90 coul90_wrapper.f90 COUL90.FOR Wigner3j.f95 cart2sph.f90 splines.f90 splder.f
@@ -47,7 +47,7 @@ all: ../Wigner3j.so ../coul90.so ../mod_bessel.so ../sphharm.so ../cms.so ../ms.
 	# compile module
 	python3 -m numpy.f2py -c cms.pyf cms.f90 sphharm.f90 coul90_wrapper.f90 COUL90.FOR Wigner3j.f95 cart2sph.f90 splines.f90 --f90flags="-fbounds-check" -llapack
 	# move module
-	mv cms.so ../
+	mv cms.*.so ../ || mv cms.so ../
 
 # multiple scattering method (for bound orbitals)
 ../ms.so: ms.f90 sphharm.f90 mod_bessel.f90 coul90_wrapper.f90 COUL90.FOR Wigner3j.f95 cart2sph.f90 splines.f90 splder.f
@@ -56,7 +56,7 @@ all: ../Wigner3j.so ../coul90.so ../mod_bessel.so ../sphharm.so ../cms.so ../ms.
 	# compile module
 	python3 -m numpy.f2py -c ms.pyf ms.f90 sphharm.f90 mod_bessel.f90 coul90_wrapper.f90 COUL90.FOR Wigner3j.f95 cart2sph.f90 splines.f90 --f90flags="-fbounds-check" -llapack
 	# move module
-	mv ms.so ../
+	mv ms.*.so ../ || mv ms.so ../
 
 
 # continuum multiple scattering method
@@ -66,7 +66,7 @@ all: ../Wigner3j.so ../coul90.so ../mod_bessel.so ../sphharm.so ../cms.so ../ms.
 	# compile module
 	python3 -m numpy.f2py -c photo.pyf photo.f90 Wigner3j.f95 sphharm.f90 --f90flags="-fbounds-check"
 	# move module
-	mv photo.so ../
+	mv photo.*.so ../ || mv photo.so ../
 
 # radial Schroedinger equation is solved using Numerov's scheme
 ../numerov.so: numerov.f90
@@ -75,7 +75,7 @@ all: ../Wigner3j.so ../coul90.so ../mod_bessel.so ../sphharm.so ../cms.so ../ms.
 	# compile module
 	python3 -m numpy.f2py -c numerov.pyf numerov.f90 --f90flags="-fbounds-check"
 	# move module
-	mv numerov.so ../
+	mv numerov.*.so ../ || mv numerov.so ../
 
 
 
