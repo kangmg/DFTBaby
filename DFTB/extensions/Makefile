@@ -31,29 +31,30 @@ else
   BLAS=-lblas
   #
   OPTIMIZATION= --opt="-O3"
-  F2PY_OPTIONS= --fcompiler=gfortran --f90flags="-Wall -fopenmp $(OpenMP) -fexternal-blas $(BLAS)" $(OpenMP) $(BLAS) $(OPTIMIZATION)
+  # Note: -fexternal-blas removed for NumPy 2.0+ compatibility
+  F2PY_OPTIONS= --fcompiler=gfortran --f90flags="-Wall -fopenmp" $(OpenMP) $(BLAS) $(OPTIMIZATION)
 endif
 
 thomson.so: thomson.f90
-	f2py -c thomson.f90 -m thomson $(F2PY_OPTIONS)
+	python3 -m numpy.f2py -c thomson.f90 -m thomson $(F2PY_OPTIONS)
 
 tddftb.so: tddftb.f90
-	f2py -c tddftb.f90 -m tddftb $(F2PY_OPTIONS)
+	python3 -m numpy.f2py -c tddftb.f90 -m tddftb $(F2PY_OPTIONS)
 
 mulliken.so: mulliken.f90
-	f2py -c mulliken.f90 -m mulliken $(F2PY_OPTIONS)
+	python3 -m numpy.f2py -c mulliken.f90 -m mulliken $(F2PY_OPTIONS)
 
 slako.so: slako.f90 splines.f90 splder.f
-	f2py -c slako.f90 -m slako $(F2PY_OPTIONS)
+	python3 -m numpy.f2py -c slako.f90 -m slako $(F2PY_OPTIONS)
 
 grad.so: grad.f90
-	f2py -c grad.f90 -m grad $(F2PY_OPTIONS)
+	python3 -m numpy.f2py -c grad.f90 -m grad $(F2PY_OPTIONS)
 
 cosmo.so: cosmo.f90
-	f2py -c cosmo.f90 -m cosmo $(F2PY_OPTIONS)
+	python3 -m numpy.f2py -c cosmo.f90 -m cosmo $(F2PY_OPTIONS)
 
 clean:
-	rm thomson.so tddftb.so mulliken.so slako.so grad.so cosmo.so
+	rm -f thomson.so tddftb.so mulliken.so slako.so grad.so cosmo.so
 
 find_bug.exe:
 	gfortran -g -O0 -Wall find_bug.f90 grad.f90 $(BLAS) -fopenmp $(OpenMP) -o find_bug.exe

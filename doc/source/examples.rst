@@ -329,20 +329,32 @@ dftbaby.cfg
 dynamics.in
 -----------
 
-Initial conditions with positions (Bohr) and velocities (a.u.)::
+Initial conditions with positions (Bohr) and velocities (a.u.).
+
+**Format**: First the number of atoms and comment line, then atomic positions,
+followed by velocities in the same order::
 
     10
-    Initial velocities from Wigner sampling
-    C   0.0000   0.0000   0.0000   0.0001  -0.0002   0.0003
-    C   2.6400   0.0000   0.0000  -0.0001   0.0004  -0.0001
-    C   3.9500   2.2800   0.0000   0.0002  -0.0001   0.0002
-    C   2.6400   4.5600   0.0000  -0.0003   0.0001  -0.0001
-    C   0.0000   4.5600   0.0000   0.0001   0.0003   0.0002
-    C  -1.3100   2.2800   0.0000  -0.0002  -0.0002   0.0001
-    H  -1.0300  -1.7700   0.0000   0.0005   0.0001  -0.0003
-    H   3.6700  -1.7700   0.0000  -0.0004   0.0002   0.0004
-    H  -1.0300   6.3400   0.0000   0.0003  -0.0004   0.0001
-    H   3.6700   6.3400   0.0000  -0.0001   0.0003  -0.0002
+    c   0.0000   0.0000   0.0000
+    c   2.6400   0.0000   0.0000
+    c   3.9500   2.2800   0.0000
+    c   2.6400   4.5600   0.0000
+    c   0.0000   4.5600   0.0000
+    c  -1.3100   2.2800   0.0000
+    h  -1.0300  -1.7700   0.0000
+    h   3.6700  -1.7700   0.0000
+    h  -1.0300   6.3400   0.0000
+    h   3.6700   6.3400   0.0000
+    0.0001  -0.0002   0.0003
+   -0.0001   0.0004  -0.0001
+    0.0002  -0.0001   0.0002
+   -0.0003   0.0001  -0.0001
+    0.0001   0.0003   0.0002
+   -0.0002  -0.0002   0.0001
+    0.0005   0.0001  -0.0003
+   -0.0004   0.0002   0.0004
+    0.0003  -0.0004   0.0001
+   -0.0001   0.0003  -0.0002
 
 Run Command
 -----------
@@ -356,9 +368,9 @@ Output Files
 ------------
 
 - ``dynamics.xyz``: Nuclear trajectory
-- ``energy_*.dat``: Energy of each electronic state vs. time
+- ``energy_0.dat, energy_1.dat, ...``: Energy of each electronic state vs. time
 - ``state.dat``: Active state vs. time (for hopping analysis)
-- ``coefficients.dat``: Electronic wavefunction coefficients
+- ``coeff_0.dat, coeff_1.dat, ...``: Quantum populations for each state
 - ``particle_hole_charges.xyz``: Charge distribution (if requested)
 
 Analysis
@@ -484,9 +496,15 @@ dftbaby.cfg
 Run Command
 -----------
 
-::
+For excited states::
 
     LR_TDDFTB.py crystal.xyz
+
+For geometry optimization::
+
+    optimize.py crystal.xyz 0
+
+(The QM/MM setup is read automatically from ``dftbaby.cfg``)
 
 Example 8: Constrained Geometry Optimization
 =============================================
