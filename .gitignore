@@ -18,3 +18,8 @@
 *~
 *~
 \#*\#
+# ignore virtual environments
+.venv/
+.venv-*/
+venv/
+env/
