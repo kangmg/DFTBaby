@@ -209,17 +209,22 @@ Error 6: BLAS/LAPACK not found
 
 **Solution**:
 
-Ubuntu/Debian::
+Ubuntu/Debian (system Python)::
 
     sudo apt-get install libblas-dev liblapack-dev
 
-Fedora/RHEL::
+Fedora/RHEL (system Python)::
 
     sudo dnf install blas-devel lapack-devel
 
-macOS::
+macOS (system Python)::
 
     brew install openblas lapack
+
+**Conda environments** (recommended for Python 3.12)::
+
+    conda install -c conda-forge "libblas=*=*openblas*"
+    conda install -c conda-forge openblas liblapack
 
 Or use optimized libraries::
 
@@ -228,6 +233,91 @@ Or use optimized libraries::
 
     # OpenBLAS
     export BLAS=/usr/lib/x86_64-linux-gnu/libopenblas.so
+
+Error 7: Meson backend BLAS linking (NumPy 2.0+ with conda)
+------------------------------------------------------------
+
+**Symptom**::
+
+    /usr/bin/ld: cannot find -lblas: No such file or directory
+
+    Environment:
+    - Python 3.12 (conda)
+    - NumPy 2.0+ with meson backend
+    - Command: python3 -m numpy.f2py ... -lblas -lgomp
+
+**Cause**: NumPy 2.0+ uses meson/ninja build backend which handles library linking
+differently than the old distutils backend. Explicit ``-lblas -lgomp`` flags don't
+work the same way with meson.
+
+**Root Cause Analysis**:
+
+1. **Old way (NumPy 1.x with distutils)**::
+
+       python3 -m numpy.f2py -c module.f90 -m module -lblas -lgomp
+       # distutils directly passes -lblas to linker
+
+2. **New way (NumPy 2.0+ with meson)**::
+
+       python3 -m numpy.f2py -c module.f90 -m module -lblas -lgomp
+       # meson uses pkg-config and its own library detection
+       # explicit -lblas may fail if meson can't find it via pkg-config
+
+**Solution 1: Install BLAS in conda environment and let meson auto-detect**
+
+This is the **recommended solution** for conda users::
+
+    # Install BLAS/LAPACK in conda environment
+    conda install -c conda-forge "libblas=*=*openblas*"
+    conda install -c conda-forge openblas liblapack
+
+    # Update Makefile to remove explicit library flags
+    # Edit DFTB/extensions/Makefile:
+
+    # OLD (causes meson error):
+    F2PY_OPTIONS= --fcompiler=gfortran --f90flags="-Wall -fopenmp" $(OpenMP) $(BLAS) $(OPTIMIZATION)
+
+    # NEW (let meson auto-detect):
+    F2PY_OPTIONS= --fcompiler=gfortran --f90flags="-Wall -fopenmp" $(OPTIMIZATION)
+    # Meson will automatically find BLAS/LAPACK from conda environment
+
+    # Then compile
+    cd DFTB/extensions
+    make clean
+    make
+
+**Solution 2: Use pkg-config (meson's preferred method)**
+
+Configure pkg-config to find libraries in conda environment::
+
+    export PKG_CONFIG_PATH=$CONDA_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH
+
+    # Verify pkg-config can find BLAS
+    pkg-config --libs openblas
+    # Should output: -L/path/to/conda/lib -lopenblas
+
+    # Then compile normally
+    cd DFTB/extensions && make
+
+**Solution 3: Meson-compatible Makefile (already done)**
+
+The updated Makefiles in this repository work with both:
+
+- **System Python** with apt-installed BLAS (explicit ``-lblas`` works)
+- **Conda Python** with conda-installed BLAS (meson auto-detects)
+
+If you still get errors with conda, use Solution 1 above to remove explicit library flags.
+
+**Solution 4: Downgrade to NumPy 1.26 (temporary workaround)**
+
+If meson issues persist, temporarily use NumPy 1.x with distutils::
+
+    pip uninstall numpy scipy
+    pip install "numpy<2.0" "scipy<1.14"
+
+    cd DFTB/extensions && make clean && make
+
+**Note**: This is NOT recommended as NumPy 1.x is deprecated.
 
 Fortran Compiler Issues
 ========================
@@ -266,18 +356,124 @@ Issue: Intel compiler compatibility
     make clean
     make
 
+Conda Environment Configuration (Python 3.12)
+==============================================
+
+**IMPORTANT**: If you're using conda with Python 3.12 and NumPy 2.0+, follow these steps
+to avoid meson/BLAS linking issues.
+
+Step-by-step Setup
+-------------------
+
+**1. Create and activate conda environment**::
+
+    conda create -n dftbaby python=3.12 -y
+    conda activate dftbaby
+
+**2. Install NumPy 2.0+ with BLAS/LAPACK**::
+
+    # Install NumPy 2.0+ with meson backend
+    conda install -c conda-forge numpy scipy
+
+    # Install BLAS/LAPACK (CRITICAL for compilation)
+    conda install -c conda-forge "libblas=*=*openblas*"
+    conda install -c conda-forge openblas liblapack
+
+    # Install gfortran if not available system-wide
+    conda install -c conda-forge gfortran
+
+**3. Verify installation**::
+
+    # Check versions
+    python3 --version         # Should be 3.12.x
+    python3 -c "import numpy; print(numpy.__version__)"  # Should be 2.x
+    gfortran --version        # Should be 11.x or newer
+
+    # Verify BLAS is installed
+    python3 -c "import numpy; numpy.show_config()"
+    # Should show openblas_info
+
+**4. Compile DFTBaby extensions**::
+
+    cd DFTB/extensions
+    make clean
+    make
+
+**5. Test compilation**::
+
+    python3 << 'EOF'
+    from DFTB.extensions import thomson, tddftb, mulliken, slako, grad, cosmo
+    print("✓ All core extensions compiled and loaded successfully!")
+    EOF
+
+Troubleshooting Conda Compilation
+----------------------------------
+
+**Issue**: Still getting ``cannot find -lblas`` error
+
+**Solution**: Update Makefile to let meson auto-detect libraries::
+
+    # Edit DFTB/extensions/Makefile
+    # Find this line (around line 35):
+    F2PY_OPTIONS= --fcompiler=gfortran --f90flags="-Wall -fopenmp" $(OpenMP) $(BLAS) $(OPTIMIZATION)
+
+    # Change to (remove $(OpenMP) $(BLAS)):
+    F2PY_OPTIONS= --fcompiler=gfortran --f90flags="-Wall -fopenmp" $(OPTIMIZATION)
+
+    # Save and recompile
+    make clean && make
+
+**Issue**: ``gfortran: command not found`` in conda
+
+**Solution**: Install gfortran in conda environment::
+
+    conda install -c conda-forge gfortran gcc_linux-64
+
+**Issue**: Meson can't find BLAS even after installing
+
+**Solution**: Set PKG_CONFIG_PATH::
+
+    export PKG_CONFIG_PATH=$CONDA_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH
+    make clean && make
+
+    # Add to ~/.bashrc to make permanent:
+    echo 'export PKG_CONFIG_PATH=$CONDA_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH' >> ~/.bashrc
+
 Verified Working Configurations
 ================================
 
 The following configurations have been tested and verified:
 
-Configuration 1: Ubuntu 22.04 LTS
-----------------------------------
+Configuration 1: Conda + Python 3.12 + NumPy 2.0
+-------------------------------------------------
 
 ::
 
     OS: Ubuntu 22.04 LTS
-    Python: 3.12.1
+    Python: 3.12.8 (conda)
+    NumPy: 2.4.1 (meson backend)
+    gfortran: 13.3.0
+    BLAS/LAPACK: OpenBLAS 0.3.28 (conda-forge)
+
+**Installation**::
+
+    conda create -n dftbaby python=3.12 -y
+    conda activate dftbaby
+    conda install -c conda-forge numpy scipy openblas liblapack gfortran
+
+**Compilation**::
+
+    cd DFTB/extensions && make clean && make
+
+**Verified modules**: All 6 core extensions compile and import successfully.
+
+Configuration 2: Ubuntu 22.04 LTS (System Python)
+--------------------------------------------------
+
+::
+
+    OS: Ubuntu 22.04 LTS
+    Python: 3.12.1 (system)
     NumPy: 2.0.2
     gfortran: 11.4.0
     BLAS/LAPACK: OpenBLAS 0.3.20
