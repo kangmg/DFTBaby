@@ -51,6 +51,28 @@ Install on Fedora/RHEL
 
     sudo dnf install gcc-gfortran blas-devel lapack-devel make
 
+Install in Conda Environment (Recommended for Python 3.12)
+-----------------------------------------------------------
+
+**IMPORTANT**: If you're using conda with Python 3.12 and NumPy 2.0+, use conda-forge
+packages to avoid meson/BLAS linking issues.
+
+::
+
+    # Create conda environment
+    conda create -n dftbaby python=3.12 -y
+    conda activate dftbaby
+
+    # Install all dependencies
+    conda install -c conda-forge numpy scipy openblas liblapack gfortran make
+
+    # Verify installation
+    python3 -c "import numpy; print(f'NumPy {numpy.__version__}')"
+    gfortran --version
+
+**For conda users experiencing BLAS linking errors**, see the detailed troubleshooting guide:
+**➜ :doc:`compilation_fixes`** (Error 7: Meson backend BLAS linking)
+
 Verify Installation
 -------------------
 
@@ -90,13 +112,35 @@ Compilation Steps
 
 **Method 1: Simple compilation (GNU gfortran)**
 
-::
+For **system Python** or **conda with working BLAS**::
 
     cd DFTB/extensions/
     make clean
     make
 
 This compiles all extensions with default settings (GNU compilers, OpenMP parallelization).
+
+**Method 1b: Conda environment (if regular Makefile fails)**
+
+If you're using conda and get ``cannot find -lblas`` errors, use the conda-specific Makefile::
+
+    cd DFTB/extensions/
+
+    # Use Makefile.conda which lets meson auto-detect libraries
+    make -f Makefile.conda clean
+    make -f Makefile.conda
+
+    # Or create a symlink to use regular make commands
+    mv Makefile Makefile.system
+    ln -s Makefile.conda Makefile
+    make clean && make
+
+**Why use Makefile.conda?**
+
+- NumPy 2.0+ uses meson/ninja build backend (not distutils)
+- Meson handles library linking differently - explicit ``-lblas -lgomp`` may fail
+- ``Makefile.conda`` removes explicit library flags and lets meson auto-detect
+- Works with conda-installed BLAS/LAPACK packages
 
 **Method 2: Intel compilers (for HPC clusters)**
 
