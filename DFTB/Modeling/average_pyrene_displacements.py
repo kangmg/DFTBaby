@@ -22,8 +22,7 @@ if __name__ == "__main__":
         displacements_avg += displacements[i][:nsteps]
     displacements_avg /= float(ntraj)
 
-    fh = open("displacements_avg.dat", "w")
-    print>>fh, "# TSTEP     R_X / Angstrom    R_Y / Angstrom   R_Z / Angstrom"
-    np.savetxt(fh, displacements_avg)
-    fh.close()
+    with open("displacements_avg.dat", "w") as fh:
+        print("# TSTEP     R_X / Angstrom    R_Y / Angstrom   R_Z / Angstrom", file=fh)
+        np.savetxt(fh, displacements_avg)
     

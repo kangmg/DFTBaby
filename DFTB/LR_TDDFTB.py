@@ -784,13 +784,12 @@ class LR_TDDFTB:
         write out excitation energies, oscillator strengths and the <nr_dominant_ex> dominant single particle
         excitations for the lowest <max_states> excited states.
         """
-        import string
         if self.dftb2.use_symmetry > 0:
             symstr = self.dftb2.symmetry_group.name().rjust(3)
         else:
             symstr = "   "
-        txt = " ground state energy: %s %s\n\n" % (string.rjust("%.7f hartree" % self.en0,15), \
-                               string.rjust("%.7f eV" % (self.en0*hartree_to_eV), 15))
+        txt = " ground state energy: %s %s\n\n" % (("%.7f hartree" % self.en0).rjust(15), \
+                               ("%.7f eV" % (self.en0*hartree_to_eV)).rjust(15))
         txt += "           Excited States\n"
         txt += "           ==============\n"
         txt += "     Spn %s     exc. en. /hartree      exc. en. / eV   exc. en. / nm    osc. strength             dominant contrib.               en_KS / eV      transition dipole [TDx TDy TDz]   /\\ diagn.\n" % symstr
@@ -815,17 +814,17 @@ class LR_TDDFTB:
                     domex_str += ","
                 if count == nr_dominant_ex-1:
                     break
-            txt += "%s %s %s: %s %s %s  %s %s %s %s %s\n" % (string.rjust(str(I+1),5), \
+            txt += "%s %s %s: %s %s %s  %s %s %s %s %s\n" % (str(I+1).rjust(5), \
                                self.multiplicity, \
-                               string.rjust(self.Irreps[I], 3), \
-                               string.rjust("%.7f hartree" % self.Omega[I],20), \
-                               string.rjust("%.7f eV" % (self.Omega[I]*hartree_to_eV), 17), \
-                               string.rjust("%.7f nm" % (hartree_to_nm / self.Omega[I]), 17), \
-                               string.rjust("%.7f" % self.oscillator_strength[I], 12), \
-                               string.rjust("%s" % domex_str, 45), \
-                               string.rjust("%s" % domKS_str, 8), \
-                               string.rjust("[%+2.7f %+2.7f %+2.7f]" % (self.tdipX[I], self.tdipY[I], self.tdipZ[I]), 40), \
-                               string.rjust("%.4f" % self.Lambda2[I], 7))
+                               self.Irreps[I].rjust(3), \
+                               ("%.7f hartree" % self.Omega[I]).rjust(20), \
+                               ("%.7f eV" % (self.Omega[I]*hartree_to_eV)).rjust(17), \
+                               ("%.7f nm" % (hartree_to_nm / self.Omega[I])).rjust(17), \
+                               ("%.7f" % self.oscillator_strength[I]).rjust(12), \
+                               ("%s" % domex_str).rjust(45), \
+                               ("%s" % domKS_str).rjust(8), \
+                               ("[%+2.7f %+2.7f %+2.7f]" % (self.tdipX[I], self.tdipY[I], self.tdipZ[I])).rjust(40), \
+                               ("%.4f" % self.Lambda2[I]).rjust(7))
         print(txt)
     def saveAbsorptionSpectrum(self, spectrum_file="absorption_spectrum.dat"):
         """
@@ -836,7 +835,6 @@ class LR_TDDFTB:
         ==========
         Output.spectrum_file: write table with excitation energies and oscillator strengths to this file. If the states were classified by symmetry a seperate file is written for each irrep.
         """
-        import string
         max_states = 10000000
         unique_irreps = np.unique(self.Irreps)
         # If the states were classified by symmetry a separate spectrum is written for each irrep
@@ -844,15 +842,21 @@ class LR_TDDFTB:
             spectrum_file_irrep = path.expanduser(path.expandvars(spectrum_file))
             if irrep != "":
                 spectrum_file_irrep += ".%s" % irrep
-            fh = open(spectrum_file_irrep, 'w')
-            if irrep != "":
-                print>>fh, "# states with %s symmetry" % irrep
-            print>>fh, "# Absorption spectrum"
-            print>>fh, "# exc. energy / hartree  osc.strength"
-            for I in range(0, min(max_states, len(self.Omega))):
-                if self.Irreps[I] == irrep:
-                    print>>fh, "%s   %s" % (string.rjust("%.7f" % self.Omega[I],20), string.rjust("%.7f" % self.oscillator_strength[I],20))
-            fh.close()
+            with open(spectrum_file_irrep, 'w') as fh:
+                if irrep != "":
+                    print("# states with %s symmetry" % irrep, file=fh)
+                print("# Absorption spectrum", file=fh)
+                print("# exc. energy / hartree  osc.strength", file=fh)
+                for I in range(0, min(max_states, len(self.Omega))):
+                    if self.Irreps[I] == irrep:
+                        print(
+                                "%s   %s"
+                                % (
+                                ("%.7f" % self.Omega[I]).rjust(20),
+                                ("%.7f" % self.oscillator_strength[I]).rjust(20),
+                            ),
+                            file=fh,
+                        )
     def _getExcitationCoefficients(self):
         """
         Excited states are linear combination of single excitations (d^+ creation and d annihilation operator):
@@ -964,7 +968,7 @@ class LR_TDDFTB:
             txt += "Particle-Hole Charges\n"
             txt += "======================\n"
             for A,(ZA,posA) in enumerate(atomlist):
-                txt += "%s: %3.7f (p) \t %3.7f (h)\n" % (string.center("%s-%s" % (atom_names[ZA-1], A),12), particle_charges[A], hole_charges[A])
+                txt += "%s: %3.7f (p) \t %3.7f (h)\n" % (("%s-%s" % (atom_names[ZA-1], A)).center(12), particle_charges[A], hole_charges[A])
             print(txt)
 
         return particle_charges, hole_charges
@@ -1013,7 +1017,7 @@ class LR_TDDFTB:
             txt += "Particle-Hole Charges\n"
             txt += "======================\n"
             for A,(ZA,posA) in enumerate(atomlist):
-                txt += "%s: %3.7f (p) \t %3.7f (h)\n" % (string.center("%s-%s" % (atom_names[ZA-1], A),12), particle_charges[A], hole_charges[A])
+                txt += "%s: %3.7f (p) \t %3.7f (h)\n" % (("%s-%s" % (atom_names[ZA-1], A)).center(12), particle_charges[A], hole_charges[A])
             print(txt)
 
         return particle_charges, hole_charges    
@@ -1041,12 +1045,14 @@ class LR_TDDFTB:
             for A,(ZA,posA) in enumerate(atomlist):
                 transition_charges[A,:] = np.tensordot(self.qtrans_ov[A,:,:],self.Cij,axes=([0,1],[1,2]))
             
-            fh = open( path.expandvars(path.expanduser(save_transition_charges)), "w")
-            print>>fh, "# Mulliken transition charges (in unit of -e) between ground and excited states"
-            print>>fh, "# ROWS: atoms"
-            print>>fh, "# COLUMNS: excited states"
-            np.savetxt(fh, -transition_charges)
-            fh.close()
+            with open(path.expandvars(path.expanduser(save_transition_charges)), "w") as fh:
+                print(
+                    "# Mulliken transition charges (in unit of -e) between ground and excited states",
+                    file=fh,
+                )
+                print("# ROWS: atoms", file=fh)
+                print("# COLUMNS: excited states", file=fh)
+                np.savetxt(fh, -transition_charges)
     def saveNTOs(self, nto_states="[]", nto_dir="./", nto_max=100):
         """
         Natural-Transition-Orbitals.nto_states: list of excited states (starting from 1) for which the NTOs should be computed. 
@@ -1149,15 +1155,14 @@ class LR_TDDFTB:
                 nac = self.NonAdiabaticCouplingVector(I)
             # save NAC to file
             nac_file = os.path.join(nac_dir, "NAC_%d.dat" % state) 
-            fh_nac = open(nac_file, "w")
-            # write header for NAC vector
-            print>>fh_nac, "# approximate non-adiabatic coupling vector ( in bohr^-1 ) "
-            print>>fh_nac, "# with ground state                                        "
-            print>>fh_nac, "# approximation for NACs : '%s'" % nac_approx
-            print>>fh_nac, "#    X             Y             Z                         "
-            # print non-adiabatic coupling vector as (Nat,3) matrix
-            np.savetxt(fh_nac, nac.transpose(), fmt="%+e")
-            fh_nac.close()
+            with open(nac_file, "w") as fh_nac:
+                # write header for NAC vector
+                print("# approximate non-adiabatic coupling vector ( in bohr^-1 ) ", file=fh_nac)
+                print("# with ground state                                        ", file=fh_nac)
+                print("# approximation for NACs : '%s'" % nac_approx, file=fh_nac)
+                print("#    X             Y             Z                         ", file=fh_nac)
+                # print non-adiabatic coupling vector as (Nat,3) matrix
+                np.savetxt(fh_nac, nac.transpose(), fmt="%+e")
 
             print("approx. non-adiabatic coupling vector for S0-S%d transition saved to %s" % (state, nac_file))
             
@@ -1169,7 +1174,14 @@ class LR_TDDFTB:
         if graphical == 0:
             return
         print("STARTING GRAPHICAL USER INTERFACE")
-        from DFTB.Analyse.mayavi import GUI
+        try:
+            from DFTB.Analyse.mayavi import GUI
+        except ImportError as exc:
+            raise RuntimeError(
+                "graphical mode requires optional Mayavi GUI dependencies. "
+                "Install with `pip install .[gui]` or use cube/molden outputs "
+                "with external viewers (e.g. VMD, PyMOL, OVITO)."
+            ) from exc
         GUI.start_graphical_analysis(self)
         
         

@@ -71,10 +71,9 @@ if __name__ == "__main__":
                     rho_u[index_i[axis_remains]] += data[i,j,k]
 
     data_1d = np.vstack((u,rho_u)).transpose()
-    fh = open(out_file, "w")
-    print>>fh, "# u  in bohr              rho(u)"
-    np.savetxt(fh, data_1d)
-    fh.close()
+    with open(out_file, "w") as fh:
+        print("# u  in bohr              rho(u)", file=fh)
+        np.savetxt(fh, data_1d)
     print("Curve saved to %s" % out_file)
 
     # Now the curve is Fourier transformed
@@ -83,10 +82,9 @@ if __name__ == "__main__":
     data_kspace_1d = np.vstack((k.real,rho_k.real,rho_k.imag)).transpose()
     
     out_file_kspace = out_file+"_kspace"
-    fh = open(out_file_kspace, "w")
-    print>>fh, "# k  in 1/bohr              rho(k)"
-    np.savetxt(fh, data_kspace_1d)
-    fh.close()
+    with open(out_file_kspace, "w") as fh:
+        print("# k  in 1/bohr              rho(k)", file=fh)
+        np.savetxt(fh, data_kspace_1d)
     print("Fourier transform of curve saved to %s" % out_file_kspace)
     
     # Analyse rho(k) to find an approximate wavevector for the state

@@ -73,7 +73,6 @@ def get_hubbard_parameters(parameter_set):
 ############# REPULSIVE POTENTIAL #########################
 
 if __name__ == "__main__":
-    import string
     # print default parameters for all atoms
     print("       DFTB Parameters")
     print("       ===============")
@@ -89,4 +88,4 @@ if __name__ == "__main__":
             U = "  %.3f (%2.3f)" % (Uhub, Uhub*AtomicData.hartree_to_eV)
         except KeyError:
             U = "---"
-        print(string.center(atom, 5) + "|" + string.center(r0, 10) + "|" + string.center(U,10))
+        print(str(atom).center(5) + "|" + str(r0).center(10) + "|" + str(U).center(10))

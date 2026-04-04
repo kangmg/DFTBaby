@@ -336,20 +336,24 @@ class GeometryOptimization:
                           title="charge=%s energy=%s" % (self.geom_kwds.get("charge",0), self.enI), mode=mode)
 
             # save table with energies along scan
-            fh = open(self.dat_scan, mode)
-            if i == 0:
-                # write header
-                print>>fh, "# Relaxed scan along %s defined by atoms %s" % (coord_type[typ], map(lambda I: I+1, IJKL))
-                print>>fh, "# state of interest: %d" % self.state
-                print>>fh, "# "
-                print>>fh, "#  Scan coordinate     Energies "
-                print>>fh, "#    %s              Hartree " % units[typ]
-                
-            print>>fh, "  %8.5f     " % scan_coord,
-            for en in self.energies:
-                print>>fh, "   %e " % en,
-            print>>fh, ""
-            fh.close()
+            with open(self.dat_scan, mode) as fh:
+                if i == 0:
+                    # write header
+                    atom_indices = tuple(I + 1 for I in IJKL)
+                    print(
+                        "# Relaxed scan along %s defined by atoms %s"
+                        % (coord_type[typ], atom_indices),
+                        file=fh,
+                    )
+                    print("# state of interest: %d" % self.state, file=fh)
+                    print("# ", file=fh)
+                    print("#  Scan coordinate     Energies ", file=fh)
+                    print("#    %s              Hartree " % units[typ], file=fh)
+
+                row = "  %8.5f     " % scan_coord
+                for en in self.energies:
+                    row += "   %e " % en
+                print(row, file=fh)
             
 
         for i in range(0, nsteps):

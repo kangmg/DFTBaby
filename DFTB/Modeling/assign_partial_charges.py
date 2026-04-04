@@ -18,23 +18,18 @@ fh_in = open(xyz_in, "r")
 lines = fh_in.readlines()
 fh_in.close()
 
-fh_out = open(charges_out, "w")
-
 solvent = lines[2:]
 
 # replace atomic labels in xyz-file with partial charges 
-iat=0
-nsolv = len(charges) # number of atoms in single solvent molecule
 header = lines[:2]
-for hl in header:
-    print>>fh_out, hl.strip()
+with open(charges_out, "w") as fh_out:
+    for hl in header:
+        print(hl.strip(), file=fh_out)
 
-for l in solvent:
-    iat = (iat + 1) % len(charges)
-    parts = l.strip().split()
-    parts[0] = "%s" % charges[iat]
-    lrepl = " ".join(parts)
-    print>>fh_out, lrepl
-
-fh_out.close()
+    for iat, l in enumerate(solvent):
+        iat %= len(charges)
+        parts = l.strip().split()
+        parts[0] = "%s" % charges[iat]
+        lrepl = " ".join(parts)
+        print(lrepl, file=fh_out)
     

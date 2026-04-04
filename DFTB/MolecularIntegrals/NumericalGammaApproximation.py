@@ -233,24 +233,24 @@ def tabulate_gamma_integrals(atom_names, filename, confined=True):
             gamma_integrals_dic[(Za, Zb)] = gamma_dic
 
     fh = open(filename, "w")
-    np.set_printoptions(threshold=sys.maxint)
+    np.set_printoptions(threshold=sys.maxsize)
     pp = pprint.PrettyPrinter(depth=10)
-    print>>fh, "# This file has been generated automatically by %s." % sys.argv[0]
-    print>>fh, "from numpy import array"
-    print>>fh, ""
-    print>>fh, "# atoms for which gamma-integrals are available"
-    print>>fh, "atom_names = %s" % atom_names
-    print>>fh, "# distances in bohr for which gamma-integrals are tabulated"
-    print>>fh, "r = %s" % pp.pformat(distances)
-    print>>fh, "# gamma-integrals gamma_{A,lA,B,lB} = (F_{A,lA}|1/r12 + f_xc[rho0A+rho0B]|F_{B,lB}) for each"
-    print>>fh, "# atom combination A-B. The integrals are stored in a nested dictionary, the keys"
-    print>>fh, "# on the first level are the atomic numbers (Za,Zb) with Za <= Zb, the keys on the"
-    print>>fh, "# second level are the angular momenta of the valence shell on atom A and B, i.e. (la,lb)"
-    print>>fh, "# For example the integral between the s-shell on carbon and the p-shell on nitrogen"
-    print>>fh, "# would be stored in gamma_integrals[(6,7)][(0,1)]"
-    print>>fh, "#                                      |      |   "
-    print>>fh, "#                                   (Za,Zb) (lA,lB)"
-    print>>fh, "gamma_integrals = \\\n%s" % pp.pformat(gamma_integrals_dic)
+    print("# This file has been generated automatically by %s." % sys.argv[0], file=fh)
+    print("from numpy import array", file=fh)
+    print("", file=fh)
+    print("# atoms for which gamma-integrals are available", file=fh)
+    print("atom_names = %s" % atom_names, file=fh)
+    print("# distances in bohr for which gamma-integrals are tabulated", file=fh)
+    print("r = %s" % pp.pformat(distances), file=fh)
+    print("# gamma-integrals gamma_{A,lA,B,lB} = (F_{A,lA}|1/r12 + f_xc[rho0A+rho0B]|F_{B,lB}) for each", file=fh)
+    print("# atom combination A-B. The integrals are stored in a nested dictionary, the keys", file=fh)
+    print("# on the first level are the atomic numbers (Za,Zb) with Za <= Zb, the keys on the", file=fh)
+    print("# second level are the angular momenta of the valence shell on atom A and B, i.e. (la,lb)", file=fh)
+    print("# For example the integral between the s-shell on carbon and the p-shell on nitrogen", file=fh)
+    print("# would be stored in gamma_integrals[(6,7)][(0,1)]", file=fh)
+    print("#                                      |      |   ", file=fh)
+    print("#                                   (Za,Zb) (lA,lB)", file=fh)
+    print("gamma_integrals = \\\n%s" % pp.pformat(gamma_integrals_dic), file=fh)
 
     print("gamma integrals for atoms %s written to '%s'" % (" ".join(atom_names), filename))
     fh.close()

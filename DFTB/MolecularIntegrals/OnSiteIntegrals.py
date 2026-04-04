@@ -161,14 +161,14 @@ def tabulate_onsite_integrals(atom_names, filename, confined=True):
         onsite_integrals_dic[atom_name] = onsite_integrals_unique(atom_name=atom_name, confined=confined)
 
     fh = open(filename, "w")
-    np.set_printoptions(threshold=sys.maxint)
+    np.set_printoptions(threshold=sys.maxsize)
     pp = pprint.PrettyPrinter(depth=10)
-    print>>fh, "# This file has been generated automatically by %s." % sys.argv[0]
-    print>>fh, "from numpy import array"
-    print>>fh, ""
-    print>>fh, "# unique on-site electron integrals (ab|1/r12+f_xc[rho0]|cd) in Hartree for each atom"
-    print>>fh, "# in the order   (ss|ss)     (sp|sp)     (ss|pp)      (pp|pp)     (pp'|pp')"
-    print>>fh, "onsite_integrals = \\\n%s" % pp.pformat(onsite_integrals_dic)
+    print("# This file has been generated automatically by %s." % sys.argv[0], file=fh)
+    print("from numpy import array", file=fh)
+    print("", file=fh)
+    print("# unique on-site electron integrals (ab|1/r12+f_xc[rho0]|cd) in Hartree for each atom", file=fh)
+    print("# in the order   (ss|ss)     (sp|sp)     (ss|pp)      (pp|pp)     (pp'|pp')", file=fh)
+    print("onsite_integrals = \\\n%s" % pp.pformat(onsite_integrals_dic), file=fh)
 
     print("unique on-site integrals for atoms %s written to '%s'" % (" ".join(atom_names), filename))
     fh.close()

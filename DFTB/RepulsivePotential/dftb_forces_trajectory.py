@@ -38,41 +38,39 @@ if __name__ == "__main__":
     print("Compute forces with DFTB")
     print("========================")
     print("")
-    fh_en = open(energy_file, "w")
-    print>>fh_en, "# ELECTRONIC ENERGY / HARTREE"
-    
-    # first geometry
-    atomlist = XYZ.read_xyz(geom_file)[0]
-    # read charge from title line in .xyz file
-    kwds = XYZ.extract_keywords_xyz(geom_file)
-    charge = kwds.get("charge", opts.charge)
-    
-    pes = PotentialEnergySurfaces(atomlist, charge=charge)
-    # dftbaby needs one excited states calculation to set all variables
-    x = XYZ.atomlist2vector(atomlist)
-    pes.getEnergies(x)
-    
-    for i,atomlist in enumerate(XYZ.read_xyz(geom_file)):
-        # compute electronic ground state forces with DFTB
-        x = XYZ.atomlist2vector(atomlist)
-        en = pes.getEnergy_S0(x)
-        # total ground state energy including repulsive potential
-        en_tot = en[0]
-        print("Structure %d   enTot= %s Hartree" % (i, en_tot))
-        # electronic energy without repulsive potential
-        en_elec = pes.tddftb.dftb2.getEnergies()[2]
-        gradVrep, gradE0, gradExc = pes.grads.gradient(I=0)
-        # exclude repulsive potential from forces
-        grad = gradE0 + gradExc
-        forces = XYZ.vector2atomlist(-grad, atomlist)
-        if i == 0:
-            mode = 'w'
-        else:
-            mode = 'a'
-        print>>fh_en, "%2.7f" % en_elec
+    with open(energy_file, "w") as fh_en:
+        print("# ELECTRONIC ENERGY / HARTREE", file=fh_en)
         
-        XYZ.write_xyz(force_file, [forces],
-                      title="forces with DFTB, total_energy=%2.7f  elec_energy=%2.7f" % (en_tot, en_elec),
-                      units="hartree/bohr", mode=mode)
-
-    fh_en.close()
+        # first geometry
+        atomlist = XYZ.read_xyz(geom_file)[0]
+        # read charge from title line in .xyz file
+        kwds = XYZ.extract_keywords_xyz(geom_file)
+        charge = kwds.get("charge", opts.charge)
+        
+        pes = PotentialEnergySurfaces(atomlist, charge=charge)
+        # dftbaby needs one excited states calculation to set all variables
+        x = XYZ.atomlist2vector(atomlist)
+        pes.getEnergies(x)
+        
+        for i,atomlist in enumerate(XYZ.read_xyz(geom_file)):
+            # compute electronic ground state forces with DFTB
+            x = XYZ.atomlist2vector(atomlist)
+            en = pes.getEnergy_S0(x)
+            # total ground state energy including repulsive potential
+            en_tot = en[0]
+            print("Structure %d   enTot= %s Hartree" % (i, en_tot))
+            # electronic energy without repulsive potential
+            en_elec = pes.tddftb.dftb2.getEnergies()[2]
+            gradVrep, gradE0, gradExc = pes.grads.gradient(I=0)
+            # exclude repulsive potential from forces
+            grad = gradE0 + gradExc
+            forces = XYZ.vector2atomlist(-grad, atomlist)
+            if i == 0:
+                mode = 'w'
+            else:
+                mode = 'a'
+            print("%2.7f" % en_elec, file=fh_en)
+            
+            XYZ.write_xyz(force_file, [forces],
+                          title="forces with DFTB, total_energy=%2.7f  elec_energy=%2.7f" % (en_tot, en_elec),
+                          units="hartree/bohr", mode=mode)

@@ -687,7 +687,7 @@ def merge_overlapping_intervals(intervals):
     if len(intervals) == 0:
         return intervals
     # sort intervals by starting point
-    sorted_intervals = sorted(intervals, key=lambda start,end: start)
+    sorted_intervals = sorted(intervals, key=lambda interval: interval[0])
     #
     merged_intervals = []
     # current interval

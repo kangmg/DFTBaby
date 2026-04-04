@@ -214,7 +214,7 @@ class Basis(object):
 
                          /  sum_(i<j,ij~AB) f_(AB,k)(r_ij)                 if     k >= 1
            A_s,(AB,k) = <
-                         \   number of A-atoms in geometry                 if     k = 0
+                         \\   number of A-atoms in geometry                 if     k = 0
         """
         Nat = len(atomlist)
         Nbf = len(self.basis_functions)
@@ -557,7 +557,7 @@ class Fitter:
         fs = 18.0
 
         #plt.title("repulsive potential $V_{rep}(r)$", fontsize=fs)
-        plt.xlabel("$r / \AA$", fontsize=fs)
+        plt.xlabel("$r / \\AA$", fontsize=fs)
         plt.ylabel("$V_{AB}$ / Hartree", fontsize=fs)
         plt.xlim((0.2, 5.0))
         plt.ylim((-0.03, 0.5))
@@ -611,21 +611,21 @@ class Fitter:
 
             import pprint
             import sys
-            numpy.set_printoptions(threshold=sys.maxint)
+            numpy.set_printoptions(threshold=sys.maxsize)
             pp = pprint.PrettyPrinter(depth=10)
             fh = open(reppot_file, "w")
-            print>>fh, "# This file has been generated automatically by %s" % sys.argv[0]
-            print>>fh, "# The repulsive potential has been fitted to the following data sets:"
+            print("# This file has been generated automatically by %s" % sys.argv[0], file=fh)
+            print("# The repulsive potential has been fitted to the following data sets:", file=fh)
             for name in self.names:
-                print>>fh, "#   - %s" % name
-            print>>fh, "from numpy import array"
-            print>>fh, "Z1 = %s" % Z1
-            print>>fh, "Z2 = %s" % Z2
-            print>>fh, "# grid for distance d between atomic centers in bohr"
-            print>>fh, "d = \\\n%s" % pp.pformat(d)
-            print>>fh, "# repulsive potential in hartree/bohr"
+                print("#   - %s" % name, file=fh)
+            print("from numpy import array", file=fh)
+            print("Z1 = %s" % Z1, file=fh)
+            print("Z2 = %s" % Z2, file=fh)
+            print("# grid for distance d between atomic centers in bohr", file=fh)
+            print("d = \\\n%s" % pp.pformat(d), file=fh)
+            print("# repulsive potential in hartree/bohr", file=fh)
             Vrep = self.basis.evaluate_reppot_array(self.x, d, Z1,Z2)
-            print>>fh, "Vrep = \\\n%s" % pp.pformat(Vrep)
+            print("Vrep = \\\n%s" % pp.pformat(Vrep), file=fh)
         
             fh.close()
 

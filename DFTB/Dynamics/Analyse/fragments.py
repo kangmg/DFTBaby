@@ -135,11 +135,10 @@ if __name__ == "__main__":
     for t in range(0, nt):
         assert abs(np.sum(data[t,1:]) - ntraj[t]) < 1.0e-5, "t = %s ntraj = %s   |w| = %s" % (t, ntraj[t], np.sum(data[t,1:]))
     # 
-    fh = open("fragments.dat", "w")
-    print>>fh, "# Fragment fractions "
-    print>>fh, col_titles
-    np.savetxt(fh, data)
-    fh.close()
+    with open("fragments.dat", "w") as fh:
+        print("# Fragment fractions ", file=fh)
+        print(col_titles, file=fh)
+        np.savetxt(fh, data)
     print("Fragment fractions written to fragments.dat")
 
     print("          Final Fragment Distribution")
@@ -148,7 +147,7 @@ if __name__ == "__main__":
     for k,v in fragment_fractions.items():
         final_fragment_distribution.append( (k,v[-1]) )
     # sort distribution in descending order
-    final_fragment_distribution.sort(key=lambda k,v: -v)
+    final_fragment_distribution.sort(key=lambda kv: -kv[1])
     for (k,v) in final_fragment_distribution:
         print(" %20.20s        %5.5f" % (k, v))
 
@@ -163,11 +162,10 @@ if __name__ == "__main__":
     for t in range(0, nt):
         assert abs(np.sum(data[t,1:]) - ntraj[t]) < 1.0e-5, "t = %s ntraj = %s   |w| = %s" % (t, ntraj[t], np.sum(data[t,1:]))
     # 
-    fh = open("channels.dat", "w")
-    print>>fh, "# Channel fractions "
-    print>>fh, col_titles
-    np.savetxt(fh, data)
-    fh.close()
+    with open("channels.dat", "w") as fh:
+        print("# Channel fractions ", file=fh)
+        print(col_titles, file=fh)
+        np.savetxt(fh, data)
     print("Channel fractions written to channels.dat")
 
     print("         Final Channel Distribution")
@@ -176,7 +174,7 @@ if __name__ == "__main__":
     for k,v in channel_fractions.items():
         final_channel_distribution.append( (k,v[-1]) )
     # sort distribution in descending order
-    final_channel_distribution.sort(key=lambda k,v: -v)
+    final_channel_distribution.sort(key=lambda kv: -kv[1])
     for (k,v) in final_channel_distribution:
         print(" %20.20s        %5.5f" % (k, v))
 

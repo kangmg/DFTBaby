@@ -192,31 +192,31 @@ class dftbaby_handler:
             if not os.path.isfile("lambda2_current.dat"):
                 outfile = open("lambda2_current.dat", "w")
                 # write header
-                print>>outfile, "# TIME / fs       LAMBDA2 "
-                print>>outfile, "#              0  -  charge transfer state"
-                print>>outfile, "#              1  -  local excitation     "
-                print>>outfile, "#             -1  -  ground state (Lambda2 undefined)"
+                print("# TIME / fs       LAMBDA2 ", file=outfile)
+                print("#              0  -  charge transfer state", file=outfile)
+                print("#              1  -  local excitation     ", file=outfile)
+                print("#             -1  -  ground state (Lambda2 undefined)", file=outfile)
             else:
                 outfile = open("lambda2_current.dat", "a")
                 
-            print>>outfile, "%14.8f    %+7.4f" % (fish.time/fish.fs_to_au, Lambda2)
+            print("%14.8f    %+7.4f" % (fish.time/fish.fs_to_au, Lambda2), file=outfile)
             outfile.close()
         if "Lambda2" in time_series:
             # Lambda2 descriptors for all excited states
             if not os.path.isfile("lambda2.dat"):
                 outfile = open("lambda2.dat", "w")
                 # write header
-                print>>outfile, "# TIME / fs       LAMBDA2's OF EXCITED STATES"
-                print>>outfile, "#              0  -  charge transfer state"
-                print>>outfile, "#              1  -  local excitation     "
-                print>>outfile, "#             -1  -  ground state (Lambda2 undefined)"
+                print("# TIME / fs       LAMBDA2's OF EXCITED STATES", file=outfile)
+                print("#              0  -  charge transfer state", file=outfile)
+                print("#              1  -  local excitation     ", file=outfile)
+                print("#             -1  -  ground state (Lambda2 undefined)", file=outfile)
             else:
                 outfile = open("lambda2.dat", "a")
 
-            print>>outfile, "%14.8f    " % (fish.time/fish.fs_to_au),
+            outfile.write("%14.8f" % (fish.time / fish.fs_to_au))
             for I in range(1, self.nstates):
-                print>>outfile, "  %+7.4f" % (self.pes.tddftb.Lambda2[I-1]),
-            print>>outfile, ""
+                outfile.write("  %+7.4f" % (self.pes.tddftb.Lambda2[I - 1]))
+            outfile.write("\n")
             
             outfile.close()
         if "transition charges current" in time_series:
@@ -316,4 +316,3 @@ class dftbaby_handler:
         assert abs(np.sum(particle_charges + hole_charges)) < 1.0e-10
 
         return particle_charges, hole_charges
-

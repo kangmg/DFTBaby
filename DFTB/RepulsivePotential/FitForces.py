@@ -234,20 +234,20 @@ a file called <reppot_dir>/<atom 1>_<atom 2>.py.
 
         import pprint
         import sys
-        numpy.set_printoptions(threshold=sys.maxint)
+        numpy.set_printoptions(threshold=sys.maxsize)
         pp = pprint.PrettyPrinter(depth=10)
         fh = open(reppot_file, "w")
-        print>>fh, "# This file has been generated automatically by %s" % sys.argv[0]
-        print>>fh, "# The repulsive potential has been fitted to the following data sets:"
+        print("# This file has been generated automatically by %s" % sys.argv[0], file=fh)
+        print("# The repulsive potential has been fitted to the following data sets:", file=fh)
         for curve_name in self.curve_names:
-            print>>fh, "#   - %s" % curve_name
-        print>>fh, "from numpy import array"
-        print>>fh, "Z1 = %s" % self.Z1
-        print>>fh, "Z2 = %s" % self.Z2
-        print>>fh, "# grid for distance d between atomic centers in bohr"
-        print>>fh, "d = \\\n%s" % pp.pformat(self.R)
-        print>>fh, "# repulsive potential in hartree/bohr"
-        print>>fh, "Vrep = \\\n%s" % pp.pformat(self.Vrep)
+            print("#   - %s" % curve_name, file=fh)
+        print("from numpy import array", file=fh)
+        print("Z1 = %s" % self.Z1, file=fh)
+        print("Z2 = %s" % self.Z2, file=fh)
+        print("# grid for distance d between atomic centers in bohr", file=fh)
+        print("d = \\\n%s" % pp.pformat(self.R), file=fh)
+        print("# repulsive potential in hartree/bohr", file=fh)
+        print("Vrep = \\\n%s" % pp.pformat(self.Vrep), file=fh)
         
         fh.close()
 

@@ -37,7 +37,7 @@ DFTBaby is a software package for tight-binding DFT calculations on ground and e
 
 - **Analysis Tools**
   - Cube files for MOs, transition densities, difference densities
-  - Graphical visualization with Mayavi
+  - External visualization via Molden/Cube outputs (recommended)
 
 ---
 
@@ -61,6 +61,7 @@ DFTBaby is a software package for tight-binding DFT calculations on ground and e
 
 > **Note**: This project supports Python 3.10+ and NumPy 1.26+ (including NumPy 2.x).
 > See [PYTHON3_MIGRATION.md](PYTHON3_MIGRATION.md) for details.
+> Packaging and entry points are managed in `pyproject.toml`.
 
 ### Recommended Versions (Colab/CI)
 
@@ -109,6 +110,22 @@ pip install .
 pip install -e .
 ```
 
+### uv Workflow
+
+```bash
+uv venv
+source .venv/bin/activate
+uv pip install -r requirements-core.txt
+uv pip install -e .
+```
+
+Run with command-style CLI:
+
+```bash
+uv run dftbaby dftb2 molecule.xyz
+uv run dftbaby lrtddftb molecule.xyz --nstates=5
+```
+
 ### Compiling Fortran Extensions
 
 Some features require compiled Fortran extensions:
@@ -154,6 +171,12 @@ After installation, the following programs are available:
 | `GeometryOptimization.py` | Geometry optimization on ground/excited states |
 | `SurfaceHopping.py` | Non-adiabatic molecular dynamics |
 
+Modern aliases:
+
+- `dftbaby dftb2 ...` / `dftbaby-dftb2 ...`
+- `dftbaby lrtddftb ...` / `dftbaby-lrtddftb ...`
+- `dftbaby surface-hopping ...` / `dftbaby-surface-hopping ...`
+
 All programs support `--help` to show available options:
 
 ```bash
@@ -173,8 +196,9 @@ from DFTB.LR_TDDFTB import LR_TDDFTB
 ### Example: TD-DFTB Calculation
 
 ```bash
-# Run with graphical visualization
-LR_TDDFTB.py molecule.xyz --nstates=5 --graphical=1
+# Compute excited states and save a spectrum
+LR_TDDFTB.py molecule.xyz --nstates=5 --spectrum_file=molecule.spec
+dftbaby lrtddftb molecule.xyz --nstates=5 --spectrum_file=molecule.spec
 ```
 
 ### Example: Non-adiabatic Dynamics
@@ -194,14 +218,14 @@ Results are saved to `dynamics.xyz`, `energy_#.dat`, and `state.dat`.
 
 ---
 
-## 📊 Graphical Analysis
+## 📊 Visualization
 
-Visualize TD-DFTB results with Mayavi:
+Recommended:
 
-```bash
-pip install mayavi
-LR_TDDFTB.py --graphical=1
-```
+- export cube/molden data from DFTBaby
+- inspect with external viewers (VMD, PyMOL, OVITO, Molden)
+
+Legacy GUI mode (`--graphical=1`) is still available via optional `.[gui]` dependencies (Mayavi), but not recommended for minimal stable setups.
 
 ---
 
@@ -228,7 +252,7 @@ python3 tests/test_compilation.py
 ```
 
 **Test Results:**
-- ✅ 99%+ Python 3 compatibility for core modules
+- ✅ 100% syntax validation pass on tracked Python files
 - ✅ All critical patterns validated
 - ✅ NumPy 1.26+/2.x compatibility for core workflows
 
@@ -308,7 +332,7 @@ If you use DFTBaby in your research, please cite:
 - ✅ **NumPy compatibility improvements**
 - ✅ **Modern build system** (pyproject.toml)
 - ✅ **Comprehensive tests** (300+ fixes validated)
-- ✅ **Updated dependencies** (SciPy 1.14+, Matplotlib 3.9+, etc.)
+- ✅ **Updated dependencies** (NumPy/SciPy modern baseline with optional packs)
 - ✅ **30 command-line tools** as entry points
 - ✅ **Automated documentation** deployment
 

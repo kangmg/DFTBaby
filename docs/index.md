@@ -7,6 +7,12 @@ This documentation is intentionally minimal:
 - choose a stable install profile first
 - enable only the features you need
 - compile only the native extensions needed for your workflow
+- runtime/build configuration is managed via `pyproject.toml`
+
+## Scope
+
+- Stable production path: non-periodic molecular workflows.
+- Periodic workflows are available but considered secondary/experimental compared to the molecular path.
 
 ## Quick Start (Stable Baseline)
 

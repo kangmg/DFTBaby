@@ -388,33 +388,32 @@ def latte_input(latte_file, A_eq, b_eq, A_ub, b_ub):
     """
     write input file in half-space format for Latte
     """
-    fh = open(latte_file, "w")
     m,d = A_eq.shape
     n,d2 = A_ub.shape
     assert d == d2
-    # equality constraints
-    print>>fh, "%d %d" % (m+n,d+1)
-    for i in range(0, m):
-        print>>fh, "%2d  " % b_eq[i],
+    with open(latte_file, "w") as fh:
+        # equality constraints
+        print("%d %d" % (m+n, d+1), file=fh)
+        for i in range(0, m):
+            row = "%2d  " % b_eq[i]
+            for j in range(0, d):
+                row += "%2d " % (-A_eq[i,j])
+            print(row, file=fh)
+        # upper bound constraints
+        for i in range(0, n):
+            row = "%2d " % b_ub[i]
+            for j in range(0, d):
+                row += "%2d " % (-A_ub[i,j])
+            print(row, file=fh)
+        # Which constraints should be treated as equality constraints?
+        linearity = "linearity %d " % m
+        for i in range(0, m):
+            linearity += "%d " % (i + 1)
+        print(linearity, file=fh)
+        nonnegative = "nonnegative %d " % d
         for j in range(0, d):
-            print>>fh, "%2d " % (-A_eq[i,j]),
-        print>>fh, ""
-    # upper bound constraints
-    for i in range(0, n):
-        print>>fh, "%2d " % b_ub[i],
-        for j in range(0, d):
-            print>>fh, "%2d " % (-A_ub[i,j]),
-        print>>fh, ""
-    # Which constraints should be treated as equality constraints?
-    print>>fh, "linearity %d " % m,
-    for i in range(0, m):
-        print>>fh, "%d " % (i+1),
-    print>>fh, ""
-    print>>fh, "nonnegative %d " % d,
-    for j in range(0, d):
-        print>>fh, "%d " % (j+1),
-    print>>fh, ""
-    fh.close()
+            nonnegative += "%d " % (j + 1)
+        print(nonnegative, file=fh)
 
 def latte_count(latte_file):
     os.system("count %s &> latte.out" % latte_file)
@@ -422,19 +421,21 @@ def latte_count(latte_file):
     lines = fh.readlines()
     print("LINES = %s" % lines)
     fh.close()
+    nr_vertices = None
+    nr_inside = None
     for l in lines:
-        print("LINE=%s" % line.strip())
+        print("LINE=%s" % l.strip())
         if ("The polytope has" in l) and ("vertices." in l):
             nr_vertices = int(l.split()[3])
         elif "The number of lattice points is:" in l:
-            print("##################################################")
-            exit(-1)
-            if len(l.split()) == 9:
-                nr_inside = int(l.split()[7])
+            # robustly parse the trailing integer count
+            import re
+            ints = re.findall(r"-?\d+", l)
+            if len(ints) > 0:
+                nr_inside = int(ints[-1])
             else:
                 nr_inside = 0
-            break
-    else:
+    if (nr_vertices is None) or (nr_inside is None):
         raise Exception("Latte calculation failed! See output")
     print("DONE")
     return nr_inside+nr_vertices

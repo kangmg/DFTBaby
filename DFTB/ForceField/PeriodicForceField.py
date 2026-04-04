@@ -217,9 +217,8 @@ def save_exciton_spectrum(spec_file, en, T, M):
     txt += "\n"
 
     print(txt)
-    fh = open(spec_file, "w")
-    print>>fh, txt
-    fh.close()
+    with open(spec_file, "w") as fh:
+        fh.write(txt)
     print("exciton spectrum written to '%s'" % spec_file)
 
 def plot_exciton_spectrum(en, T, M, broadening=0.005, units="nm"):
@@ -352,25 +351,27 @@ def write_force_field(ff_file, atomlist, atomtypes, partial_charges, lattice_vec
     lattice_vectors: list of at most 3 vectors defining the unit cell, 
                      if the list is empty, [], no lattice vectors are saved
     """
-    fh = open(ff_file, mode=mode)
     nat = len(atomlist)
-
-    print>>fh, " %d" % nat
-    print>>fh, " %s" % title
-    for i in range(nat):
-        Zi,posi = atomlist[i]
-        atname = AtomicData.atom_names[Zi-1].capitalize()
-        type_num = atomtypes[i]
-        charge = partial_charges[i]
-        x,y,z = posi[0], posi[1], posi[2]
-        if units == "Angstrom":
-            x,y,z = map(lambda c: c*AtomicData.bohr_to_angs, [x,y,z])
-        print>>fh, " %4s    %15.10f %15.10f %15.10f    %3.1d  %+5.3f" % (atname.capitalize(), x,y,z, type_num, charge)
-    # lattice vectors
-    if len(lattice_vectors) == 3:
-        for i in range(0, 3):
-            print>>fh, "Tv    %10.7f   %10.7f   %10.7f" % tuple(lattice_vectors[i])
-    fh.close()
+    with open(ff_file, mode=mode) as fh:
+        print(" %d" % nat, file=fh)
+        print(" %s" % title, file=fh)
+        for i in range(nat):
+            Zi,posi = atomlist[i]
+            atname = AtomicData.atom_names[Zi-1].capitalize()
+            type_num = atomtypes[i]
+            charge = partial_charges[i]
+            x,y,z = posi[0], posi[1], posi[2]
+            if units == "Angstrom":
+                x,y,z = map(lambda c: c*AtomicData.bohr_to_angs, [x,y,z])
+            print(
+                " %4s    %15.10f %15.10f %15.10f    %3.1d  %+5.3f"
+                % (atname.capitalize(), x,y,z, type_num, charge),
+                file=fh,
+            )
+        # lattice vectors
+        if len(lattice_vectors) == 3:
+            for i in range(0, 3):
+                print("Tv    %10.7f   %10.7f   %10.7f" % tuple(lattice_vectors[i]), file=fh)
     print("geometry, atomtypes and partial charges written to '%s'" % ff_file)
 
 def read_transition_charges(chromo_file, units="Angstrom"):
@@ -453,34 +454,34 @@ def write_transition_charges(chromo_file, atomlist,
     mode: 'w' write or 'a' append
     """
     Nat = len(indeces)
-    fh = open(chromo_file, mode)
-    # number of atoms
-    print>>fh, "%d" % Nat
-    # excitation energies
-    Nst = len(excitation_energies)
-    print>>fh, "%s" % " ".join(map(lambda f: "%10.5f" % (f*AtomicData.hartree_to_eV),
-                                   excitation_energies))
-    #
-    for i in range(0, Nat):
-        atno,pos = atomlist[i]
-        x,y,z = pos[0], pos[1], pos[2]
-        if units == "Angstrom":
-            x,y,z = map(lambda c: c*AtomicData.bohr_to_angs, [x,y,z])
-        try:
-            atname = AtomicData.atom_names[atno-1]
-        except TypeError:
-            # leave it as is
-            atname = atno
-        
-        row = "%4s %15.10f %15.10f %15.10f    %5.1d    " \
-              % (atname.capitalize(),x,y,z, indeces[i]+index_offset)
-        for j in range(0, Nst):
-            q = transition_charges[i][4*j]
-            mvec = transition_charges[i][4*j+1:4*j+4]
-            row += "%+7.5f  %+7.5f %+7.5f %+7.5f    " % (q, mvec[0], mvec[1], mvec[2])
-        print>>fh, row
-    
-    fh.close()
+    with open(chromo_file, mode) as fh:
+        # number of atoms
+        print("%d" % Nat, file=fh)
+        # excitation energies
+        Nst = len(excitation_energies)
+        print(
+            "%s" % " ".join(map(lambda f: "%10.5f" % (f*AtomicData.hartree_to_eV), excitation_energies)),
+            file=fh,
+        )
+        #
+        for i in range(0, Nat):
+            atno,pos = atomlist[i]
+            x,y,z = pos[0], pos[1], pos[2]
+            if units == "Angstrom":
+                x,y,z = map(lambda c: c*AtomicData.bohr_to_angs, [x,y,z])
+            try:
+                atname = AtomicData.atom_names[atno-1]
+            except TypeError:
+                # leave it as is
+                atname = atno
+
+            row = "%4s %15.10f %15.10f %15.10f    %5.1d    " \
+                  % (atname.capitalize(),x,y,z, indeces[i]+index_offset)
+            for j in range(0, Nst):
+                q = transition_charges[i][4*j]
+                mvec = transition_charges[i][4*j+1:4*j+4]
+                row += "%+7.5f  %+7.5f %+7.5f %+7.5f    " % (q, mvec[0], mvec[1], mvec[2])
+            print(row, file=fh)
         
 def enlarged_unitcell(atomlist, lattice_vectors, nmax=1):
     """

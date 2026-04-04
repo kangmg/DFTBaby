@@ -37,44 +37,42 @@ if __name__ == "__main__":
     print("Basis set:  %s" % options.basis_set)
     print("")
     
-    fh_en = open(energy_file, "w")
-    print>>fh_en, "# TOTAL ENERGY / HARTREE     %s/%s" % (options.method, options.basis_set)
+    with open(energy_file, "w") as fh_en:
+        print("# TOTAL ENERGY / HARTREE     %s/%s" % (options.method, options.basis_set), file=fh_en)
 
-    
-    kwds = XYZ.extract_keywords_xyz(geom_file)
-    if "charge" in kwds:
-        # charge keyword in file overrides command line option --charge
-        options.charge = int(kwds["charge"])
-    
-    for i,atomlist in enumerate(XYZ.read_xyz(geom_file)):
-        tmp_com = tmp_dir + "gaussian.com"
-        tmp_out = tmp_dir + "gaussian.log"
-        tmp_chk = tmp_dir + "gaussian.chk"
-        if i == 0:
-            guess=""
-        else:
-            # read starting MOs from checkpoint file
-            guess="Guess=Read"
-        Gaussian.write_input(tmp_com, atomlist, \
-                        route="# %s/%s %s Force Integral=(Grid=Ultrafine) Geom=NoCrowd" % (options.method, options.basis_set, guess), \
-                        chk_file=tmp_chk, \
-                        title="Gradients for fitting repulsive potential", \
-                        charge=options.charge, multiplicity=options.multiplicity)
-        # compute forces with gaussian
-        os.system("g09 < %s > %s" % (tmp_com, tmp_out))
+        
+        kwds = XYZ.extract_keywords_xyz(geom_file)
+        if "charge" in kwds:
+            # charge keyword in file overrides command line option --charge
+            options.charge = int(kwds["charge"])
+        
+        for i,atomlist in enumerate(XYZ.read_xyz(geom_file)):
+            tmp_com = tmp_dir + "gaussian.com"
+            tmp_out = tmp_dir + "gaussian.log"
+            tmp_chk = tmp_dir + "gaussian.chk"
+            if i == 0:
+                guess=""
+            else:
+                # read starting MOs from checkpoint file
+                guess="Guess=Read"
+            Gaussian.write_input(tmp_com, atomlist, \
+                            route="# %s/%s %s Force Integral=(Grid=Ultrafine) Geom=NoCrowd" % (options.method, options.basis_set, guess), \
+                            chk_file=tmp_chk, \
+                            title="Gradients for fitting repulsive potential", \
+                            charge=options.charge, multiplicity=options.multiplicity)
+            # compute forces with gaussian
+            os.system("g09 < %s > %s" % (tmp_com, tmp_out))
 
-        en_tot = Gaussian.read_total_energy(tmp_out)
-        print("Structure %d   enTot= %s Hartree" % (i, en_tot))
-        forces_dic = Gaussian.read_forces(tmp_out)
-        forces = []
-        for center in forces_dic.keys():
-            forces.append(forces_dic[center])
-        print>>fh_en, "%2.7f" % en_tot
-        XYZ.write_xyz(force_file, [forces],
-                      title="forces with %s/%s, total_energy=%2.7f" % (options.method, options.basis_set, en_tot),
-                      units="hartree/bohr",
-                      mode=mode)
-        mode = 'a'
-
-    fh_en.close()
+            en_tot = Gaussian.read_total_energy(tmp_out)
+            print("Structure %d   enTot= %s Hartree" % (i, en_tot))
+            forces_dic = Gaussian.read_forces(tmp_out)
+            forces = []
+            for center in forces_dic.keys():
+                forces.append(forces_dic[center])
+            print("%2.7f" % en_tot, file=fh_en)
+            XYZ.write_xyz(force_file, [forces],
+                          title="forces with %s/%s, total_energy=%2.7f" % (options.method, options.basis_set, en_tot),
+                          units="hartree/bohr",
+                          mode=mode)
+            mode = 'a'
     

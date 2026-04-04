@@ -483,14 +483,18 @@ class DFTB2(object):
             self.solvent_cavity.constructCOSMO()
 
         if self.verbose > 0:
-            import string
             print("  Total number of valence electrons: %s" % self.Nelec_val)
             print("  Geometry")
             print("  ========")
-            print(string.ljust("Atom",15) + string.center("X/bohr",10) + string.center("Y/bohr",10) + string.center("Z/bohr",10))
+            print("Atom".ljust(15) + "X/bohr".center(10) + "Y/bohr".center(10) + "Z/bohr".center(10))
             print("-"*45)
             for (Zi, posi) in self.atomlist:
-                print(string.ljust(atom_names[Zi-1], 15) + string.rjust("%.5f" % posi[0],10) + string.rjust("%.5f" % posi[1],10) + string.rjust("%.5f" % posi[2],10))
+                print(
+                    atom_names[Zi-1].ljust(15)
+                    + ("%.5f" % posi[0]).rjust(10)
+                    + ("%.5f" % posi[1]).rjust(10)
+                    + ("%.5f" % posi[2]).rjust(10)
+                )
             print("")
     def setPointCharges(self, point_charges):
         """
@@ -498,13 +502,17 @@ class DFTB2(object):
         """
         self.point_charges = point_charges
         if self.verbose > 0 and len(self.point_charges) > 0:
-            import string
             print("  Point Charges")
             print("  =============")
-            print(string.ljust("Charge",15) + string.center("X/bohr",10) + string.center("Y/bohr",10) + string.center("Z/bohr",10))
+            print("Charge".ljust(15) + "X/bohr".center(10) + "Y/bohr".center(10) + "Z/bohr".center(10))
             print("-"*45)
             for (Zi, posi) in point_charges:
-                print(string.ljust("%.3f" % Zi, 10) + string.rjust("%.5f" % posi[0],10) + string.rjust("%.5f" % posi[1],10) + string.rjust("%.5f" % posi[2],10))
+                print(
+                    ("%.3f" % Zi).ljust(10)
+                    + ("%.5f" % posi[0]).rjust(10)
+                    + ("%.5f" % posi[1]).rjust(10)
+                    + ("%.5f" % posi[2]).rjust(10)
+                )
             print("")
     def setChargeGuess(self, charge_guess):
         self.charge_guess = charge_guess
@@ -1559,8 +1567,8 @@ class DFTB2(object):
             Sk = zeros((self.dim,self.dim), dtype=complex)
             H0k = zeros((self.dim,self.dim), dtype=complex)
             # build periodic hamiltonian and overlap
-            for t,SmnT,H0mnT in itertools.izip(T,Smn,H0mn):
-                if SmnT != None:
+            for t, SmnT, H0mnT in zip(T, Smn, H0mn):
+                if SmnT is not None:
                     Sk += exp(1.0j*dot(k,t))*SmnT
                     H0k += exp(1.0j*dot(k,t))*H0mnT
             # Why are Sk and H0k not hermitian already??? -> because t is only positive
@@ -1577,6 +1585,7 @@ class DFTB2(object):
             orbs_k = orbs_k[:,sort_indx]
             # construct density matrix for this k-point
             mu, fk = fermi_occupation(orbe_k, self.Nelec_val, T=0.0)
+            Pk = self._density_matrix(orbs_k, fk, check=False)
             occ_indx = where(fk > 0.0)[0]
             occ_orbs = orbs_k[:,occ_indx]
 #            Pk = dot(fk[occ_indx]*occ_orbs,occ_orbs.conjugate().transpose()) Pk = dot(fk[occ_indx]*occ_orbs.conjugate(),occ_orbs.transpose())
@@ -1608,7 +1617,7 @@ class DFTB2(object):
         diis = DIIS_80(DIIS_memory)
         # initial charge guess
         self.dq = zeros(len(self.atomlist))
-        q_last = copy(self.q0)
+        q_last = np.array(self.q0, dtype=float)
         # repulsive energy
         self.E_rep = 0.0
         for t in T:
@@ -1626,14 +1635,13 @@ class DFTB2(object):
                 self.q += qk
                 Pk = self._density_matrix(orbs_k, fk, check=False)
                 self.E_bs += sum(Pk * H0k)
-            self.E_bs /= float(len(T))
-            self.q /= float(len(kpoints))
+            self.E_bs = (self.E_bs / float(len(T))).real
+            self.q = (self.q / float(len(kpoints))).real
             if DIIS_memory > 1:
-                self.q = diis.next_approximation(self.q.real)
+                self.q = diis.next_approximation(self.q)
             else:
                 alpha = linear_mixing_coefficient
                 self.q = alpha*self.q + (1.0-alpha)*q_last
-                pass
             # Mulliken excess charges
             for i in range(0, len(self.atomlist)):
                 self.dq[i] = self.q[i] - self.q0[i] # excess charge
@@ -1651,7 +1659,10 @@ class DFTB2(object):
             # 
             if self.relative_change < scc_conv:
                 if self.verbose > 0:
-                    print("!!! CONVERGED after %s iterations (relative change = %.2e < %.2e = threshold)!!!" ) % (self.i+1, self.relative_change, scc_conv)
+                    print(
+                        "!!! CONVERGED after %s iterations (relative change = %.2e < %.2e = threshold)!!!"
+                        % (self.i + 1, self.relative_change, scc_conv)
+                    )
                 break
 
             q_last = copy(self.q)
@@ -1679,11 +1690,10 @@ class DFTB2(object):
         """
         self.special_kpoint = special_kpoint
     def write_Mulliken_charges(self):
-        import string
         txt = "  Mulliken Charges (Excess Charges)\n"
         txt += "  =================================\n"
         for i,(Zi,posi) in enumerate(self.atomlist):
-            txt += "%s: %.3f\t(%.3f)\n" % (string.center("%s-%s" % (atom_names[Zi-1], i),12), self.q[i].real, self.dq[i].real)
+            txt += "%s: %.3f\t(%.3f)\n" % (("%s-%s" % (atom_names[Zi-1], i)).center(12), self.q[i].real, self.dq[i].real)
         print(txt)
         print("sum q0 = %s" % sum(self.q0))
         print("sum q  = %s" % sum(self.q))
@@ -1713,6 +1723,9 @@ class DFTB2(object):
         band_structure: list of numpy arrays with KS energies levels for each k-vector
         """
         assert len(lattice_vectors) <= 3
+        lattice_vectors = [np.asarray(v) for v in lattice_vectors]
+        lat = Periodic.CrystalSystem()
+        lat.setLatticeVectors(lattice_vectors)
         # create all translations that are compatible with the symmetry
         T = []
         klm = list(itertools.product(range(-nmax[0], nmax[0]+1), range(-nmax[1],nmax[1]+1), range(-nmax[2],nmax[2]+1)))
@@ -1729,8 +1742,8 @@ class DFTB2(object):
             for (Zi,posi) in atomlist:
                 lattice.append( (Zi, posi + t) )
         Smn, H0mn = self.displaced_matrix_elements(T)
-        if dq != None:
-            gamma = self.construct_periodic_gamma(lat)
+        if dq is not None:
+            gamma = self._construct_periodic_gamma(lat, nmax=nmax)
             h1 = self._construct_h1(gamma, dq)
         else:
             h1 = zeros((self.dim,self.dim))
@@ -1748,18 +1761,18 @@ class DFTB2(object):
         print("perform DFTB calculation for each k-vector ...")
         for k in ks:
             # TODO: parallelize over k
-#            print "K-Vector = %s" % k Sk = zeros((self.dim,self.dim), dtype=complex)
+            Sk = zeros((self.dim,self.dim), dtype=complex)
             H0k = zeros((self.dim,self.dim), dtype=complex)
             # build periodic hamiltonian and overlap
-            for t,SmnT,H0mnT in itertools.izip(T,Smn,H0mn):
-                if SmnT != None:
+            for t, SmnT, H0mnT in zip(T, Smn, H0mn):
+                if SmnT is not None:
                     Sk += exp(1.0j*dot(k,t))*SmnT
                     H0k += exp(1.0j*dot(k,t))*H0mnT
             Sk = 0.5 * (Sk + Sk.conjugate().transpose())
             H0k = 0.5 * (H0k + H0k.conjugate().transpose())
             Hk = H0k + h1*Sk
             Hk = 0.5 * (Hk + Hk.conjugate().transpose())
-            orbe_k, orbs_k = eig(Hk,Sk)
+            orbe_k, orbs_k = eigh(Hk,Sk)
             # sort orbitals by energy
             orbe_k = orbe_k.real
             sort_indx = argsort(orbe_k)
@@ -1769,9 +1782,7 @@ class DFTB2(object):
             # construct density matrix for this k-point
             mu, fk = fermi_occupation(orbe_k, self.Nelec_val, T=0.0)
             self.f = fk # UGLY, select GAMMA point
-            occ_indx = where(fk > 0.0)[0]
-            occ_orbs = orbs_k[:,occ_indx]
-            Pk = dot(fk[occ_indx]*occ_orbs,occ_orbs.transpose())
+            Pk = self._density_matrix(orbs_k, fk, check=False)
             # Mulliken charges
             qk = zeros(len(self.atomlist), dtype=complex)
             dqk = zeros(len(self.atomlist), dtype=complex)
@@ -1788,15 +1799,12 @@ class DFTB2(object):
             if la.norm(k) < 1.0e-10:
                 print("K-Vector: %s (Gamma)" % k)
                 self.write_Crystal_orbital_coefficients(orbe_k, orbs_k, fk)
-        Omega_BZ = la.norm(np.cross(lattice_vectors[0], lattice_vectors[1]))
-        print("Omega_BZ = %s" % Omega_BZ)
-        self.dq *= Omega_BZ / float(len(ks))
-        self.q  *= Omega_BZ / float(len(ks))
-        import string
+        self.dq /= float(len(ks))
+        self.q /= float(len(ks))
         txt = "  Mulliken Charges (Excess Charges)\n"
         txt += "  =================================\n"
         for i,(Zi,posi) in enumerate(self.atomlist):
-            txt += "%s: %.3f\t(%.3f)\n" % (string.center("%s-%s" % (atom_names[Zi-1], i),12), self.q[i].real, self.dq[i].real)
+            txt += "%s: %.3f\t(%.3f)\n" % (("%s-%s" % (atom_names[Zi-1], i)).center(12), self.q[i].real, self.dq[i].real)
         print(txt)
         print("sum q0 = %s" % sum(self.q0))
         print("sum q  = %s" % sum(self.q))
@@ -2113,7 +2121,6 @@ class DFTB2(object):
           partial charges
           MO coefficients
         """
-        import string
         txt  = "      *******************\n"
         txt += "      * Iteration: %.2d *\n" % self.i
         txt += "      *******************\n"
@@ -2124,36 +2131,36 @@ class DFTB2(object):
         if "energies" in info:
             txt += "  Electronic Energies\n"
             txt += "  ===================\n"
-            txt += "band structure energy E_bs: %s %s\n" % (string.rjust("%.7f hartree" % self.E_bs,20), string.rjust("%.7f eV" % (self.E_bs*hartree_to_eV),20))
-            txt += "Coulomb energy E_coulomb  : %s %s\n" % (string.rjust("%.7f hartree" % self.E_coulomb,20), string.rjust("%.7f eV" % (self.E_coulomb*hartree_to_eV),20))
+            txt += "band structure energy E_bs: %s %s\n" % (("%.7f hartree" % self.E_bs).rjust(20), ("%.7f eV" % (self.E_bs*hartree_to_eV)).rjust(20))
+            txt += "Coulomb energy E_coulomb  : %s %s\n" % (("%.7f hartree" % self.E_coulomb).rjust(20), ("%.7f eV" % (self.E_coulomb*hartree_to_eV)).rjust(20))
             if hasattr(self, "E_multipoles"):
-                txt += "            E_multipoles  : %s %s\n" % (string.rjust("%.7f hartree" % self.E_multipoles,20), string.rjust("%.7f eV" % (self.E_multipoles*hartree_to_eV),20))
+                txt += "            E_multipoles  : %s %s\n" % (("%.7f hartree" % self.E_multipoles).rjust(20), ("%.7f eV" % (self.E_multipoles*hartree_to_eV)).rjust(20))
 
             if hasattr(self, "Vcoul_pc"):
-                txt += "point charges E_pc        : %s %s\n" % (string.rjust("%.7f hartree" % self.E_point_charges,20), string.rjust("%.7f eV" % (self.E_point_charges*hartree_to_eV),20))
+                txt += "point charges E_pc        : %s %s\n" % (("%.7f hartree" % self.E_point_charges).rjust(20), ("%.7f eV" % (self.E_point_charges*hartree_to_eV)).rjust(20))
             if hasattr(self, "E_onsite"):
-                txt += "Coulomb on-site E_onsite  : %s %s\n" % (string.rjust("%.7f hartree" % self.E_onsite,20), string.rjust("%.7f eV" % (self.E_onsite*hartree_to_eV),20))
+                txt += "Coulomb on-site E_onsite  : %s %s\n" % (("%.7f hartree" % self.E_onsite).rjust(20), ("%.7f eV" % (self.E_onsite*hartree_to_eV)).rjust(20))
             if hasattr(self, "E_HF_x"):
-                txt += "long range HF-x E_x       : %s %s\n" % (string.rjust("%.7f hartree" % self.E_HF_x,20), string.rjust("%.7f eV" % (self.E_HF_x*hartree_to_eV),20))
+                txt += "long range HF-x E_x       : %s %s\n" % (("%.7f hartree" % self.E_HF_x).rjust(20), ("%.7f eV" % (self.E_HF_x*hartree_to_eV)).rjust(20))
                 
-            txt += "total electronic energy   : %s %s\n" % (string.rjust("%.7f hartree" % self.E_elec,20), string.rjust("%.7f eV" % (self.E_elec*hartree_to_eV),20))
-            txt += "repulsion energy          : %s %s\n" % (string.rjust("%.7f hartree" % self.E_rep,20), string.rjust("%.7f eV" % (self.E_rep*hartree_to_eV),20))
+            txt += "total electronic energy   : %s %s\n" % (("%.7f hartree" % self.E_elec).rjust(20), ("%.7f eV" % (self.E_elec*hartree_to_eV)).rjust(20))
+            txt += "repulsion energy          : %s %s\n" % (("%.7f hartree" % self.E_rep).rjust(20), ("%.7f eV" % (self.E_rep*hartree_to_eV)).rjust(20))
             if hasattr(self, "dispersion"):
-                txt += "dispersion energy         : %s %s\n" % (string.rjust("%.7f hartree" % self.E_disp,20), string.rjust("%.7f eV" % (self.E_disp*hartree_to_eV),20))
+                txt += "dispersion energy         : %s %s\n" % (("%.7f hartree" % self.E_disp).rjust(20), ("%.7f eV" % (self.E_disp*hartree_to_eV)).rjust(20))
             if self.qmmm != None:
-                txt += "QM/MM energy              : %s %s\n" % (string.rjust("%.7f hartree" % self.E_qmmm,20), string.rjust("%.7f eV" % (self.E_qmmm*hartree_to_eV),20))
+                txt += "QM/MM energy              : %s %s\n" % (("%.7f hartree" % self.E_qmmm).rjust(20), ("%.7f eV" % (self.E_qmmm*hartree_to_eV)).rjust(20))
             if self.cavity != None:
-                txt += "Cavity energy             : %s %s\n" % (string.rjust("%.7f hartree" % self.E_cav,20), string.rjust("%.7f eV" % (self.E_cav*hartree_to_eV),20))
+                txt += "Cavity energy             : %s %s\n" % (("%.7f hartree" % self.E_cav).rjust(20), ("%.7f eV" % (self.E_cav*hartree_to_eV)).rjust(20))
             if hasattr(self, "solvent_cavity") and self.solvent_cavity.implicit_solvent != 0:
-                txt += "solvent screening energy  : %s %s\n" % (string.rjust("%.7f hartree" % self.E_screening,20), string.rjust("%.7f eV" % (self.E_screening*hartree_to_eV),20))
-            txt += "total energy              : %s %s\n" % (string.rjust("%.7f hartree" % self.E_tot,20), string.rjust("%.7f eV" % (self.E_tot*hartree_to_eV),20))
+                txt += "solvent screening energy  : %s %s\n" % (("%.7f hartree" % self.E_screening).rjust(20), ("%.7f eV" % (self.E_screening*hartree_to_eV)).rjust(20))
+            txt += "total energy              : %s %s\n" % (("%.7f hartree" % self.E_tot).rjust(20), ("%.7f eV" % (self.E_tot*hartree_to_eV)).rjust(20))
         if "orbitals" in info:
-            txt += "HOMO-LUMO gap             : %s %s\n" % (string.rjust("%.7f hartree" % self.HLgap,20), string.rjust("%.7f eV" % (self.HLgap*hartree_to_eV),20))
+            txt += "HOMO-LUMO gap             : %s %s\n" % (("%.7f hartree" % self.HLgap).rjust(20), ("%.7f eV" % (self.HLgap*hartree_to_eV)).rjust(20))
             txt += "  Orbital Energies\n"
             txt += "  ================\n"
             sort_indx = argsort(self.orbe) # calculated redundantly in fermi_occupation !!
             for i,a in enumerate(sort_indx):
-                txt += "%s: %s %s  (%.3f e)\n" % (string.rjust(str(i+1),6), string.rjust("%.7f hartree" % self.orbe[a], 20), string.rjust("%.7f eV" % (self.orbe[a]*hartree_to_eV), 20), self.f[a])
+                txt += "%s: %s %s  (%.3f e)\n" % (str(i+1).rjust(6), ("%.7f hartree" % self.orbe[a]).rjust(20), ("%.7f eV" % (self.orbe[a]*hartree_to_eV)).rjust(20), self.f[a])
             if self.verbose > 1:
                 txt += "  MO Coefficients\n"
                 txt += "  ===============\n"
@@ -2168,7 +2175,7 @@ class DFTB2(object):
             txt += "  NOTE: charges are in units of e-!\n"
             txt += "  =========================================================================\n"
             for i,(Zi,posi) in enumerate(self.atomlist):
-                txt += "%s: %.3f\t(%+.3f)" % (string.center("%s-%s" % (atom_names[Zi-1], i),12), \
+                txt += "%s: %.3f\t(%+.3f)" % (("%s-%s" % (atom_names[Zi-1], i)).center(12), \
                        self.q[i], self.dq[i])
                 if self.mulliken_dipoles == 1:
                     txt += "\t[%+.3f %+.3f %+.3f]\n" %(self.ddip[i,0], self.ddip[i,1], self.ddip[i,2])
@@ -2302,7 +2309,7 @@ class DFTB2(object):
                     Z1 = Zi
                     Z2 = Zj
                 R = array(posi) - array(posj)
-                if translation != None:
+                if translation is not None:
                     R -= translation
                 Rij = norm(R)
                 # nucleus-nucleus and core electron repulsion
@@ -2621,7 +2628,10 @@ if __name__ == "__main__":
     for i,atomlist in enumerate(structures):
         dftb2.setGeometry(atomlist, kwds.get("charge", 0.0))
         dftb2.getEnergy(**scf_options)
-        print("TOTAL ENERGY OF STRUCTURE %d              : %s %s\n" % (i, string.rjust("%.7f hartree" % dftb2.E_tot,20), string.rjust("%.7f eV" % (dftb2.E_tot*hartree_to_eV),20)))
+        print(
+            "TOTAL ENERGY OF STRUCTURE %d              : %s %s\n"
+            % (i, ("%.7f hartree" % dftb2.E_tot).rjust(20), ("%.7f eV" % (dftb2.E_tot*hartree_to_eV)).rjust(20))
+        )
 #        print "Dipole Moment (exact): %s" % dftb2.getDipoleMoment()
 #        print "Dipole Moment (Mulliken approximation): %s" % dftb2.getMullikenDipoleMoment()
 

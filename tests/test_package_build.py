@@ -13,7 +13,10 @@ import subprocess
 import tempfile
 import shutil
 import importlib
+import io
+import contextlib
 from pathlib import Path
+import numpy as np
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 LEGACY_WARNING_FILES = set()
@@ -199,6 +202,103 @@ def test_entry_points():
     return len(invalid) == 0
 
 
+def test_cli_help_smoke():
+    """Smoke-test core non-periodic CLI help output."""
+    print("\nTesting core CLI --help...")
+
+    commands = [
+        ("DFTB2", [sys.executable, "-m", "DFTB.DFTB2", "--help"]),
+        ("LR_TDDFTB", [sys.executable, "-m", "DFTB.LR_TDDFTB", "--help"]),
+        ("SurfaceHopping", [sys.executable, "-m", "DFTB.Dynamics.SurfaceHopping", "--help"]),
+        ("GeometryOptimization", [sys.executable, "-m", "DFTB.Optimize.GeometryOptimization", "--help"]),
+    ]
+
+    failed = []
+    for name, cmd in commands:
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            cwd=str(REPO_ROOT),
+        )
+        if result.returncode == 0:
+            print(f"  ✓ {name}: --help OK")
+        else:
+            print(f"  ✗ {name}: --help failed")
+            failed.append((name, result.stderr[:300]))
+
+    if failed:
+        for name, stderr in failed:
+            print(f"    {name} stderr: {stderr}")
+    return len(failed) == 0
+
+
+def test_periodic_runtime_smoke():
+    """Smoke-test periodic non-SCC and SCC execution on a tiny Gamma-point cell."""
+    print("\nTesting periodic runtime smoke...")
+
+    try:
+        if str(REPO_ROOT) not in sys.path:
+            sys.path.insert(0, str(REPO_ROOT))
+        from DFTB.DFTB2 import DFTB2
+    except Exception as exc:
+        print(f"  ✗ Could not import periodic code path: {exc}")
+        return False
+
+    atomlist = [
+        (1, [0.0, 0.0, 0.0]),
+        (1, [1.4, 0.0, 0.0]),
+    ]
+    lattice_vectors = [
+        [8.0, 0.0, 0.0],
+        [0.0, 8.0, 0.0],
+        [0.0, 0.0, 8.0],
+    ]
+    ks = [np.array([0.0, 0.0, 0.0])]
+
+    try:
+        dftb2 = DFTB2(
+            atomlist,
+            parameter_set="homegrown",
+            verbose=0,
+            long_range_correction=0,
+            onsite_correction=0,
+            use_symmetry=0,
+        )
+        dftb2.setGeometry(atomlist, charge=0.0)
+
+        with contextlib.redirect_stdout(io.StringIO()):
+            _, non_scc_bands = dftb2.runPeriodicNonSCC(lattice_vectors, ks, nmax=(1, 1, 1))
+            q_non_scc = np.array(dftb2.q, copy=True)
+            dq_non_scc = np.array(dftb2.dq, copy=True)
+            _, scc_bands, dq = dftb2.runPeriodicSCC(
+                lattice_vectors, ks, nmax=(1, 1, 1), maxiter=5, scc_conv=1.0e-6
+            )
+    except Exception as exc:
+        print(f"  ✗ Periodic execution failed: {exc}")
+        return False
+
+    if len(non_scc_bands) != 1 or len(scc_bands) != 1:
+        print("  ✗ Unexpected number of k-point solutions")
+        return False
+    if non_scc_bands[0].shape[0] != 2 or scc_bands[0].shape[0] != 2:
+        print("  ✗ Unexpected orbital dimensions in periodic bands")
+        return False
+    if len(dq) != len(atomlist):
+        print("  ✗ Unexpected periodic charge vector size")
+        return False
+    if not np.isclose(np.sum(q_non_scc.real), 2.0, atol=1.0e-6):
+        print("  ✗ Periodic non-SCC does not conserve total valence charge")
+        return False
+    if not np.isclose(np.sum(dq_non_scc.real), 0.0, atol=1.0e-6):
+        print("  ✗ Periodic non-SCC excess charge is not neutral")
+        return False
+
+    print("  ✓ Periodic NonSCC path OK")
+    print("  ✓ Periodic SCC path OK")
+    return True
+
+
 def main():
     print("=" * 70)
     print("DFTBaby Package Build Test")
@@ -211,6 +311,8 @@ def main():
         ("Setuptools build", test_setuptools_build),
         ("MANIFEST files", test_manifest_files),
         ("Entry points", test_entry_points),
+        ("CLI help smoke", test_cli_help_smoke),
+        ("Periodic runtime smoke", test_periodic_runtime_smoke),
     ]
 
     results = []

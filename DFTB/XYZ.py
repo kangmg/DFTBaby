@@ -220,17 +220,15 @@ def update_xyz(filename,atomlist,title="", units="Angstrom"):
         symbols.append( words[0] )
     fh.close()
     #
-    fh = open(filename, "w")
-    print>>fh, "%d" % nat
-    print>>fh, "%s" % comment
-    for i,atom in enumerate(atomlist):
-        atno,pos = atom
-        x,y,z = pos[0], pos[1], pos[2]
-        if units == "Angstrom":
-            x,y,z = map(lambda c: c*bohr_to_angs, [x,y,z])
-        print>>fh, "%s %10.15f %10.15f %10.15f" \
-                   % (symbols[i],x,y,z)
-    fh.close()
+    with open(filename, "w") as fh:
+        print("%d" % nat, file=fh)
+        print("%s" % comment, file=fh)
+        for i,atom in enumerate(atomlist):
+            atno,pos = atom
+            x,y,z = pos[0], pos[1], pos[2]
+            if units == "Angstrom":
+                x,y,z = map(lambda c: c*bohr_to_angs, [x,y,z])
+            print("%s %10.15f %10.15f %10.15f" % (symbols[i],x,y,z), file=fh)
         
 def read_initial_conditions(filename, units="Angstrom", fragment_id=atomic_number):
     """
@@ -390,16 +388,15 @@ def write_charges(filename, atomlist, charges, title=" ", units="Angstrom", mode
     # 1st and 2nd line
     txt = "%d\n%s\n" % (len(atomlist),title)
     for i,(Zat,(x,y,z)) in enumerate(atomlist):
+        atname = atom_names[Zat-1]
         if units == "Angstrom":
             x,y,z = map(lambda c: c*bohr_to_angs, [x,y,z])
-            atname = atom_names[Zat-1]
         q = charges[i]
         txt += "%3s    %+10.8f  %+10.8f  %+10.8f    %+10.8f\n" \
                % (atname.capitalize(),x,y,z, q)
 
-    fh = open(filename, mode)
-    print>>fh, txt
-    fh.close()
+    with open(filename, mode) as fh:
+        fh.write(txt)
     
             
 def connectivity_matrix(atomlist, search_neighbours=None, thresh=1.3, hydrogen_bonds=False, debug=0):

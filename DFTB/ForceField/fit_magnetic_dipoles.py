@@ -367,10 +367,9 @@ if __name__ == "__main__":
     magnetic_dipoles = fitter.fitVectorPotential(mtot)
 
     # save magnetic dipoles
-    fh = open(dat_file, "w")
-    print>>fh, "# atom-centered magnetic dipoles fitted to the vector potential A(r)"
-    print>>fh, "# The dipoles were projected onto principle axes of rotation (with all masses = 1) "
-    print>>fh, "#   Mx        My        Mz"
-    np.savetxt(fh, magnetic_dipoles)
-    fh.close()
+    with open(dat_file, "w") as fh:
+        print("# atom-centered magnetic dipoles fitted to the vector potential A(r)", file=fh)
+        print("# The dipoles were projected onto principle axes of rotation (with all masses = 1) ", file=fh)
+        print("#   Mx        My        Mz", file=fh)
+        np.savetxt(fh, magnetic_dipoles)
     print("magnetic dipoles saved to '%s'" % dat_file)

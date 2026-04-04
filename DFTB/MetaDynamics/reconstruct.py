@@ -5,7 +5,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-import meta
+try:
+    from DFTB.MetaDynamics import meta
+except ModuleNotFoundError as exc:
+    if exc.name in {"DFTB", "DFTB.MetaDynamics", "DFTB.MetaDynamics.meta"}:
+        import meta
+    else:
+        raise
 
 class reconstruct_metadynamics(meta.metadynamics):
     def reconstruct_vg(self, x0=None, ngauss=None, plot=True, animate=False, stride=1):

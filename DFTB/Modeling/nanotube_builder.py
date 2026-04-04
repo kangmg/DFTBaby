@@ -674,7 +674,7 @@ def capped_uff_nanotube(cnt,NcapN=0, NcapS=0, optimize_uff=1, out_xyz="/tmp/cnt.
             # try for 5 times
             for n in range(0, ntrial):
                 dcap.append( (dnN,dnS) )
-    dcap = sorted(dcap, key=lambda a,b: abs(a)+abs(b))
+    dcap = sorted(dcap, key=lambda ab: abs(ab[0]) + abs(ab[1]))
 
     for (dnN,dnS) in dcap:
         print("north cap: %s points, south cap: %s points" % (NcapN+dnN,NcapS+dnS))

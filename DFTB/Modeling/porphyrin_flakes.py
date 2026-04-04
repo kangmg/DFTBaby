@@ -1093,13 +1093,12 @@ if __name__ == "__main__":
         for gen,flake_generation in grown_flakes.items():
             print("Generation %d" % gen)
             hueckel_out = "polyomino_hueckel_gen_%d.dat" % (gen+1)
-            fh = open(hueckel_out, "w")
-            print>>fh, "# ID   N    EN(TOT)    HOMO-LUMO gap    (-1)*(NR. NEW BONDS)"
-            for flake in flake_generation:
-                print("Flake %d" % i)
-                en_tot, HLgap, orbeHueckel, orbsHueckel = flake.hueckel(orbe, Sh,Sv, H0h,H0v)
-                new_bonds = flake.count_new_bonds()
-                print>>fh,"%d  %d  %10.6f %10.6f  %d" % (i,gen+1,en_tot, HLgap, -new_bonds)
-                i += 1
-            fh.close()
+            with open(hueckel_out, "w") as fh:
+                print("# ID   N    EN(TOT)    HOMO-LUMO gap    (-1)*(NR. NEW BONDS)", file=fh)
+                for flake in flake_generation:
+                    print("Flake %d" % i)
+                    en_tot, HLgap, orbeHueckel, orbsHueckel = flake.hueckel(orbe, Sh,Sv, H0h,H0v)
+                    new_bonds = flake.count_new_bonds()
+                    print("%d  %d  %10.6f %10.6f  %d" % (i,gen+1,en_tot, HLgap, -new_bonds), file=fh)
+                    i += 1
             print("Hueckel results for generation %d written to file %s" % (gen, hueckel_out))

@@ -18,6 +18,22 @@ pip install -e .
 
 Use this for stable ground/excited-state workflows without extra features.
 
+## uv-Based Setup (Recommended for Reproducibility)
+
+```bash
+uv venv
+source .venv/bin/activate
+uv pip install -r requirements-core.txt
+uv pip install -e .
+```
+
+Run commands with uv-managed environment:
+
+```bash
+uv run dftbaby dftb2 benzene.xyz
+uv run dftbaby lrtddftb benzene.xyz --nstates=6
+```
+
 ## 2) Reproducible (Colab/CI)
 
 ```bash
@@ -33,9 +49,10 @@ Use this when exact reproducibility matters.
 pip install ".[plot]"         # plotting and spectra helpers
 pip install ".[metadynamics]" # SurfaceHopping dyn_mode="M"
 pip install ".[advanced]"     # advanced modules (mpmath)
-pip install ".[gui]"          # legacy GUI stack (mayavi)
 pip install ".[full]"         # all optional packs
 ```
+
+`.[gui]` (Mayavi) remains available only for legacy graphical analysis and is not recommended for minimal stable environments.
 
 ## 4) Compile Only What You Need
 

@@ -480,30 +480,30 @@ class AtomPair:
 
         import pprint
         import sys
-        np.set_printoptions(threshold=sys.maxint)
+        np.set_printoptions(threshold=sys.maxsize)
         pp = pprint.PrettyPrinter(depth=10)
         fh = open(slako_file, "w")
-        print>>fh, "# This file has been generated automatically by %s" % sys.argv[0]
-        print>>fh, "# from %s and %s." % (self.A1.atom.__file__, self.A2.atom.__file__)
-        print>>fh, "from numpy import array"
-        print>>fh, "Z1 = %s" % self.A1.atom.Z
-        print>>fh, "Z2 = %s" % self.A2.atom.Z
-        print>>fh, "# overlaps S[(l1,l2,i)] and hamilton matrix elements H[(l1,l2,i)]"
-        print>>fh, "# l1 and l2 are the angular quantum numbers of valence orbitals"
-        print>>fh, "# on atom1 and atom2 respectively."
-        print>>fh, "# i enumerates the Slater-Koster integrals:"
-        print>>fh, "index2symbol = \\\n%s" % dict([(i, T.tau2symbol[T.index2tau[i]]) for (l1,l2,i) in self.S.keys()])
-        print>>fh, "# grid for distance d between atomic centers"
-        print>>fh, "d = \\\n%s" % pp.pformat(self.d)
-        print>>fh, "# overlaps"
-        print>>fh, "S = \\\n%s" % pp.pformat(self.S)
-        print>>fh, "# hamiltonian matrix elements"
-        print>>fh, "H = \\\n%s" % pp.pformat(self.H)
-        print>>fh, "# dipoles"
-        print>>fh, "Dipole = \\\n%s" % pp.pformat(self.Dipole)
+        print("# This file has been generated automatically by %s" % sys.argv[0], file=fh)
+        print("# from %s and %s." % (self.A1.atom.__file__, self.A2.atom.__file__), file=fh)
+        print("from numpy import array", file=fh)
+        print("Z1 = %s" % self.A1.atom.Z, file=fh)
+        print("Z2 = %s" % self.A2.atom.Z, file=fh)
+        print("# overlaps S[(l1,l2,i)] and hamilton matrix elements H[(l1,l2,i)]", file=fh)
+        print("# l1 and l2 are the angular quantum numbers of valence orbitals", file=fh)
+        print("# on atom1 and atom2 respectively.", file=fh)
+        print("# i enumerates the Slater-Koster integrals:", file=fh)
+        print("index2symbol = \\\n%s" % dict([(i, T.tau2symbol[T.index2tau[i]]) for (l1,l2,i) in self.S.keys()]), file=fh)
+        print("# grid for distance d between atomic centers", file=fh)
+        print("d = \\\n%s" % pp.pformat(self.d), file=fh)
+        print("# overlaps", file=fh)
+        print("S = \\\n%s" % pp.pformat(self.S), file=fh)
+        print("# hamiltonian matrix elements", file=fh)
+        print("H = \\\n%s" % pp.pformat(self.H), file=fh)
+        print("# dipoles", file=fh)
+        print("Dipole = \\\n%s" % pp.pformat(self.Dipole), file=fh)
         if hasattr(self, "PhaseShifts"):
-            print>>fh, "# phase shifts"
-            print>>fh, "PhaseShifts = \\\n%s" % pp.pformat(self.PhaseShifts)
+            print("# phase shifts", file=fh)
+            print("PhaseShifts = \\\n%s" % pp.pformat(self.PhaseShifts), file=fh)
         fh.close()
 
 

@@ -114,8 +114,8 @@ def write_initial_conditions(atomlist, velocities, in_file):
         vx,vy,vz = velocities[i]
         txt += "   %+10.15f    %+10.15f   %+10.15f\n" % (vx,vy,vz)
     #
-    fh = open(in_file, "w")
-    print>>fh, txt
+    with open(in_file, "w") as fh:
+        fh.write(txt)
 
 if __name__ == "__main__":
     import sys
@@ -123,5 +123,4 @@ if __name__ == "__main__":
         if b.__class__ == time_Block:
             t,atomlist,velocities = b.getData()
             print(t)
-
 

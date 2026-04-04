@@ -36,32 +36,31 @@ if __name__ == "__main__":
     # initialize the TD-DFTB calculator
     pes = PotentialEnergySurfaces(atomlist, Nst=Nst, **kwds)
 
-    fh = open(dat_file, "w")
-    for i,atomlist in enumerate(atomlists):
-        print("SCAN geometry %d of %d" % (i+1, len(atomlists)))
-        # convert geometry to a vector
-        x = XYZ.atomlist2vector(atomlist)
-        try:
-            if Nst == 1:
-                ens = pes.getEnergy_S0(x)
-            else:
-                ens = pes.getEnergies(x)
-        except ExcitedStatesError as e:
-            print("WARNING: %s" % e)
-            print("%d-th point is skipped" % i)
-            continue
-        if i == 0:
-            E0 = ens[0]
-        # subtract ground state energy at first geometry
-        ens -= E0
-        # convert to eV
-        ens *= AtomicData.hartree_to_eV
-        print>>fh, "%d  " % i,
-        for ei in ens:
-            print>>fh, "%3.7f " % ei,
-        print>>fh, ""
-        fh.flush()
-    fh.close()
+    with open(dat_file, "w") as fh:
+        for i,atomlist in enumerate(atomlists):
+            print("SCAN geometry %d of %d" % (i+1, len(atomlists)))
+            # convert geometry to a vector
+            x = XYZ.atomlist2vector(atomlist)
+            try:
+                if Nst == 1:
+                    ens = pes.getEnergy_S0(x)
+                else:
+                    ens = pes.getEnergies(x)
+            except ExcitedStatesError as e:
+                print("WARNING: %s" % e)
+                print("%d-th point is skipped" % i)
+                continue
+            if i == 0:
+                E0 = ens[0]
+            # subtract ground state energy at first geometry
+            ens -= E0
+            # convert to eV
+            ens *= AtomicData.hartree_to_eV
+            row = "%d  " % i
+            for ei in ens:
+                row += "%3.7f " % ei
+            fh.write(row + "\n")
+            fh.flush()
 
     # timing
     print(T)

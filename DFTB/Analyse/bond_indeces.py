@@ -49,10 +49,10 @@ if __name__ == "__main__":
         exit(-1)
     xyz_file = sys.argv[1]
     out_file = sys.argv[2]
-    fh = open(out_file, 'w')
-    for atomlist in XYZ.read_xyz_it(xyz_file):
-        for bi in bond_indeces(atomlist):
-            print>>fh, "%.7f " % bi, 
-        print>>fh, ""
-    fh.close()
+    with open(out_file, "w") as fh:
+        for atomlist in XYZ.read_xyz_it(xyz_file):
+            row = ""
+            for bi in bond_indeces(atomlist):
+                row += "%.7f " % bi
+            fh.write(row.rstrip() + "\n")
     plot_bond_indeces(atomlist, out_file)

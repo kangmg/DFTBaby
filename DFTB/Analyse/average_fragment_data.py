@@ -133,10 +133,10 @@ if __name__ == "__main__":
         fname = "fragment_%s.dat" % fragment_label
         atom_ids = fragments[k]
         with open(fname, "w") as fh:
-            print>>fh, "# Atom indices belonging to this fragment:"
+            print("# Atom indices belonging to this fragment:", file=fh)
             coord_str = "-".join(map(str,np.array(atom_ids)+1))
-            print>>fh, "# %s" % coord_str
-            print>>fh, "# Time / fs              Data"
+            print("# %s" % coord_str, file=fh)
+            print("# Time / fs              Data", file=fh)
             data_avg_frag = np.zeros((nsteps,ncols+1))
             # insert time axis
             data_avg_frag[:,0] = times[:nsteps]

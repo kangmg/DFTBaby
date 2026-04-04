@@ -54,7 +54,6 @@ full = [
     "matplotlib>=3.7.0",
     "sympy>=1.12",
     "mpmath>=1.3.0",
-    "mayavi>=4.8.0",
 ]
 dev = [
     "pytest>=7.0",
@@ -70,6 +69,15 @@ build = [
 ]
 
 [project.scripts]
+"dftbaby" = "DFTB.cli:main"
+"dftbaby-dftb2" = "DFTB.cli:dispatch"
+"dftbaby-lrtddftb" = "DFTB.cli:dispatch"
+"dftbaby-surface-hopping" = "DFTB.cli:dispatch"
+"dftbaby-geometry-opt" = "DFTB.cli:dispatch"
+"dftbaby-optimize" = "DFTB.cli:dispatch"
+"dftbaby-initial-conditions" = "DFTB.cli:dispatch"
+"dftbaby-populations" = "DFTB.cli:dispatch"
+"dftbaby-scan" = "DFTB.cli:dispatch"
 "DFTB2.py" = "DFTB.cli:dispatch"
 "LR_TDDFTB.py" = "DFTB.cli:dispatch"
 "optimize.py" = "DFTB.cli:dispatch"

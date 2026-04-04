@@ -219,17 +219,17 @@ def write_repulsive_potential(mod, reppot_file, title=""):
     import pprint
     import sys
     import numpy
-    numpy.set_printoptions(threshold=sys.maxint)
+    numpy.set_printoptions(threshold=sys.maxsize)
     pp = pprint.PrettyPrinter(depth=10)
     fh = open(reppot_file, "w")
-    print>>fh, "# %s" % title
-    print>>fh, "from numpy import array"
-    print>>fh, "Z1 = %s" % mod.Z1
-    print>>fh, "Z2 = %s" % mod.Z2
-    print>>fh, "# grid for distance d between atomic centers in bohr"
-    print>>fh, "d = \\\n%s" % pp.pformat(mod.d)
-    print>>fh, "# repulsive potential in hartree/bohr"
-    print>>fh, "Vrep = \\\n%s" % pp.pformat(mod.Vrep)
+    print("# %s" % title, file=fh)
+    print("from numpy import array", file=fh)
+    print("Z1 = %s" % mod.Z1, file=fh)
+    print("Z2 = %s" % mod.Z2, file=fh)
+    print("# grid for distance d between atomic centers in bohr", file=fh)
+    print("d = \\\n%s" % pp.pformat(mod.d), file=fh)
+    print("# repulsive potential in hartree/bohr", file=fh)
+    print("Vrep = \\\n%s" % pp.pformat(mod.Vrep), file=fh)
         
     fh.close()
 

@@ -553,28 +553,27 @@ def writeCube(cubefile, atomlist, origin, axes, data):
     data: values for each voxel,   data[i,j,k] is the value of the voxel
        at position  x_ijk = origin + i*axes[0] + j*axes[1] + k*axes[2]
     """
-    fh = open(cubefile, "w")
     nx,ny,nz = data.shape
     xmin,ymin,zmin = origin
-    print>>fh, "CUBE FILE"
-    print>>fh, "OUTER LOOP: X, MIDDLE LOOP: Y, INNER LOOP: Z"
-    print>>fh, "%5i %11.6f %11.6f %11.6f" %  (len(atomlist),xmin,ymin,zmin)
-    print>>fh, "%5i %11.6f %11.6f %11.6f" %  (nx,axes[0][0],axes[0][1],axes[0][2])
-    print>>fh, "%5i %11.6f %11.6f %11.6f" %  (ny,axes[1][0],axes[1][1],axes[1][2])
-    print>>fh, "%5i %11.6f %11.6f %11.6f" %  (nz,axes[2][0],axes[2][1],axes[2][2])
+    with open(cubefile, "w") as fh:
+        print("CUBE FILE", file=fh)
+        print("OUTER LOOP: X, MIDDLE LOOP: Y, INNER LOOP: Z", file=fh)
+        print("%5i %11.6f %11.6f %11.6f" % (len(atomlist), xmin, ymin, zmin), file=fh)
+        print("%5i %11.6f %11.6f %11.6f" % (nx, axes[0][0], axes[0][1], axes[0][2]), file=fh)
+        print("%5i %11.6f %11.6f %11.6f" % (ny, axes[1][0], axes[1][1], axes[1][2]), file=fh)
+        print("%5i %11.6f %11.6f %11.6f" % (nz, axes[2][0], axes[2][1], axes[2][2]), file=fh)
 
-    for (Zi, posi) in atomlist:
-        x,y,z = posi
-        print>>fh, "%5i %11.6f %11.6f %11.6f %11.6f" %  (Zi,Zi,x,y,z)
+        for (Zi, posi) in atomlist:
+            x,y,z = posi
+            print("%5i %11.6f %11.6f %11.6f %11.6f" % (Zi, Zi, x, y, z), file=fh)
 
-    for i in range(nx):
-        for j in range(ny):
-            for k in range(nz):
-                print>>fh, " %11.5e" % data[i,j,k],
-                if k % 6 == 5: print>>fh, "\n ",
-            print>>fh, "\n ",
-
-    fh.close()
+        for i in range(nx):
+            for j in range(ny):
+                for k in range(nz):
+                    fh.write(" %11.5e" % data[i, j, k])
+                    if k % 6 == 5:
+                        fh.write("\n ")
+                fh.write("\n ")
 
 if __name__ == "__main__":
     from numpy import array, mgrid, ones, diag, zeros

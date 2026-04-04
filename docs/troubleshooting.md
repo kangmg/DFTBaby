@@ -66,4 +66,6 @@ initial_conditions.py --help
 python3 -c "from DFTB.Dynamics.SurfaceHopping import main; print('ok')"
 ```
 
+For periodic jobs, run a short NonSCC and SCC sanity run before launching production trajectories.
+
 If instability remains, create a fresh virtual environment and reinstall one profile from scratch.

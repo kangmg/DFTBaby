@@ -89,6 +89,11 @@ import sys, os
 import types
 import textwrap
 
+try:
+    import builtins
+except ImportError:  # pragma: no cover - legacy fallback
+    import __builtin__ as builtins
+
 def _repr(self):
     return "<%s at 0x%x: %s>" % (self.__class__.__name__, id(self), self)
 
@@ -662,10 +667,9 @@ class Option:
             # complicated check of __builtin__ is only necessary for
             # Python 2.1 and earlier, and is short-circuited by the
             # first check on modern Pythons.)
-            import __builtin__
-            if ( type(self.type) is types.TypeType or
+            if (isinstance(self.type, type) or
                  (hasattr(self.type, "__name__") and
-                  getattr(__builtin__, self.type.__name__, None) is self.type) ):
+                  getattr(builtins, self.type.__name__, None) is self.type)):
                 self.type = self.type.__name__
 
             if self.type == "str":
@@ -682,7 +686,7 @@ class Option:
             if self.choices is None:
                 raise OptionError(
                     "must supply a list of choices for type 'choice'", self)
-            elif type(self.choices) not in (types.TupleType, types.ListType):
+            elif not isinstance(self.choices, (tuple, list)):
                 raise OptionError(
                     "choices must be a list of strings ('%s' supplied)"
                     % str(type(self.choices)).split("'")[1], self)
@@ -726,12 +730,12 @@ class Option:
                 raise OptionError(
                     "callback not callable: %r" % self.callback, self)
             if (self.callback_args is not None and
-                type(self.callback_args) is not types.TupleType):
+                not isinstance(self.callback_args, tuple)):
                 raise OptionError(
                     "callback_args, if supplied, must be a tuple: not %r"
                     % self.callback_args, self)
             if (self.callback_kwargs is not None and
-                type(self.callback_kwargs) is not types.DictType):
+                not isinstance(self.callback_kwargs, dict)):
                 raise OptionError(
                     "callback_kwargs, if supplied, must be a dict: not %r"
                     % self.callback_kwargs, self)
@@ -856,9 +860,9 @@ class Values:
 
     def __cmp__(self, other):
         if isinstance(other, Values):
-            return cmp(self.__dict__, other.__dict__)
-        elif isinstance(other, types.DictType):
-            return cmp(self.__dict__, other)
+            return 0 if self.__dict__ == other.__dict__ else -1
+        elif isinstance(other, dict):
+            return 0 if self.__dict__ == other else -1
         else:
             return -1
 
@@ -1030,7 +1034,7 @@ class OptionContainer:
         """add_option(Option)
            add_option(opt_str, ..., kwarg=val, ...)
         """
-        if type(args[0]) in types.StringTypes:
+        if isinstance(args[0], str):
             option = self.option_class(*args, **kwargs)
         elif len(args) == 1 and not kwargs:
             option = args[0]
@@ -1360,7 +1364,7 @@ class OptionParser (OptionContainer):
 
     def add_option_group(self, *args, **kwargs):
         # XXX lots of overlap with OptionContainer.add_option()
-        if type(args[0]) is types.StringType:
+        if isinstance(args[0], str):
             group = OptionGroup(self, *args, **kwargs)
         elif len(args) == 1 and not kwargs:
             group = args[0]
@@ -1640,7 +1644,9 @@ class OptionParser (OptionContainer):
         or not defined.
         """
         if self.usage:
-            print >>file, self.get_usage()  # TODO: Convert print >> to file.write()
+            if file is None:
+                file = sys.stdout
+            print(self.get_usage(), file=file)
 
     def get_version(self):
         if self.version:
@@ -1657,7 +1663,9 @@ class OptionParser (OptionContainer):
         name.  Does nothing if self.version is empty or undefined.
         """
         if self.version:
-            print >>file, self.get_version()  # TODO: Convert print >> to file.write()
+            if file is None:
+                file = sys.stdout
+            print(self.get_version(), file=file)
 
     def format_option_help(self, formatter=None):
         if formatter is None:
@@ -1707,7 +1715,12 @@ class OptionParser (OptionContainer):
         if file is None:
             file = sys.stdout
         encoding = self._get_encoding(file)
-        file.write(self.format_help().encode(encoding, "replace"))
+        help_text = self.format_help()
+        try:
+            file.write(help_text)
+        except TypeError:
+            # Fallback for binary-like streams.
+            file.write(help_text.encode(encoding, "replace"))
 
 # class OptionParser
 

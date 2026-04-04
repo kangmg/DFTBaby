@@ -22,9 +22,8 @@ def write_gen(gen_out, atomlist):
         txt += "%d 2\n" % (i+1)
         txt += "%d 3\n" % (i+1)
     
-    fh = open(gen_out, "w")
-    print>>fh, txt
-    fh.close()
+    with open(gen_out, "w") as fh:
+        fh.write(txt)
 
 if __name__ == "__main__":
     import sys

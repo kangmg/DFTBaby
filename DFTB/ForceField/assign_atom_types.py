@@ -91,87 +91,88 @@ if __name__ == "__main__":
         bonded_atomnames[atJ].append( atnameI )
     print("atom type assignment")
     ff_file = sys.argv[2]
-    fh = open(ff_file, "w")
-    print>>fh, nat
-    print>>fh, ""
-    for i,(Zi,posi) in enumerate(atomlist):
-        posi = np.array(posi) * AtomicData.bohr_to_angs
-        atname = AtomicData.atom_names[Zi-1].capitalize()
-        # list of bond orders for all bonds connected to atom i
-        BOs = bond_orders_atomwise[i]
-        # number of bonds
-        nr_bonds = len(BOs)
-        #
-        # Type assignment in part taken from 'pysimm' package
-        #
-        atomtype = None
-        # partial charges
-        charge = 0.0
+    with open(ff_file, "w") as fh:
+        print(nat, file=fh)
+        print("", file=fh)
+        for i,(Zi,posi) in enumerate(atomlist):
+            posi = np.array(posi) * AtomicData.bohr_to_angs
+            atname = AtomicData.atom_names[Zi-1].capitalize()
+            # list of bond orders for all bonds connected to atom i
+            BOs = bond_orders_atomwise[i]
+            # number of bonds
+            nr_bonds = len(BOs)
+            #
+            # Type assignment in part taken from 'pysimm' package
+            #
+            atomtype = None
+            # partial charges
+            charge = 0.0
 
-        if atname == "H":
-            if (len(bonded_atomnames[i]) == 1) and bonded_atomnames[i][0] in ['N', 'O', 'F']:
-                # hydrogen bonded to 1 electronegative atom  (N, O, F)
-                atomtype = 'H__HB'
-            else:
-                atomtype = 'H_'
-        elif atname == "B":
-            if 2.0 in BOs:
-                atomtype = "B_2"
-            else:
-                atomtype = "B_3"
-        elif atname == "C":
-            if 1.5 in BOs:
-                atomtype = 'C_R'
-            elif nr_bonds == 4:
-                atomtype = 'C_3'
-            elif nr_bonds == 3:
-                atomtype = 'C_2'
-            elif nr_bonds == 2:
-                atomtype = 'C_1'
-        elif atname == "N":
-            if nr_bonds == 2 and (2.0 in BOs):
-                atomtype = 'N_R'
-            elif 2.0 in BOs:
-                atomtype = 'N_2'
-            elif 3.0 in BOs:
-                atomtype = 'N_1'
-            elif 1.0 in BOs:
-                if nr_bonds == 3:
-                    atomtype = 'N_3'
+            if atname == "H":
+                if (len(bonded_atomnames[i]) == 1) and bonded_atomnames[i][0] in ['N', 'O', 'F']:
+                    # hydrogen bonded to 1 electronegative atom  (N, O, F)
+                    atomtype = 'H__HB'
+                else:
+                    atomtype = 'H_'
+            elif atname == "B":
+                if 2.0 in BOs:
+                    atomtype = "B_2"
+                else:
+                    atomtype = "B_3"
+            elif atname == "C":
+                if 1.5 in BOs:
+                    atomtype = 'C_R'
+                elif nr_bonds == 4:
+                    atomtype = 'C_3'
+                elif nr_bonds == 3:
+                    atomtype = 'C_2'
                 elif nr_bonds == 2:
+                    atomtype = 'C_1'
+            elif atname == "N":
+                if nr_bonds == 2 and (2.0 in BOs):
+                    atomtype = 'N_R'
+                elif 2.0 in BOs:
                     atomtype = 'N_2'
-        elif atname == "O":
-            if 1.5 in BOs:
-                atomtype = 'O_R'
-            elif 2.0 in BOs:
-                if nr_bonds == 2:
-                    atomtype = 'O_2'
-                elif nr_bonds == 1:
-                    atomtype = 'O_1'
-            elif 1.0 in BOs:
-                atomtype = 'O_3'
-        elif atname in ["Cl", "Br", "Na", "Ca", "Fe", "Zn"]:
-            atomtype = atname
-        elif atname in ["F", "I"]:
-            atomtype = atname + "_"
-        elif atname in ["Al", "Si", "Ga", "Ge", "As", "Se", "In", "Sn", "Sb", "Te"]:
-            atomtype = atname + "3"
-        elif atname in ["P", "S"]:
-            atomtype = atname + "_3"
-            
-        if atomtype == None:
-                raise RuntimeError("Cannot assign atom type to '%s(%d)'" % (atname, i+1))
+                elif 3.0 in BOs:
+                    atomtype = 'N_1'
+                elif 1.0 in BOs:
+                    if nr_bonds == 3:
+                        atomtype = 'N_3'
+                    elif nr_bonds == 2:
+                        atomtype = 'N_2'
+            elif atname == "O":
+                if 1.5 in BOs:
+                    atomtype = 'O_R'
+                elif 2.0 in BOs:
+                    if nr_bonds == 2:
+                        atomtype = 'O_2'
+                    elif nr_bonds == 1:
+                        atomtype = 'O_1'
+                elif 1.0 in BOs:
+                    atomtype = 'O_3'
+            elif atname in ["Cl", "Br", "Na", "Ca", "Fe", "Zn"]:
+                atomtype = atname
+            elif atname in ["F", "I"]:
+                atomtype = atname + "_"
+            elif atname in ["Al", "Si", "Ga", "Ge", "As", "Se", "In", "Sn", "Sb", "Te"]:
+                atomtype = atname + "3"
+            elif atname in ["P", "S"]:
+                atomtype = atname + "_3"
+                
+            if atomtype == None:
+                    raise RuntimeError("Cannot assign atom type to '%s(%d)'" % (atname, i+1))
 
-        type_num = atom_types2num[atomtype]
+            type_num = atom_types2num[atomtype]
 
-        print>>fh, " %s     %10.7f %10.7f %10.7f    %3.1d   %3.2f  %s" % (atname, posi[0], posi[1], posi[2], type_num, charge, atomtype)
-    """
-    # Lattice vectors
-    lattice_constant = 100000.0  #  very large box
-    print>>fh, "Tv	   %10.7f	  0.00000        0.00000" % lattice_constant
-    print>>fh, "Tv	   0.00000	  %10.7f	 0.00000" % lattice_constant
-    print>>fh, "Tv	   0.00000	  0.00000	 %10.7f " % lattice_constant
-    fh.close()
-    """
+            print(
+                " %s     %10.7f %10.7f %10.7f    %3.1d   %3.2f  %s"
+                % (atname, posi[0], posi[1], posi[2], type_num, charge, atomtype),
+                file=fh,
+            )
+    # If needed, lattice vectors for a very large non-periodic box can be added here:
+    # lattice_constant = 100000.0
+    # print("Tv   %10.7f  0.00000  0.00000" % lattice_constant, file=fh)
+    # print("Tv   0.00000  %10.7f  0.00000" % lattice_constant, file=fh)
+    # print("Tv   0.00000  0.00000  %10.7f" % lattice_constant, file=fh)
     print("Atom types written to 7th column of '%s'" % ff_file)
     

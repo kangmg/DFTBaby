@@ -269,51 +269,50 @@ def pyrene_dimer_analysis(xyz_traj_file, out_file, qmmm_partitioning=None):
     If the file contains additional molecules (e.g. MM molecules), the atom indeces belonging
     to the dimer should be specified as a list in qmmm_partioning.
     """
-    fh = open(out_file, "w")
-    print>>fh, "# TSTEP     R_X / Angstrom    R_Y / Angstrom   R_Z / Angstrom"
-    # process one geometry after the other
-    for i,atomlist in enumerate(XYZ.read_xyz_it(xyz_traj_file)):
-        if qmmm_partitioning != None:
-            # select the atoms belonging to the dimer pair
-            atomlist = [atomlist[j] for j in qmmm_partitioning]
-        nat = len(atomlist)
-        assert nat == 52, "Pyrene dimer should contain 52 atoms!"
-        # 
-        monomer1 = atomlist[:nat/2]
-        monomer2 = atomlist[nat/2:]
-        # compute the enclosing box for each pyrene unit
-        box1 = MoleculeBox(monomer1)
-        box2 = MoleculeBox(monomer2)
+    with open(out_file, "w") as fh:
+        print("# TSTEP     R_X / Angstrom    R_Y / Angstrom   R_Z / Angstrom", file=fh)
+        # process one geometry after the other
+        for i,atomlist in enumerate(XYZ.read_xyz_it(xyz_traj_file)):
+            if qmmm_partitioning != None:
+                # select the atoms belonging to the dimer pair
+                atomlist = [atomlist[j] for j in qmmm_partitioning]
+            nat = len(atomlist)
+            assert nat == 52, "Pyrene dimer should contain 52 atoms!"
+            # 
+            monomer1 = atomlist[: nat // 2]
+            monomer2 = atomlist[nat // 2 :]
+            # compute the enclosing box for each pyrene unit
+            box1 = MoleculeBox(monomer1)
+            box2 = MoleculeBox(monomer2)
 
-        # distance between the centers of the enclosing boxes
-        vec = box2.center - box1.center
-        # decompose distance between centers into a part that is perpendicular to the
-        # plane of the 1st monomer and another one that is horizontal to it by projecting
-        # onto the z-axis of the box belonging to the 1st monomer
-        vec_vertical = np.dot(box1.axes[2], vec) * box1.axes[2]
-        ## The x-axis is parallel to the vector passing through atoms C12 and C10
-        #xaxis = np.array(atomlist[9][1]) - np.array(atomlist[11][1])
-        # In the geometries with periodic boundary conditions the x-axis passes
-        # through atoms C3 and C23
-        xaxis = np.array(atomlist[2][1]) - np.array(atomlist[22][1])
-        # remove z-component from x-axis
-        xaxis -= np.dot(box1.axes[2], xaxis) * box1.axes[2]
-        xaxis /= la.norm(xaxis)
-        ## The y-axis is parallel to the vector passing through atoms C11 and C13
-        #yaxis = np.array(atomlist[10][1]) - np.array(atomlist[12][1])
-        # In the geometries with periodic boundary conditions the y-axis passes
-        # through atoms C14 and C4
-        yaxis = np.array(atomlist[13][1]) - np.array(atomlist[3][1])
-        yaxis -= np.dot(box1.axes[2], yaxis) * box1.axes[2]
-        yaxis /= la.norm(yaxis)
+            # distance between the centers of the enclosing boxes
+            vec = box2.center - box1.center
+            # decompose distance between centers into a part that is perpendicular to the
+            # plane of the 1st monomer and another one that is horizontal to it by projecting
+            # onto the z-axis of the box belonging to the 1st monomer
+            vec_vertical = np.dot(box1.axes[2], vec) * box1.axes[2]
+            ## The x-axis is parallel to the vector passing through atoms C12 and C10
+            #xaxis = np.array(atomlist[9][1]) - np.array(atomlist[11][1])
+            # In the geometries with periodic boundary conditions the x-axis passes
+            # through atoms C3 and C23
+            xaxis = np.array(atomlist[2][1]) - np.array(atomlist[22][1])
+            # remove z-component from x-axis
+            xaxis -= np.dot(box1.axes[2], xaxis) * box1.axes[2]
+            xaxis /= la.norm(xaxis)
+            ## The y-axis is parallel to the vector passing through atoms C11 and C13
+            #yaxis = np.array(atomlist[10][1]) - np.array(atomlist[12][1])
+            # In the geometries with periodic boundary conditions the y-axis passes
+            # through atoms C14 and C4
+            yaxis = np.array(atomlist[13][1]) - np.array(atomlist[3][1])
+            yaxis -= np.dot(box1.axes[2], yaxis) * box1.axes[2]
+            yaxis /= la.norm(yaxis)
 
-        vec_horizontal = vec - vec_vertical
-        Rx = np.dot(xaxis, vec_horizontal) * AtomicData.bohr_to_angs
-        Ry = np.dot(yaxis, vec_horizontal) * AtomicData.bohr_to_angs
-        Rz = la.norm(vec_vertical) * AtomicData.bohr_to_angs
+            vec_horizontal = vec - vec_vertical
+            Rx = np.dot(xaxis, vec_horizontal) * AtomicData.bohr_to_angs
+            Ry = np.dot(yaxis, vec_horizontal) * AtomicData.bohr_to_angs
+            Rz = la.norm(vec_vertical) * AtomicData.bohr_to_angs
 
-        print>>fh, "%d  %8.6f  %8.6f  %8.6f" % (i,Rx,Ry,Rz)
-    fh.close()
+            print("%d  %8.6f  %8.6f  %8.6f" % (i,Rx,Ry,Rz), file=fh)
     
 if __name__ == "__main__":
     import sys

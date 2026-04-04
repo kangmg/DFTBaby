@@ -156,51 +156,49 @@ class MECI:
         x = XYZ.atomlist2vector(self.atomlist0)
         # overwrite geometries from previous run
         mode = "w"
-        en_fh = open("meci_energies.dat", "w")
-        print>>en_fh, "# optimization of MECI"
-        print>>en_fh, "# STEP     ENERGY(1)/Hartree    ENERGY(2)/Hartree    ENERGY(3)-EPS/Hartree"
-        
-        for i in range(0, max_iter):
-            e1, e2, grad = self.getGradient(x)
-            # energy gap
-            en_gap = e2-e1
-            self.adjust_shift(en_gap)
-
-            # save intermediate steps and energies
-            atomlist = XYZ.vector2atomlist(x, self.atomlist0)
-            XYZ.write_xyz("meci_path.xyz", [atomlist],
-                          title="ENERGY= %e  GAP= %e" % (e2, en_gap), mode=mode)
-            print>>en_fh, " %4.1d      %+15.10f      %+15.10f      %+15.10f" % (i,e1,e2,e2-self.epsilon)
-            en_fh.flush()
+        with open("meci_energies.dat", "w") as en_fh:
+            print("# optimization of MECI", file=en_fh)
+            print("# STEP     ENERGY(1)/Hartree    ENERGY(2)/Hartree    ENERGY(3)-EPS/Hartree", file=en_fh)
             
-            # append to trajectory file
-            mode = "a"
-            #
-            
-            gnorm = la.norm(grad)
-            print(" %4.1d    e2= %e  e2-e1= %e   |grad|= %e  (tolerance= %e)" % (i, e2, en_gap, gnorm, gtol))
-            if gnorm < gtol:
-                break
+            for i in range(0, max_iter):
+                e1, e2, grad = self.getGradient(x)
+                # energy gap
+                en_gap = e2-e1
+                self.adjust_shift(en_gap)
 
-            if self.coord_system == "cartesian":
-                # descend along gradient directly in cartesian coordinates
-                x -= step_size * grad
-            elif self.coord_system == "internal":
-                # use internal redundant coordinates
-                # 1) transform cartesian to internal coordinates x -> q
-                q = self.ic.cartesian2internal(x)
-                # 2) transform cartesian gradient to internal coordinates
-                # dE/dx -> dE/dq
-                grad_intern = self.ic.transform_gradient(x, grad)
-                # 3) take step along gradient in internal coordinates
-                q = q - step_size * grad_intern
-                # 4) deduce new cartesian coordinates from new internal coordinates q
-                x = self.ic.internal2cartesian(q)
+                # save intermediate steps and energies
+                atomlist = XYZ.vector2atomlist(x, self.atomlist0)
+                XYZ.write_xyz("meci_path.xyz", [atomlist],
+                              title="ENERGY= %e  GAP= %e" % (e2, en_gap), mode=mode)
+                print(" %4.1d      %+15.10f      %+15.10f      %+15.10f" % (i,e1,e2,e2-self.epsilon), file=en_fh)
+                en_fh.flush()
+                
+                # append to trajectory file
+                mode = "a"
+                #
+                
+                gnorm = la.norm(grad)
+                print(" %4.1d    e2= %e  e2-e1= %e   |grad|= %e  (tolerance= %e)" % (i, e2, en_gap, gnorm, gtol))
+                if gnorm < gtol:
+                    break
 
-        else:
-            print("exceeded maximum number of steps")
-            
-        en_fh.close()
+                if self.coord_system == "cartesian":
+                    # descend along gradient directly in cartesian coordinates
+                    x -= step_size * grad
+                elif self.coord_system == "internal":
+                    # use internal redundant coordinates
+                    # 1) transform cartesian to internal coordinates x -> q
+                    q = self.ic.cartesian2internal(x)
+                    # 2) transform cartesian gradient to internal coordinates
+                    # dE/dx -> dE/dq
+                    grad_intern = self.ic.transform_gradient(x, grad)
+                    # 3) take step along gradient in internal coordinates
+                    q = q - step_size * grad_intern
+                    # 4) deduce new cartesian coordinates from new internal coordinates q
+                    x = self.ic.internal2cartesian(q)
+
+            else:
+                print("exceeded maximum number of steps")
         
             
 if __name__ == "__main__":
@@ -253,4 +251,3 @@ if __name__ == "__main__":
                 state1=state1, state2=state2)
     
     meci.opt(step_size=0.1, gtol=0.001)
-

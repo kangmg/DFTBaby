@@ -76,52 +76,50 @@ if __name__ == "__main__":
             if np.sum((isomer_connectivities[i] - isomer_connectivities[j])**2) == 0:
                 print("WARNING: Isomer %d and %d in file '%s' have the same adjacency matrices!" % (i+1,j+1, isomer_file))
     
-    fh = open(opts.out_file, "w")
+    with open(opts.out_file, "w") as fh:
+        print("# isomer indeces refer to the geometries in '%s'" % isomer_file, file=fh)
+        print("# GEOMETRY        ISOMER(S)", file=fh)
 
-    print>>fh, "# isomer indeces refer to the geometries in '%s'" % isomer_file
-    print>>fh, "# GEOMETRY        ISOMER(S)"
+        print("classify geometries by comparison with isomers")
+        for i_step,atomlist in enumerate(XYZ.read_xyz_it(dynamics_file)):
 
-    print("classify geometries by comparison with isomers")
-    for i_step,atomlist in enumerate(XYZ.read_xyz_it(dynamics_file)):
-
-        if i_step % opts.step != 0:
-            continue
-
-        # Each fragment has to be analyzed separately separately
-        fragments = MolecularGraph.disconnected_fragments(atomlist, hydrogen_bonds=True)
-
-        # The geometry is assigned the index of the isomer which it resembles.
-        # If the molecule consists of several fragments each fragment is assigned
-        # separately.
-
-        if len(fragments) == 1:
-            # disconnected_fragments sometimes messes up, ;(. If there is only one fragment,
-            # it is better to use the original ordering of the atoms.
-            fragments = [atomlist]
-        classification = []
-        for i_frag,fragment in enumerate(fragments):
-            #print "Fragment %d" % i_frag
-            # canonically ordered atoms and adjacency matrix
-            atomlist_can, A_can = MolecularGraph.morgan_ordering(fragment, hydrogen_bonds=True)
-        
-            for i in range(0, n):
-                # loop over isomers and compare with connectivity matrix of current geometry
-                if A_can.shape != isomer_connectivities[i].shape:
-                    # fragment and isomer do not contain the same number of atoms
-                    continue
-                if np.sum((A_can - isomer_connectivities[i])**2) == 0:
-                    print("%d-th fragment of %d-th geometry classified as isomer %d" % (i_frag, i_step, i)                    )
-                    classification.append( i )
-                    break
-            else:
-                print("%d-th fragment of %d-th geometry could not be classified" % (i_frag, i_step))
+            if i_step % opts.step != 0:
                 continue
-        # print table
-        #
-        #   GEOMETRY I        ISOMER(FRAGMENT 1) ISOMER(FRAGMENT 2), ....
-        #
-        if len(classification) > 0:
-            print>>fh, "%d              %s" % (i_step, "   ".join(map(str, classification)))
 
-    fh.close()
+            # Each fragment has to be analyzed separately separately
+            fragments = MolecularGraph.disconnected_fragments(atomlist, hydrogen_bonds=True)
+
+            # The geometry is assigned the index of the isomer which it resembles.
+            # If the molecule consists of several fragments each fragment is assigned
+            # separately.
+
+            if len(fragments) == 1:
+                # disconnected_fragments sometimes messes up, ;(. If there is only one fragment,
+                # it is better to use the original ordering of the atoms.
+                fragments = [atomlist]
+            classification = []
+            for i_frag,fragment in enumerate(fragments):
+                #print "Fragment %d" % i_frag
+                # canonically ordered atoms and adjacency matrix
+                atomlist_can, A_can = MolecularGraph.morgan_ordering(fragment, hydrogen_bonds=True)
+            
+                for i in range(0, n):
+                    # loop over isomers and compare with connectivity matrix of current geometry
+                    if A_can.shape != isomer_connectivities[i].shape:
+                        # fragment and isomer do not contain the same number of atoms
+                        continue
+                    if np.sum((A_can - isomer_connectivities[i])**2) == 0:
+                        print("%d-th fragment of %d-th geometry classified as isomer %d" % (i_frag, i_step, i)                    )
+                        classification.append( i )
+                        break
+                else:
+                    print("%d-th fragment of %d-th geometry could not be classified" % (i_frag, i_step))
+                    continue
+            # print table
+            #
+            #   GEOMETRY I        ISOMER(FRAGMENT 1) ISOMER(FRAGMENT 2), ....
+            #
+            if len(classification) > 0:
+                print("%d              %s" % (i_step, "   ".join(map(str, classification))), file=fh)
+
     print("Table with classifications written to %s" % opts.out_file)

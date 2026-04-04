@@ -155,13 +155,11 @@ def save_partial_dipoles(filename, atomlist, ddip):
     with blender
     """
     # write partial dipoles
-    fh = open(filename, "w")
     nat = len(atomlist)
-    print>>fh, "%s" % nat
-    for (Zi,(x,y,z)) in atomlist:
-        print>>fh, "%s   %s %s %s" % (AtomicData.atom_names[Zi-1], x, y, z)
-    for i in range(0, nat):
-        print>>fh, "%s %s %s" % tuple(ddip[i,:])
-    fh.close()
+    with open(filename, "w") as fh:
+        print("%s" % nat, file=fh)
+        for (Zi,(x,y,z)) in atomlist:
+            print("%s   %s %s %s" % (AtomicData.atom_names[Zi-1], x, y, z), file=fh)
+        for i in range(0, nat):
+            print("%s %s %s" % tuple(ddip[i,:]), file=fh)
     print("wrote partial dipoles to file %s" % filename)
-

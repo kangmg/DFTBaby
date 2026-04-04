@@ -220,13 +220,13 @@ if __name__ == "__main__":
     nac = non_adiabatic_coupling_vector(atomlist, basis, Ptrans, en_diff)
 
     # and save it to a file
-    fh_nac = open(nac_file, "w")
-    # write header for NAC vector
-    print>>fh_nac, "# non-adiabatic coupling vector ( in bohr^-1 ) "
-    print>>fh_nac, "#    X             Y             Z             "
-    
-    # print non-adiabatic coupling vector as (Nat,3) matrix
-    Nat = len(atomlist)
-    np.savetxt(fh_nac, nac.transpose(), fmt="%+e")
+    with open(nac_file, "w") as fh_nac:
+        # write header for NAC vector
+        print("# non-adiabatic coupling vector ( in bohr^-1 ) ", file=fh_nac)
+        print("#    X             Y             Z             ", file=fh_nac)
+        
+        # print non-adiabatic coupling vector as (Nat,3) matrix
+        Nat = len(atomlist)
+        np.savetxt(fh_nac, nac.transpose(), fmt="%+e")
 
     print("Non-adiabatic coupling vector written to %s" % nac_file)

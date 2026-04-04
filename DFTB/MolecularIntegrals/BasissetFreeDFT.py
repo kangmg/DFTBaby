@@ -282,7 +282,7 @@ def effective_potential_func(atomlist, rho, xc,
     if not (xc is None):
         # GGA xc-functionals need the gradient squared of the density
         #          __     2
-        # sigma = (\/ rho)
+        # sigma = (\\/ rho)
         sigma = multicenter_gradient2(rho,
                                       atomic_coordinates, atomic_numbers,
                                       radial_grid_factor=settings.radial_grid_factor,
@@ -388,7 +388,7 @@ def laplacian_func(atomlist, phi):
     """
     create function for evaluating the Laplacian of phi,
       __2
-      \/  phi
+      \\/  phi
 
     Parameters
     ==========
@@ -415,7 +415,7 @@ def energy(atomlist, bra, ket, potential):
     compute matrix element of electronic energy
 
                      /    *        __2 
-       <bra|H|ket> = | bra  ( -1/2 \/  + V(r) ) ket dr
+       <bra|H|ket> = | bra  ( -1/2 \\/  + V(r) ) ket dr
                      /
 
     Parameters
@@ -452,7 +452,7 @@ def energy_ee(atomlist, bra, ket, potential_ee):
     compute matrix element of electronic energy
 
                      /    *        __2 
-       <bra|H|ket> = | bra  ( -1/2 \/  + V(r) ) ket dr
+       <bra|H|ket> = | bra  ( -1/2 \\/  + V(r) ) ket dr
                      /
 
     Unlike in `energy(...)` the kinetic energy and the nuclear attraction
@@ -491,7 +491,7 @@ def residual_func(atomlist, phi, potential, e):
     """
     create function for evaluating the "residual" (see Ref. [3])
                 __2
-       R = -1/2 \/  phi(r)  +  (V-e) phi(r)
+       R = -1/2 \\/  phi(r)  +  (V-e) phi(r)
 
     Parameters
     ==========
@@ -518,7 +518,7 @@ def residual_ee_func(atomlist, phi, potential_ee, e):
     """
     create function for evaluating the "residual" (see Ref. [3])
                 __2
-       R = -1/2 \/  phi(r)  +  (V-e) phi(r)
+       R = -1/2 \\/  phi(r)  +  (V-e) phi(r)
 
     Unlike in `residual_func(...)` the kinetic energy and the nuclear attraction
     energy are computed together to avoid numerical errors.
@@ -660,7 +660,7 @@ def orbital_correction(atomlist, potential, source,  e, delta_e):
     determine the orbital correction  delta_phi  by solving the
     inhomogeneous Schroedinger equation 
            __2
-      -1/2 \/   (delta_phi) + (V - e - delta_e) delta_phi = delta_e phi - R
+      -1/2 \\/   (delta_phi) + (V - e - delta_e) delta_phi = delta_e phi - R
 
     approximately for a potential that is spherically averaged
     around each atom.
@@ -699,7 +699,7 @@ def inhomogeneous_schroedinger(atomlist, potential, source, E):
     solve the inhomogeneous Schroedinger equation
 
            __2
-      -1/2 \/   phi + (V(r) - E) phi = S(r)
+      -1/2 \\/   phi + (V(r) - E) phi = S(r)
 
     for the wavefunction (correction) phi. 
 
@@ -882,7 +882,7 @@ def exchange_correlation_energy(atomlist, rho, xc):
     atomic_numbers, atomic_coordinates = atomlist2arrays(atomlist)
     # GGA xc-functionals need the gradient squared of the density
     #          __     2
-    # sigma = (\/ rho)
+    # sigma = (\\/ rho)
     sigma = multicenter_gradient2(rho,
                                   atomic_coordinates, atomic_numbers,
                                   radial_grid_factor=settings.radial_grid_factor,
@@ -1453,25 +1453,25 @@ class BasissetFreeDFT(object):
                 
                 orbital_corrections.append(delta_phi)
 
-                """
+                r"""
                 ### DEBUG
                 import matplotlib.pyplot as plt
                 r = np.linspace(0.00001, 10.0, 5000)
                 
                 plt.plot(r, veff(r,0*r,0*r), ls="-.", lw=2, label=r"$v_{eff}$")
 
-                plt.plot(r, residual(r,0*r,0*r), label=r"residual $(H-\epsilon)\phi$")
-                plt.plot(r, source(r,0*r,0*r), label=r"source $\Delta \epsilon \phi - (H-E)\phi$")
+                plt.plot(r, residual(r,0*r,0*r), label=r"residual $(H-\\epsilon)\\phi$")
+                plt.plot(r, source(r,0*r,0*r), label=r"source $\Delta \\epsilon \\phi - (H-E)\\phi$")
                 # wavefunctions
-                plt.plot(r, phi(r,0*r,0*r), label=r"guess $\phi$")
-                plt.plot(r, delta_phi(r,0*r,0*r), label=r"correction $\Delta \phi$")
-                plt.plot(r, phi(r,0*r,0*r) + delta_phi(r,0*r,0*r), label=r"$\phi + \Delta \phi$")
-                plt.plot(r, phi(r,0*r,0*r) - delta_phi(r,0*r,0*r), label=r"$\phi - \Delta \phi$")
+                plt.plot(r, phi(r,0*r,0*r), label=r"guess $\\phi$")
+                plt.plot(r, delta_phi(r,0*r,0*r), label=r"correction $\Delta \\phi$")
+                plt.plot(r, phi(r,0*r,0*r) + delta_phi(r,0*r,0*r), label=r"$\\phi + \Delta \\phi$")
+                plt.plot(r, phi(r,0*r,0*r) - delta_phi(r,0*r,0*r), label=r"$\\phi - \Delta \\phi$")
                 
                 plt.legend()
                 plt.show()
                 ###
-                """
+                r"""
                 
             print("k= %3.1d  error = %e (threshold = %e)" % (k, total_error, thresh))
 
@@ -1729,20 +1729,20 @@ class BasissetFreeDFT(object):
                 
                 orbital_corrections.append(delta_phi)
 
-                """
+                r"""
                 ### DEBUG
                 import matplotlib.pyplot as plt
                 r = np.linspace(0.00001, 10.0, 5000)
                 
                 plt.plot(r, veff(r,0*r,0*r), ls="-.", lw=2, label=r"$v_{eff}$")
 
-                plt.plot(r, residual(r,0*r,0*r), label=r"residual $(H-\epsilon)\phi$")
-                plt.plot(r, source(r,0*r,0*r), label=r"source $\Delta \epsilon \phi - (H-E)\phi$")
+                plt.plot(r, residual(r,0*r,0*r), label=r"residual $(H-\\epsilon)\\phi$")
+                plt.plot(r, source(r,0*r,0*r), label=r"source $\Delta \\epsilon \\phi - (H-E)\\phi$")
                 # wavefunctions
-                plt.plot(r, phi(r,0*r,0*r), label=r"guess $\phi$")
-                plt.plot(r, delta_phi(r,0*r,0*r), label=r"correction $\Delta \phi$")
-                plt.plot(r, phi(r,0*r,0*r) + delta_phi(r,0*r,0*r), label=r"$\phi + \Delta \phi$")
-                plt.plot(r, phi(r,0*r,0*r) - delta_phi(r,0*r,0*r), label=r"$\phi - \Delta \phi$")
+                plt.plot(r, phi(r,0*r,0*r), label=r"guess $\\phi$")
+                plt.plot(r, delta_phi(r,0*r,0*r), label=r"correction $\Delta \\phi$")
+                plt.plot(r, phi(r,0*r,0*r) + delta_phi(r,0*r,0*r), label=r"$\\phi + \Delta \\phi$")
+                plt.plot(r, phi(r,0*r,0*r) - delta_phi(r,0*r,0*r), label=r"$\\phi - \Delta \\phi$")
                 
                 plt.legend()
                 plt.show()
@@ -1840,12 +1840,12 @@ class BasissetFreeDFT(object):
         plt.xlabel("r / bohr")
 
         # radial (l,m) component of wavefunctions
-        plt.plot(r, phi0_rad(r), label=r"initial $\phi^{(0)}_{l=%d,m=%+d}(r)$" % (l,m))
-        plt.plot(r, phi_rad(r), label=r"current $\phi_{l=%d,m=%+d}(r)$" % (l,m))
+        plt.plot(r, phi0_rad(r), label=r"initial $\\phi^{(0)}_{l=%d,m=%+d}(r)$" % (l,m))
+        plt.plot(r, phi_rad(r), label=r"current $\\phi_{l=%d,m=%+d}(r)$" % (l,m))
         
         # residuals (spherically averaged)
-        plt.plot(r, residual0_avg(r), label=r"residual $\int d\Omega (H-E)\phi_0$")
-        plt.plot(r, residual_avg(r), label=r"residual $\int d\Omega (H-E)\phi$")
+        plt.plot(r, residual0_avg(r), label=r"residual $\int d\Omega (H-E)\\phi_0$")
+        plt.plot(r, residual_avg(r), label=r"residual $\int d\Omega (H-E)\\phi$")
             
         plt.legend()
         #plt.savefig("/tmp/iteration_%4.4d.png" % k)
@@ -2168,11 +2168,11 @@ class BasissetFreeDFT(object):
             axes[0].plot(r, veff(x,y,z) , ls="-",  label=r"original $V$")
             axes[0].plot(r, u(x,y,z),     ls="-.", label=r"inverted $U = S^{-1} V$")
             axes[0].plot(r, v_rec(x,y,z), ls="--", label=r"reconstructed $V^{(rec)}$")
-            axes[0].plot(r, source(x,y,z), ls="-.", label=r"source $-(V-V_0) \phi_0$")
+            axes[0].plot(r, source(x,y,z), ls="-.", label=r"source $-(V-V_0) \\phi_0$")
 
             # wavefunctions
-            axes[1].plot(r, phi0(x,y,z), ls="-.", label=r"$\phi_0$")
-            axes[1].plot(r, phi(x,y,z),  ls="-" , label=r"$\phi$")
+            axes[1].plot(r, phi0(x,y,z), ls="-.", label=r"$\\phi_0$")
+            axes[1].plot(r, phi(x,y,z),  ls="-" , label=r"$\\phi$")
 
             ### LCAO continuum wavefunction
             for i,(Z,pos) in enumerate(atomlist):
@@ -2183,18 +2183,18 @@ class BasissetFreeDFT(object):
                     phi_LCAO = phiI
                 else:
                     phi_LCAO = add_two_functions(atomlist, phi_LCAO, phiI, 1.0, 1.0)
-            axes[1].plot(r, phi_LCAO(x,y,z), ls="--", label=r"$\phi_{LCAO}$")
+            axes[1].plot(r, phi_LCAO(x,y,z), ls="--", label=r"$\\phi_{LCAO}$")
             
             ##################################
             
             # residuals
-            axes[2].plot(r, residual0(x,y,z), ls="-.", label=r"residual $(T+V-E)\phi_0$")
-            axes[2].plot(r, residual(x,y,z),  ls="-",  label=r"residual $(T+V-E)\phi$")
+            axes[2].plot(r, residual0(x,y,z), ls="-.", label=r"residual $(T+V-E)\\phi_0$")
+            axes[2].plot(r, residual(x,y,z),  ls="-",  label=r"residual $(T+V-E)\\phi$")
 
             ######################################
             # residual of LCAO wavefunction
             residual_LCAO  = residual_func(atomlist, phi_LCAO, veff, E)                    
-            axes[2].plot(r, residual_LCAO(x,y,z), ls="--", label=r"residual $(T+V-E)\phi_{LCAO}$")
+            axes[2].plot(r, residual_LCAO(x,y,z), ls="--", label=r"residual $(T+V-E)\\phi_{LCAO}$")
             ######################################
             
             for ax in axes:
@@ -2473,8 +2473,8 @@ class BasissetFreeDFT(object):
             axes[0].plot(r, v_rec(x,y,z), ls="--", label=r"reconstructed $V^{(rec)}$")
 
             # wavefunctions
-            axes[1].plot(r, phi0(x,y,z), ls="-.", label=r"$\phi_0$")
-            axes[1].plot(r, phi(x,y,z),  ls="-" , label=r"$\phi$")
+            axes[1].plot(r, phi0(x,y,z), ls="-.", label=r"$\\phi_0$")
+            axes[1].plot(r, phi(x,y,z),  ls="-" , label=r"$\\phi$")
 
             ### LCAO continuum wavefunction
             for i,(Z,pos) in enumerate(atomlist):
@@ -2485,22 +2485,22 @@ class BasissetFreeDFT(object):
                     phi_LCAO = phiI
                 else:
                     phi_LCAO = add_two_functions(atomlist, phi_LCAO, phiI, 1.0, 1.0)
-            axes[1].plot(r, phi_LCAO(x,y,z), ls="--", label=r"$\phi_{LCAO}$")
+            axes[1].plot(r, phi_LCAO(x,y,z), ls="--", label=r"$\\phi_{LCAO}$")
             
             ##################################
             
             # residuals
-            axes[2].plot(r, residual0(x,y,z), ls="-.", label=r"residual $(T+V-E)\phi_0$")
-            axes[2].plot(r, residual(x,y,z),  ls="-",  label=r"residual $(T+V-E)\phi$")
+            axes[2].plot(r, residual0(x,y,z), ls="-.", label=r"residual $(T+V-E)\\phi_0$")
+            axes[2].plot(r, residual(x,y,z),  ls="-",  label=r"residual $(T+V-E)\\phi$")
 
             # kinetic vs. potential energy
-            axes[2].plot(r, -0.5 * lap_phi(x,y,z), ls="--", label=r"kinetic energy $T\phi$")
-            axes[2].plot(r, (veff(x,y,z)-E)*phi(x,y,z), ls="--", label=r"potential energy $(V-E)\phi$")
+            axes[2].plot(r, -0.5 * lap_phi(x,y,z), ls="--", label=r"kinetic energy $T\\phi$")
+            axes[2].plot(r, (veff(x,y,z)-E)*phi(x,y,z), ls="--", label=r"potential energy $(V-E)\\phi$")
             
             ######################################
             # residual of LCAO wavefunction
             residual_LCAO  = residual_func(atomlist, phi_LCAO, veff, E)                    
-            axes[2].plot(r, residual_LCAO(x,y,z), ls="--", label=r"residual $(T+V-E)\phi_{LCAO}$")
+            axes[2].plot(r, residual_LCAO(x,y,z), ls="--", label=r"residual $(T+V-E)\\phi_{LCAO}$")
             ######################################
             
             for ax in axes:
@@ -2543,7 +2543,7 @@ def regular_coulomb_func(E, Z, l, m, delta_l,
     Schroedinger equation with energy E for the hydrogen atom (if Z=1)
 
               __2
-        (-1/2 \/  -  Z/r) Cf(x,y,z) = E Cf(x,y,z)
+        (-1/2 \\/  -  Z/r) Cf(x,y,z) = E Cf(x,y,z)
 
 
     The angular part of Cf are real (!) spherical harmonics.
@@ -2618,7 +2618,7 @@ def irregular_coulomb_func(E, Z, l, m, delta_l,
     Schroedinger equation with energy E for the hydrogen atom (if Z=1)
 
               __2
-        (-1/2 \/  -  Z/r) Cg(x,y,z) = E Cf(x,y,z)
+        (-1/2 \\/  -  Z/r) Cg(x,y,z) = E Cf(x,y,z)
 
 
     The angular part of Cg are real (!) spherical harmonics.
@@ -2812,8 +2812,8 @@ def phaseshift_lstsq(atomlist, phi, E, Z, l, m, rmin, rmax, Npts,
         plt.xlabel(r"phase shift $\delta$")
         plt.ylabel(r"matching error$^2$")
         error2_array = [error2(d) for d in ds]
-        plt.plot(ds, error2_array, label=r"$\epsilon(\delta)^2 = \vert r R(r) - s Cf(r,\delta) \vert^2$")
-        plt.plot([delta_opt], [err2], "o", label=r"$\epsilon(\delta^*)$")
+        plt.plot(ds, error2_array, label=r"$\\epsilon(\delta)^2 = \vert r R(r) - s Cf(r,\delta) \vert^2$")
+        plt.plot([delta_opt], [err2], "o", label=r"$\\epsilon(\delta^*)$")
         plt.legend()
         plt.show()
 
@@ -3599,8 +3599,8 @@ def imaginary_time_propagation(atomlist, phi0, potential, e, t, n):
         print(residual2(x,y,z))
         plt.cla()
         plt.clf()
-        plt.plot(r, residual(x,y,z), label="$(H-E) \phi$")
-        plt.plot(r, residual2(x,y,z), label="$(H-E)^2 \phi$")
+        plt.plot(r, residual(x,y,z), label="$(H-E) \\phi$")
+        plt.plot(r, residual2(x,y,z), label="$(H-E)^2 \\phi$")
         plt.legend()
         plt.show()
         ###
@@ -3626,23 +3626,23 @@ def test_hydrogen_molecular_ion():
     ground state energy of the hydrogen molecular ion (HMI, H2+)
     using Becke's basis-set-free solver for the Schroedinger equation.
     
-    The initial guess for the 1\sigma_g orbital is the normalized sum
+    The initial guess for the 1\\sigma_g orbital is the normalized sum
     of two 1s hydrogen orbitals centered on each proton.
 
     The numerically exact eigenenergies of the HMI for a bond length 
     of rHH = 2 bohr can be obtained with the program 
     'DFTB/Scattering/hydrogen_molecular_ion.py':
 
-    1\sigma_g  Energy: -1.10263535012 Hartree
-    2\sigma_g  Energy: -0.360864925127 Hartree
-    3\sigma_g  Energy: -0.177680825727 Hartree
-    1\sigma_u  Energy: -0.667534428815 Hartree
-    2\sigma_u  Energy: -0.255413235739 Hartree
-    3\sigma_u  Energy: -0.13730603945 Hartree
-    1\pi_g     Energy: -0.226699702323 Hartree
-    2\pi_g     Energy: -0.126703197559 Hartree
-    1\delta_g  Energy: -0.212732490978 Hartree
-    2\delta_g  Energy: -0.121011034108 Hartree
+    1\\sigma_g  Energy: -1.10263535012 Hartree
+    2\\sigma_g  Energy: -0.360864925127 Hartree
+    3\\sigma_g  Energy: -0.177680825727 Hartree
+    1\\sigma_u  Energy: -0.667534428815 Hartree
+    2\\sigma_u  Energy: -0.255413235739 Hartree
+    3\\sigma_u  Energy: -0.13730603945 Hartree
+    1\\pi_g     Energy: -0.226699702323 Hartree
+    2\\pi_g     Energy: -0.126703197559 Hartree
+    1\\delta_g  Energy: -0.212732490978 Hartree
+    2\\delta_g  Energy: -0.121011034108 Hartree
     
     """
     #xc = XCFunctionals.libXCFunctional("lda_x", "lda_c_xalpha")
@@ -3713,18 +3713,18 @@ def test_hydrogen_molecular_ion():
             ####
             # cut along x-axis
             ax[0].set_xlabel("x / bohr")
-            ax[0].set_ylabel(r"$\phi(x,0,0)$")
-            linex, = ax[0].plot(r, phi(r,zero,zero), label=r"$\phi$   iter. %d" % k)
+            ax[0].set_ylabel(r"$\\phi(x,0,0)$")
+            linex, = ax[0].plot(r, phi(r,zero,zero), label=r"$\\phi$   iter. %d" % k)
 
             # cut along y-axis
             ax[1].set_xlabel("y / bohr")
-            ax[1].set_ylabel(r"$\phi(0,y,0)$")
-            liney, = ax[1].plot(r, phi(zero,r,zero), label=r"$\phi$   iter. %d" % k)
+            ax[1].set_ylabel(r"$\\phi(0,y,0)$")
+            liney, = ax[1].plot(r, phi(zero,r,zero), label=r"$\\phi$   iter. %d" % k)
 
             # cut along z-axis
             ax[2].set_xlabel("z / bohr")
-            ax[2].set_ylabel(r"$\phi(0,0,z)$")
-            linez, = ax[2].plot(r, phi(zero,zero,r), label=r"$\phi$   iter. %d" % k)
+            ax[2].set_ylabel(r"$\\phi(0,0,z)$")
+            linez, = ax[2].plot(r, phi(zero,zero,r), label=r"$\\phi$   iter. %d" % k)
 
             #plt.show()
             
@@ -3747,15 +3747,15 @@ def test_hydrogen_molecular_ion():
 
             ####
             # cut along x-axis
-            ax[0].plot(r, delta_phi(r,zero,zero), ls="-.", color=linex.get_color(), label=r"$\Delta \phi$ iter. %d" % k)
+            ax[0].plot(r, delta_phi(r,zero,zero), ls="-.", color=linex.get_color(), label=r"$\Delta \\phi$ iter. %d" % k)
             ax[0].legend()
 
             # cut along y-axis
-            ax[1].plot(r, delta_phi(zero,r,zero), ls="-.", color=liney.get_color(), label=r"$\Delta \phi$ iter. %d" % k)
+            ax[1].plot(r, delta_phi(zero,r,zero), ls="-.", color=liney.get_color(), label=r"$\Delta \\phi$ iter. %d" % k)
             ax[1].legend()
 
             # cut along z-axis
-            ax[2].plot(r, delta_phi(zero,zero,r), ls="-.", color=linez.get_color(), label=r"$\Delta \phi$ iter. %d" % k)
+            ax[2].plot(r, delta_phi(zero,zero,r), ls="-.", color=linez.get_color(), label=r"$\Delta \\phi$ iter. %d" % k)
             ax[2].legend()
 
             #plt.show()
@@ -3900,7 +3900,7 @@ def test_coulomb_waves():
     check that Coulomb waves phi(r) satisfy Schroedinger's equation
     for the hydrogen atom,
               __2
-        (-1/2 \/  -  1/r) phi = E phi
+        (-1/2 \\/  -  1/r) phi = E phi
 
     by plotting the residual   R(r) = (H-E) phi(r).
 
@@ -3957,7 +3957,7 @@ def test_scattering_solution():
 
     Assume that the Hamiltonian H = H0 + V can be split into a part 
                    __2
-         H0 = -1/2 \/  + V0(r)
+         H0 = -1/2 \\/  + V0(r)
 
     for which the solutions phi0(r) are known, (H0-E)phi0 = 0, 
     and a perturbation V1(r) with V1 ---> 0 exponentially fast 
@@ -4097,18 +4097,18 @@ def test_scattering_solution():
     plt.ylim((-0.55, 0.25))
     plt.xlabel("r / bohr")
 
-    plt.plot(r, phi0(r,0*r,0*r), label=r"$\phi_0$")
-    plt.plot(r, dphi(r,0*r,0*r), label=r"$\Delta \phi$")
-    plt.plot(r, phi(r,0*r,0*r), label=r"$\phi = \phi_0 + \Delta \phi$")
-    plt.plot(r, phi_norm(r,0*r,0*r), label=r"normalized $\phi$")
+    plt.plot(r, phi0(r,0*r,0*r), label=r"$\\phi_0$")
+    plt.plot(r, dphi(r,0*r,0*r), label=r"$\Delta \\phi$")
+    plt.plot(r, phi(r,0*r,0*r), label=r"$\\phi = \\phi_0 + \Delta \\phi$")
+    plt.plot(r, phi_norm(r,0*r,0*r), label=r"normalized $\\phi$")
     plt.plot(r, Cf_shift(r,0*r,0*r), ls="-.", label=r"shifted Coulomb")
 
     # 
     plt.plot(r, potential(r,0*r,0*r), ls="-.", label=r"potential $V(r) = V_0(r) + V_1(r)$")
     # 
-    plt.plot(r, residual0(r,0*r,0*r), label=r"residual $(H-E)\phi_0$")
-    plt.plot(r, residual( r,0*r,0*r), label=r"residual $(H-E)\phi$")
-    plt.plot(r, residual_avg(r), label=r"residual $\int d\Omega (H-E)\phi$")
+    plt.plot(r, residual0(r,0*r,0*r), label=r"residual $(H-E)\\phi_0$")
+    plt.plot(r, residual( r,0*r,0*r), label=r"residual $(H-E)\\phi$")
+    plt.plot(r, residual_avg(r), label=r"residual $\int d\Omega (H-E)\\phi$")
     plt.legend()
     
     plt.show()
@@ -4265,7 +4265,7 @@ def test_asymptotic_regular_coulomb():
 
     r = np.linspace(0.003, 1000.0, 10000)
     plt.plot(r, Cf(0*r,0*r,r), label=r"Coulomb wavefunction")
-    plt.plot(r, asymptotic(0*r,0*r,r), label=r"$\sin(kr - \eta \log(2 k r) - l/2 \pi + \sigma_l)/r$")
+    plt.plot(r, asymptotic(0*r,0*r,r), label=r"$\\sin(kr - \\eta \log(2 k r) - l/2 \\pi + \\sigma_l)/r$")
     plt.legend()
 
     plt.show()
@@ -4345,7 +4345,7 @@ def test_improved_asymptotic_regular_coulomb():
     r = np.linspace(0.003, 1000.0, 10000)
     rho = k*r
     for nmax in range(0, 5):
-        plt.plot(r, asymptotic(rho,nmax=nmax), label=r"$|\Lambda_{%d}|\sin(kr - \eta \log(2 k r) - l/2 \pi + \sigma_l + \arg(\Lambda_{%d}))/r$" % (nmax, nmax))
+        plt.plot(r, asymptotic(rho,nmax=nmax), label=r"$|\Lambda_{%d}|\\sin(kr - \\eta \log(2 k r) - l/2 \\pi + \\sigma_l + \arg(\Lambda_{%d}))/r$" % (nmax, nmax))
     plt.plot(r, coulombf(rho), ls="-.", label=r"Coulomb wavefunction")
 
     plt.legend()
@@ -4374,7 +4374,7 @@ def test_improved_asymptotic_regular_coulomb():
     plt.xlabel("r / bohr")
     plt.ylim((-10.0,10.0))
     
-    plt.plot(r, delta, label=r"$\delta$ mod $\pi$")
+    plt.plot(r, delta, label=r"$\delta$ mod $\\pi$")
     
     plt.legend()
     plt.show()
@@ -4706,8 +4706,8 @@ def test1_lithium_scattering_solution():
     # save cut of wavefunction along x-axis to file
     data = np.vstack((r, phi0(r,0*r,0*r), phi_norm(r,0*r,0*r), residual_avg(r))).transpose()
     fh = open("/tmp/li+_wavefunction.dat", "w")
-    print>>fh, "# phase shift (relative to Coulomb wave) = %e" % delta
-    print>>fh, "# R / bohr      Coulomb         phi      <(H-E)phi>"
+    print("# phase shift (relative to Coulomb wave) = %e" % delta, file=fh)
+    print("# R / bohr      Coulomb         phi      <(H-E)phi>", file=fh)
     np.savetxt(fh, data, fmt="%+e")
     fh.close()
     
@@ -4716,10 +4716,10 @@ def test1_lithium_scattering_solution():
     plt.xlabel("r / bohr")
 
     # wavefunctions
-    plt.plot(r, phi0(r,0*r,0*r), label=r"$\phi_0$")
-    plt.plot(r, dphi(r,0*r,0*r), label=r"$\Delta \phi$")
-    plt.plot(r, phi(r,0*r,0*r), label=r"$\phi = \phi_0 + \Delta \phi$")
-    plt.plot(r, phi_norm(r,0*r,0*r), label=r"normalized $\phi$")
+    plt.plot(r, phi0(r,0*r,0*r), label=r"$\\phi_0$")
+    plt.plot(r, dphi(r,0*r,0*r), label=r"$\Delta \\phi$")
+    plt.plot(r, phi(r,0*r,0*r), label=r"$\\phi = \\phi_0 + \Delta \\phi$")
+    plt.plot(r, phi_norm(r,0*r,0*r), label=r"normalized $\\phi$")
     plt.plot(r, Cf_shift(r,0*r,0*r), ls="-.", label=r"shifted Coulomb")
 
     # potentials
@@ -4728,9 +4728,9 @@ def test1_lithium_scattering_solution():
     plt.plot(r, potential(r,0*r,0*r), lw=2, ls="-.", label=r"potential $V(r) = V_0(r) + V_1(r)$")
     
     # residuals
-    plt.plot(r, residual0(r,0*r,0*r), label=r"residual $(H-E)\phi_0$")
-    plt.plot(r, residual( r,0*r,0*r), label=r"residual $(H-E)\phi$")
-    plt.plot(r, residual_avg(r), label=r"residual $\int d\Omega (H-E)\phi$")
+    plt.plot(r, residual0(r,0*r,0*r), label=r"residual $(H-E)\\phi_0$")
+    plt.plot(r, residual( r,0*r,0*r), label=r"residual $(H-E)\\phi$")
+    plt.plot(r, residual_avg(r), label=r"residual $\int d\Omega (H-E)\\phi$")
     
     plt.legend()
     
@@ -4865,7 +4865,7 @@ def test1_spherical_remainder():
     for n,spherical in enumerate(spherical_parts):
         v_reconstructed += spherical(0.0*r, 0.0*r, r)
 
-        axes[1].plot(r, v_reconstructed, label=r"reconstructed $\sum_{n=0}^{%d} V^{(sph)}_n$" % n)
+        axes[1].plot(r, v_reconstructed, label=r"reconstructed $\\sum_{n=0}^{%d} V^{(sph)}_n$" % n)
         
     for ax in axes:
         ax.set_xlabel("z / bohr")
@@ -5142,11 +5142,11 @@ def test_solve_spherical_potential_water():
                            v(0*r,r,0*r+z),
                            v_rec(0*r,r,0*r+z),
                            u(0*r,r,0*r+z))).transpose()
-        print>>fh, "# cut through potential along the y-axis at x=0, z=%e" % z
-        print>>fh, "# "
-        print>>fh, "# R/bohr    V/Hartree       V^(rec)/Hartree      U/Hartree"
+        print("# cut through potential along the y-axis at x=0, z=%e" % z, file=fh)
+        print("# ", file=fh)
+        print("# R/bohr    V/Hartree       V^(rec)/Hartree      U/Hartree", file=fh)
         np.savetxt(fh, data, fmt="%+10.8e")
-        print>>fh, " "
+        print(" ", file=fh)
     print("tables with V, V^(rec)=S.U and U=S^(-1).V  written to '%s'" % dat_file)
     fh.close()
 
@@ -5239,11 +5239,11 @@ def test_solve_spherical_potential_water_dummy():
                            v(0*r,r,0*r+z),
                            v_rec(0*r,r,0*r+z),
                            u(0*r,r,0*r+z))).transpose()
-        print>>fh, "# cut through potential along the y-axis at x=0, z=%e" % z
-        print>>fh, "# "
-        print>>fh, "# R/bohr    V/Hartree       V^(rec)/Hartree      U/Hartree"
+        print("# cut through potential along the y-axis at x=0, z=%e" % z, file=fh)
+        print("# ", file=fh)
+        print("# R/bohr    V/Hartree       V^(rec)/Hartree      U/Hartree", file=fh)
         np.savetxt(fh, data, fmt="%+10.8e")
-        print>>fh, " "
+        print(" ", file=fh)
     print("tables with V, V^(rec)=S.U and U=S^(-1).V  written to '%s'" % dat_file)
     fh.close()
 
@@ -5531,8 +5531,8 @@ def test_iterative_inhomogeneous(): # NOT WORKING, THERE IS A CONCEPTUAL MISTAKE
         residual = residual_func(atomlist, phi, potential_full, E)
             
         axes[0].plot(r, potential(0.0*r, 0.0*r, r), label=r"$V_{%d}(0,0,z)$" % k)
-        axes[1].plot(r, phi(0.0*r,0.0*r,r), label=r"$\phi_{%d}(0,0,z)$" % k)
-        axes[2].plot(r, residual(0.0*r,0.0*r,r), ls="-.", label=r"residual $(H-E)\phi_{%d}(0,0,z)$" % k)
+        axes[1].plot(r, phi(0.0*r,0.0*r,r), label=r"$\\phi_{%d}(0,0,z)$" % k)
+        axes[2].plot(r, residual(0.0*r,0.0*r,r), ls="-.", label=r"residual $(H-E)\\phi_{%d}(0,0,z)$" % k)
 
     for ax in axes:
         ax.set_xlabel("z / bohr")
@@ -5703,14 +5703,14 @@ def test1_hmi_scattering():
         ax.plot(r, v0(0*r,0*r,r), lw=2, label=r"$v_0(0,0,z)$")
         ax.plot(r, v1(0*r,0*r,r), lw=2, label=r"$v_1(0,0,z)$")
 
-        ax.plot(r, phi0(0*r,0*r,r), ls="-.", label=r"$\phi_0(0,0,z)$")
-        ax.plot(r, phi1(0*r,0*r,r), ls="-.", label=r"$\phi_1(0,0,z)$")
-        ax.plot(r, phi2(0*r,0*r,r), ls="-.", label=r"$\phi_2(0,0,z)$")
+        ax.plot(r, phi0(0*r,0*r,r), ls="-.", label=r"$\\phi_0(0,0,z)$")
+        ax.plot(r, phi1(0*r,0*r,r), ls="-.", label=r"$\\phi_1(0,0,z)$")
+        ax.plot(r, phi2(0*r,0*r,r), ls="-.", label=r"$\\phi_2(0,0,z)$")
 
         # residuals
-        ax.plot(r, residual0(0*r,0*r,r), label=r"residual $R(z) = (H-E)\phi_0$")
-        ax.plot(r, residual1(0*r,0*r,r), label=r"residual $R(z) = (H-E)\phi_1$")
-        ax.plot(r, residual2(0*r,0*r,r), label=r"residual $R(z) = (H-E)\phi_2$")
+        ax.plot(r, residual0(0*r,0*r,r), label=r"residual $R(z) = (H-E)\\phi_0$")
+        ax.plot(r, residual1(0*r,0*r,r), label=r"residual $R(z) = (H-E)\\phi_1$")
+        ax.plot(r, residual2(0*r,0*r,r), label=r"residual $R(z) = (H-E)\\phi_2$")
         
         ax.legend()
         
@@ -5736,8 +5736,8 @@ def test1_hmi_scattering():
         
         
         plt.plot(r, potential(0*r,0*r,r), label=r"$v_{eff}(0,0,z)$")
-        plt.plot(r, residual0(0*r,0*r,r), label=r"residual $R(z) = (H-E)\phi_0$")
-        plt.plot(r, residual(0*r,0*r,r), label=r"residual $R(z) = (H-E)\phi$")
+        plt.plot(r, residual0(0*r,0*r,r), label=r"residual $R(z) = (H-E)\\phi_0$")
+        plt.plot(r, residual(0*r,0*r,r), label=r"residual $R(z) = (H-E)\\phi$")
         
         plt.ylim((-2.0, 2.0))
         plt.legend()
@@ -5835,10 +5835,10 @@ def test_imaginary_time_propagation():
     lap0 = laplacian_func(atomlist, phi0)
     
     plt.plot(r, potential(x,y,z), label="-1/sqrt(r^2+eps^2)")
-    plt.plot(r, phi0(x,y,z), label="$\phi_0$")
-    plt.plot(r, -0.5 * lap0(x,y,z), ls="-.", label=r"kinetic energy $T \phi_0$")
-    plt.plot(r, (potential(x,y,z)-E)*phi0(x,y,z), ls="-.", label=r"potential energy $(V-E)\phi_0$")
-    plt.plot(r, -0.5 * lap0(x,y,z) + (potential(x,y,z)-E)*phi0(x,y,z), ls="--", label="residual $(T+V-E)\phi_0$")
+    plt.plot(r, phi0(x,y,z), label="$\\phi_0$")
+    plt.plot(r, -0.5 * lap0(x,y,z), ls="-.", label=r"kinetic energy $T \\phi_0$")
+    plt.plot(r, (potential(x,y,z)-E)*phi0(x,y,z), ls="-.", label=r"potential energy $(V-E)\\phi_0$")
+    plt.plot(r, -0.5 * lap0(x,y,z) + (potential(x,y,z)-E)*phi0(x,y,z), ls="--", label="residual $(T+V-E)\\phi_0$")
     
     plt.legend()
     plt.show()
@@ -5846,7 +5846,7 @@ def test_imaginary_time_propagation():
     print("residual of initial guess...")
     residual0 = residual_func(atomlist, phi0, potential, E)
 
-    plt.plot(r, residual0(x,y,z), ls="--", label=r"residual $(H-E)\phi_0$")
+    plt.plot(r, residual0(x,y,z), ls="--", label=r"residual $(H-E)\\phi_0$")
 
     lap_res = laplacian_func(atomlist, residual0)
     plt.plot(r, lap_res(x,y,z), ls="-.", label=r"$-1/2 \nabla^2$ residual")
@@ -5859,7 +5859,7 @@ def test_imaginary_time_propagation():
         print("imaginary time propagation  exp(-(H-E)^2 t) phi0 ...")
         phi = imaginary_time_propagation(atomlist, phi, potential, E, time, nsteps)
 
-        plt.plot(r, phi(x,y,z), ls="-.", label="$\phi_{%d}$" % (i+1))
+        plt.plot(r, phi(x,y,z), ls="-.", label="$\\phi_{%d}$" % (i+1))
 
     plt.legend()
     plt.show()
@@ -5892,7 +5892,7 @@ def test_xc_functional():
         return n
 
     #          __     2
-    # sigma = (\/ rho)
+    # sigma = (\\/ rho)
     sigma = multicenter_gradient2(rho,
                                   atomic_coordinates, atomic_numbers,
                                   radial_grid_factor=settings.radial_grid_factor,

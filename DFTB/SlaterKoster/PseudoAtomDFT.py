@@ -719,33 +719,33 @@ class PseudoAtomDFT:
         import sys
         if not self.converged:
             raise Exception("You have to run an SCF calculation first.")
-        numpy.set_printoptions(threshold=sys.maxint)
+        numpy.set_printoptions(threshold=sys.maxsize)
         pp = pprint.PrettyPrinter(depth=10)
-        print>>fh, "# This file has been generated automatically by %s." % sys.argv[0]
-        print>>fh, "from numpy import array, inf"
-        print>>fh, "Z = %s" % self.Z
-        print>>fh, "Nelec = %s" % self.Nelec
-        print>>fh, "# total DFT energies"
-        print>>fh, "Eenuc = %s" % self.KS_pot.Eenuc
-        print>>fh, "Ecoul = %s" % self.KS_pot.Ecoul
-        print>>fh, "Exc   = %s" % self.KS_pot.Exc
-        print>>fh, "Ebs   = %s" % self.KS_pot.Ebs
-        print>>fh, "Ekin  = %s" % self.KS_pot.Ekin
-        print>>fh, "Etot  = %s" % self.KS_pot.Etot
-        print>>fh, "# confinement potential (r/r0)^2"
-        print>>fh, "r0 = %s" % self.r0
-        print>>fh, "# exchange and correlation potential"
-        print>>fh, "pseudo_orbital_x = \"%s\"" % pseudo_orbital_x
-        print>>fh, "pseudo_orbital_c = \"%s\"" % pseudo_orbital_c
-        print>>fh, "# radial grid"
-        print>>fh, "r = \\\n%s" % pp.pformat(self.getRadialGrid())
-        print>>fh, "# radial electron density"
-        print>>fh, "radial_density = \\\n%s" % pp.pformat(self.n)
-        print>>fh, "# occupation numbers (<number of electrons in orbital n+1,l> , n, l)"
-        print>>fh, "occupation = \\\n%s" % pp.pformat(self.occupation)
-        print>>fh, "# self-consistent effective potential (including confinement but without angular l(l+1)/(2 r^2) part)"
-        print>>fh, "effective_potential = \\\n%s" % pp.pformat(self.KS_pot.getRadialPotential())
-        print>>fh, "# orbital energies and wave functions of pseudoatom"
+        print("# This file has been generated automatically by %s." % sys.argv[0], file=fh)
+        print("from numpy import array, inf", file=fh)
+        print("Z = %s" % self.Z, file=fh)
+        print("Nelec = %s" % self.Nelec, file=fh)
+        print("# total DFT energies", file=fh)
+        print("Eenuc = %s" % self.KS_pot.Eenuc, file=fh)
+        print("Ecoul = %s" % self.KS_pot.Ecoul, file=fh)
+        print("Exc   = %s" % self.KS_pot.Exc, file=fh)
+        print("Ebs   = %s" % self.KS_pot.Ebs, file=fh)
+        print("Ekin  = %s" % self.KS_pot.Ekin, file=fh)
+        print("Etot  = %s" % self.KS_pot.Etot, file=fh)
+        print("# confinement potential (r/r0)^2", file=fh)
+        print("r0 = %s" % self.r0, file=fh)
+        print("# exchange and correlation potential", file=fh)
+        print("pseudo_orbital_x = \"%s\"" % pseudo_orbital_x, file=fh)
+        print("pseudo_orbital_c = \"%s\"" % pseudo_orbital_c, file=fh)
+        print("# radial grid", file=fh)
+        print("r = \\\n%s" % pp.pformat(self.getRadialGrid()), file=fh)
+        print("# radial electron density", file=fh)
+        print("radial_density = \\\n%s" % pp.pformat(self.n), file=fh)
+        print("# occupation numbers (<number of electrons in orbital n+1,l> , n, l)", file=fh)
+        print("occupation = \\\n%s" % pp.pformat(self.occupation), file=fh)
+        print("# self-consistent effective potential (including confinement but without angular l(l+1)/(2 r^2) part)", file=fh)
+        print("effective_potential = \\\n%s" % pp.pformat(self.KS_pot.getRadialPotential()), file=fh)
+        print("# orbital energies and wave functions of pseudoatom", file=fh)
         l2spectroscopic = ["s", "p", "d", "f", "g", "h", "i", "j"]
         en_vars = []
         u_vars = []
@@ -767,40 +767,61 @@ class PseudoAtomDFT:
                     orb_occ.append(0)
                 en_var = "energy_%s" % orb_name
                 en_vars.append(en_var)
-                print>>fh, "%s = %s" % (en_var, en)
+                print("%s = %s" % (en_var, en), file=fh)
                 angmoms.append(l)
                 u_var = "orbital_%s" % orb_name
                 u_vars.append(u_var)
                 orb_names.append(orb_name)
-                print>>fh, "%s = \\\n%s" % (u_var, pp.pformat(self.wavefuncs[l][nml]))
+                print("%s = \\\n%s" % (u_var, pp.pformat(self.wavefuncs[l][nml])), file=fh)
         valence_orbitals = []
         for (n,l) in self.getValenceOrbitals():
             i = zip(nshell,angmoms).index((n,l))
             valence_orbitals.append(i)
-        print>>fh, "orbital_names = %s" % pp.pformat(orb_names)
-        print>>fh, "# energy of each orbital"
-        print>>fh, "energies = %s" % pp.pformat(en_vars).replace("'", "")
-        print>>fh, "radial_wavefunctions = %s" % pp.pformat(u_vars).replace("'", "")
-        print>>fh, "# principle n quantum number of each orbital"
-        print>>fh, "nshell = %s" % pp.pformat(nshell)
-        print>>fh, "# angular l quantum number of each orbital"
-        print>>fh, "angular_momenta = %s" % pp.pformat(angmoms)
-        print>>fh, "# occupation of each orbital"
-        print>>fh, "orbital_occupation = %s" % pp.pformat(orb_occ)
-        print>>fh, "# indeces of valence orbitals, which form the atomic centered basis"
-        print>>fh, "valence_orbitals = %s" % pp.pformat(valence_orbitals)
+        print("orbital_names = %s" % pp.pformat(orb_names), file=fh)
+        print("# energy of each orbital", file=fh)
+        print("energies = %s" % pp.pformat(en_vars).replace("'", ""), file=fh)
+        print("radial_wavefunctions = %s" % pp.pformat(u_vars).replace("'", ""), file=fh)
+        print("# principle n quantum number of each orbital", file=fh)
+        print("nshell = %s" % pp.pformat(nshell), file=fh)
+        print("# angular l quantum number of each orbital", file=fh)
+        print("angular_momenta = %s" % pp.pformat(angmoms), file=fh)
+        print("# occupation of each orbital", file=fh)
+        print("orbital_occupation = %s" % pp.pformat(orb_occ), file=fh)
+        print("# indeces of valence orbitals, which form the atomic centered basis", file=fh)
+        print("valence_orbitals = %s" % pp.pformat(valence_orbitals), file=fh)
         if hasattr(self, "partial_charge"):
-            print>>fh, "# energy cost for adding or removing partial charges: E(dq) = E(dq=0) - chi*dq + 1/2*U*dq^2"
-            print>>fh, "hardness_chi = %s" % self.hardness_chi
-            print>>fh, "Hubbard_U = %s" % self.Hubbard_U
-            print>>fh, "# dE(dq) for plotting "
-            print>>fh, "partial_charge = %s" % pp.pformat(self.partial_charge)
-            print>>fh, "charging_energy = %s" % pp.pformat(self.charging_energy)
+            print("# energy cost for adding or removing partial charges: E(dq) = E(dq=0) - chi*dq + 1/2*U*dq^2", file=fh)
+            print("hardness_chi = %s" % self.hardness_chi, file=fh)
+            print("Hubbard_U = %s" % self.Hubbard_U, file=fh)
+            print("# dE(dq) for plotting ", file=fh)
+            print("partial_charge = %s" % pp.pformat(self.partial_charge), file=fh)
+            print("charging_energy = %s" % pp.pformat(self.charging_energy), file=fh)
             q_vars = ["hardness_chi", "Hubbard_U"]
         else:
             q_vars = []
-        print>>fh, "__all__ = %s" \
-            % pp.pformat(["Z", "Nelec", "r0", "r", "radial_density", "occupation", "effective_potential", "orbital_names", "energies", "radial_wavefunctions", "angular_momenta", "valence_orbitals"] + en_vars + u_vars + q_vars)
+        print(
+            "__all__ = %s"
+            % pp.pformat(
+                [
+                    "Z",
+                    "Nelec",
+                    "r0",
+                    "r",
+                    "radial_density",
+                    "occupation",
+                    "effective_potential",
+                    "orbital_names",
+                    "energies",
+                    "radial_wavefunctions",
+                    "angular_momenta",
+                    "valence_orbitals",
+                ]
+                + en_vars
+                + u_vars
+                + q_vars
+            ),
+            file=fh,
+        )
         
 
 def valence_qnumbers_nl(occupation):

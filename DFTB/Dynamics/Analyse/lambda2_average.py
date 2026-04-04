@@ -52,9 +52,7 @@ if __name__ == "__main__":
     # divide lambda2_avg by the number of trajectories
     for t in range(0, Nt):
         lambda2_avg[t,1] /= float(Ntraj[t])
-    fh = open("lambda2_average.dat", "w")
-    print>>fh, "# TIME / fs               LAMBDA2"
-    np.savetxt(fh, lambda2_avg)
-    fh.close()
+    with open("lambda2_average.dat", "w") as fh:
+        print("# TIME / fs               LAMBDA2", file=fh)
+        np.savetxt(fh, lambda2_avg)
     print("Averaged Lambda2 values saved to file 'lambda2_average.dat'")
-

@@ -132,7 +132,6 @@ def annotated_matrix(M, row_labels, col_labels, format="%.4f", colwidth=10, bloc
     ========
     string with formatted matrix
     """
-    import string
     from math import ceil
     m,n = M.shape
 
@@ -141,7 +140,7 @@ def annotated_matrix(M, row_labels, col_labels, format="%.4f", colwidth=10, bloc
     for b in range(0, nblocks):
         txt += " "*(colwidth+1) + "|"
         for col in range(b*block_len, min(n,(b+1)*block_len)):
-            txt += string.center(col_labels[col], colwidth+1) + "|"
+            txt += str(col_labels[col]).center(colwidth+1) + "|"
         txt += "\n" + "-"*(colwidth+2)*(min(block_len,n)+1) + "\n"
 
         nr_sep = 0 # count the separation lines to keep track
@@ -151,9 +150,9 @@ def annotated_matrix(M, row_labels, col_labels, format="%.4f", colwidth=10, bloc
                 txt += "-"*(min(block_len,n)+1)*(colwidth+2)
                 nr_sep += 1
             else:
-                txt += string.center(row_labels[row], colwidth+1) + "|"
+                txt += str(row_labels[row]).center(colwidth+1) + "|"
                 for col in range(b*block_len, min(n,(b+1)*block_len)):
-                    txt += string.center(format % M[row-nr_sep,col], colwidth+1) + "|"
+                    txt += str(format % M[row-nr_sep,col]).center(colwidth+1) + "|"
             txt += "\n"
         txt += "\n"
     return txt

@@ -98,22 +98,22 @@ if __name__ == "__main__":
         # convert from bohr to Angstrom
         posi = np.array(posi) * AtomicData.bohr_to_angs
         # x,y,z coordinates
-        print>>fh, "  %+20.15e" % posi[0]
-        print>>fh, "  %+20.15e" % posi[1]
-        print>>fh, "  %+20.15e" % posi[2]
+        print("  %+20.15e" % posi[0], file=fh)
+        print("  %+20.15e" % posi[1], file=fh)
+        print("  %+20.15e" % posi[2], file=fh)
         
     # 2) normal mode displacements in cartesian coordinates
     #    T(I,J), J=3*N-6, I=1,3*N, J is the faster index
     for i in range(0,3*nat):
         for j in range(0,nvib):
-            print>>fh, "   %+20.15e" % vib_modes_cart[i,j]
+            print("   %+20.15e" % vib_modes_cart[i,j], file=fh)
 
     # 3) vibrational frequencies in cm^-1
     #    G(J), J=1,3*N-6
     # convert from Hartree to cm^-1
     vib_freq *= AtomicData.hartree_to_wavenumbers
     for j in range(0, nvib):
-        print>>fh, "%20.15f" % vib_freq[j]
+        print("%20.15f" % vib_freq[j], file=fh)
 
     fh.close()
 

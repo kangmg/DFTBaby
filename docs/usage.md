@@ -2,6 +2,8 @@
 
 All options can be passed on the command line or through `dftbaby.cfg` in the working directory (legacy behavior preserved).
 
+Primary supported path is non-periodic molecular dynamics/photochemistry. Periodic workflows are available but currently a secondary path.
+
 ## Main Programs (Legacy Compatible)
 
 - `DFTB2.py`: ground-state SCC-DFTB
@@ -11,10 +13,17 @@ All options can be passed on the command line or through `dftbaby.cfg` in the wo
 - `initial_conditions.py`: Wigner initial-condition sampling from Hessian
 - `SurfaceHopping.py`: non-adiabatic molecular dynamics
 
+Modern command-style aliases are also available:
+
+- `dftbaby dftb2 ...` (or `dftbaby-dftb2 ...`)
+- `dftbaby lrtddftb ...` (or `dftbaby-lrtddftb ...`)
+- `dftbaby surface-hopping ...` (or `dftbaby-surface-hopping ...`)
+
 ## 1) Ground-State Single Point (Original Style)
 
 ```bash
 DFTB2.py benzene.xyz
+dftbaby dftb2 benzene.xyz
 ```
 
 Export Molden orbitals:
@@ -28,6 +37,7 @@ DFTB2.py benzene.xyz --molden_file=benzene.molden --verbose=0
 ```bash
 LR_TDDFTB.py benzene.xyz --nstates=6 --diag_conv=1.0e-8
 LR_TDDFTB.py benzene.xyz --nstates=6 --spectrum_file=benzene.spec
+dftbaby lrtddftb benzene.xyz --nstates=6 --spectrum_file=benzene.spec
 ```
 
 Legacy graphical mode:
@@ -36,7 +46,7 @@ Legacy graphical mode:
 LR_TDDFTB.py benzene.xyz --nstates=6 --graphical=1
 ```
 
-For plotting install `.[plot]`. For the full legacy GUI stack install `.[gui]`.
+For plotting install `.[plot]`. For robust workflows, prefer external viewers from exported cube/molden files.
 
 ## 3) Geometry Optimization (Updated + Legacy)
 
@@ -45,6 +55,7 @@ Recommended interface:
 ```bash
 GeometryOptimization.py molecule.xyz --state=0
 GeometryOptimization.py molecule.xyz --state=1 --calc_hessian=1
+dftbaby geometry-opt molecule.xyz --state=1
 ```
 
 Legacy equivalent:
@@ -60,7 +71,7 @@ optimize.py molecule.xyz 1
 
 ```bash
 optimize.py F1_C2v.xyz 0 --verbose=0
-LR_TDDFTB.py F1_S0.xyz --graphical=1 --verbose=1
+LR_TDDFTB.py F1_S0.xyz --nstates=6 --spectrum_file=F1_S0.spec --verbose=1
 ```
 
 2. Compute Hessian and sample Wigner initial conditions.
@@ -80,6 +91,7 @@ initial_conditions.py F1_S0.xyz hessian.dat --Nsample=10 --outdir=.
 ```bash
 cd TRAJ_0
 SurfaceHopping.py
+dftbaby surface-hopping
 ```
 
 5. Aggregate populations after running many trajectories.
@@ -89,6 +101,20 @@ populations.py TRAJ_*/state.dat
 ```
 
 Typical trajectory outputs include `dynamics.xyz`, `state.dat`, `energy_*.dat`, `coeff_*.dat`, and non-adiabatic coupling tables.
+
+### External Visualization (Recommended)
+
+- `--molden_file=...` for MO and charge inspection in molden-capable tools.
+- cube exports for orbitals/densities can be viewed with tools like VMD, PyMOL, or OVITO.
+- `--graphical=1` is legacy and requires optional `.[gui]` dependencies.
+
+## 5) Periodic Calculations (Secondary Path)
+
+Periodic SCC/NonSCC execution paths are smoke-tested, but the main hardening target remains molecular systems. If you need periodic runs:
+
+- start from `requirements-core.txt`
+- run short sanity jobs first (small cells, low state count)
+- add optional modules only when your workflow needs them
 
 ## Minimal `dftbaby.cfg` (Current Keys)
 
