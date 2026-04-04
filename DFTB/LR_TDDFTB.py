@@ -299,11 +299,34 @@ class LR_TDDFTB:
                 mu += 1
         #
         """
-        # FASTER FORTRAN CODE
-        from DFTB.extensions import tddftb
-        orbs_occ = orbs[:,self.active_occupied_orbs]
-        orbs_virt = orbs[:,self.active_virtual_orbs]
-        q_oo, q_ov, q_vv = tddftb.tddftb.trans_charges(orbs_occ, orbs_virt, S, self.dftb2.orbsPerAtom)
+        # Prefer fast Fortran backend, but keep a pure-Python fallback.
+        try:
+            from DFTB.extensions import tddftb
+            orbs_occ = orbs[:,self.active_occupied_orbs]
+            orbs_virt = orbs[:,self.active_virtual_orbs]
+            q_oo, q_ov, q_vv = tddftb.tddftb.trans_charges(orbs_occ, orbs_virt, S, self.dftb2.orbsPerAtom)
+        except ImportError:
+            Nat = len(atomlist)
+            dim_o = len(self.active_occupied_orbs)
+            dim_v = len(self.active_virtual_orbs)
+            q_ov = zeros((Nat, dim_o, dim_v))
+            q_oo = zeros((Nat, dim_o, dim_o))
+            q_vv = zeros((Nat, dim_v, dim_v))
+
+            Sc = dot(S,orbs)
+            mu = 0
+            for A,(ZA,posA) in enumerate(atomlist):
+                for (nA,lA,mA) in valorbs[ZA]:
+                    for i,occi in enumerate(self.active_occupied_orbs):
+                        for a,virta in enumerate(self.active_virtual_orbs):
+                            q_ov[A,i,a] += 0.5*(orbs[mu,occi]*Sc[mu,virta] + orbs[mu,virta]*Sc[mu,occi])
+                    for i,occi in enumerate(self.active_occupied_orbs):
+                        for j,occj in enumerate(self.active_occupied_orbs):
+                            q_oo[A,i,j] += 0.5*(orbs[mu,occi]*Sc[mu,occj] + orbs[mu,occj]*Sc[mu,occi])
+                    for a,virta in enumerate(self.active_virtual_orbs):
+                        for b,virtb in enumerate(self.active_virtual_orbs):
+                            q_vv[A,a,b] += 0.5*(orbs[mu,virta]*Sc[mu,virtb] + orbs[mu,virtb]*Sc[mu,virta])
+                    mu += 1
         """
         # COMPARE PYTHON AND FORTRAN RESULTS
         err = np.sum(abs(q_oo - self.qtrans_oo))

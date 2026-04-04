@@ -15,7 +15,6 @@ import numpy.linalg as la
 from scipy.linalg import eig, eigh, norm, inv, sqrtm
 from scipy.special import erf 
 from scipy.optimize import fminbound, fmin
-from scipy.misc import derivative
 import itertools
 import multiprocessing
 from DFTB import utils
@@ -35,7 +34,10 @@ from DFTB.Timer import GlobalTimer as T
 from DFTB.Modeling import MolecularCoords
 from DFTB import Symmetry
 from DFTB import Mulliken
-from DFTB.extensions import mulliken # for fast Mulliken charge calculation
+try:
+    from DFTB.extensions import mulliken as mulliken_ext  # for fast Mulliken charge calculation
+except ImportError:
+    mulliken_ext = None
 from DFTB.BasisSets import import_pseudo_atom
 from DFTB.DensityFitting import DensityFitting
 from DFTB.Dispersion import DispersionCorrection
@@ -846,8 +848,12 @@ class DFTB2(object):
         perform Mulliken population analysis
         """      
         # MONOPOLES
-        # faster fortran code
-        self.q, self.dq = mulliken.mulliken.monopoles(self.P, self.P0, self.S, self.orbsPerAtom)
+        if mulliken_ext is not None:
+            # faster Fortran code
+            self.q, self.dq = mulliken_ext.mulliken.monopoles(self.P, self.P0, self.S, self.orbsPerAtom)
+        else:
+            # pure Python fallback if extensions are not compiled
+            self.q, self.dq = Mulliken.monopoles(self.atomlist, self.P, self.P0, self.S, self.valorbs)
         """
         # slow python code
         q_py, dq_py = Mulliken.monopoles(self.atomlist, self.P, self.P0, self.S, self.valorbs)
@@ -2090,7 +2096,7 @@ class DFTB2(object):
         constr_arr = array(constr_arr)
         from matplotlib.pyplot import plot, show, legend, xlabel, ylabel
         xlabel("Lagrange multiplier", fontsize=15)
-        ylabel("Constraint $\int w_F \rho - N_F$")
+        ylabel("Constraint $\\int w_F \\rho - N_F$")
         plot(lagrange_arr, constr_arr, lw=2)
 #        plot(lagrange_arr, entot_arr, label="total energy")
         legend()

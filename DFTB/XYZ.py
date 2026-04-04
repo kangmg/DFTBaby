@@ -11,7 +11,7 @@
  license. Please see the file LICENSE that is part of this
  distribution. 
 """
-from AtomicData import atom_names, atomic_number, bohr_to_angs, covalent_radii
+from DFTB.AtomicData import atom_names, atomic_number, bohr_to_angs, covalent_radii
 from numpy import zeros
 import numpy as np
 from numpy import linalg as la

@@ -1,12 +1,12 @@
 from numpy import array, linspace, arctan2, sqrt, log, exp, pi, mgrid, sum, reshape, where, zeros
 import numpy as np
 from scipy import interpolate
-from PolarTwoCenterGrid import ptcgrid
-import slako_transformations as T
-import slako_transformations_dipole as Tdip
+from DFTB.SlaterKoster.PolarTwoCenterGrid import ptcgrid
+from DFTB.SlaterKoster import slako_transformations as T
+from DFTB.SlaterKoster import slako_transformations_dipole as Tdip
 from DFTB import AtomicData
 from DFTB import utils
-from hotbit_format import parseHotbitParameters
+from DFTB.SlaterKoster.hotbit_format import parseHotbitParameters
 import os.path
 
 ############# CREATION OF SLATER-KOSTER TABLES ###########################################
@@ -257,7 +257,7 @@ class Atom:
             #
             """
             from matplotlib.pyplot import plot, legend, show
-            from hotbit_format import parseHotbitParameters
+            from DFTB.SlaterKoster.hotbit_format import parseHotbitParameters
             hbdata = parseHotbitParameters("DFTB/test_parameters/C.elm")
             indx2name = {1: "2s", 2: "2p"}
             orbname = "radial_wavefunction_%s" % indx2name[hb_indx+1]

@@ -2,12 +2,9 @@
 create Wigner distributions from Gaussian 09 or Turbomole Hessians
 """
 from scipy import optimize
-from scipy.misc import factorial
 import numpy as np
 import numpy.linalg as la
 import scipy.linalg as sla
-
-import sympy
 
 from DFTB import AtomicData, XYZ
 from DFTB.Formats.Gaussian2py import GaussianWavepacket

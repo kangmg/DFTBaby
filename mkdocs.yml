@@ -1,0 +1,22 @@
+site_name: DFTBaby
+site_description: Tight-binding DFT calculations for ground/excited states and non-adiabatic dynamics
+site_url: https://kangmg.github.io/DFTBaby/
+repo_url: https://github.com/kangmg/DFTBaby
+repo_name: kangmg/DFTBaby
+docs_dir: docs
+
+theme:
+  name: mkdocs
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - tables
+  - fenced_code
+
+nav:
+  - Home: index.md
+  - Installation Profiles: installation.md
+  - Run By Goal: usage.md
+  - Troubleshooting: troubleshooting.md

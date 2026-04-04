@@ -272,33 +272,49 @@ def call_with_opts_from_dict(func):
 
     stolen from http://bytes.com/topic/python/answers/170128-expanding-dictionary-function-arguments
     """
-    argnames = func.func_code.co_varnames[hasattr(func, 'im_func'):func.func_code.co_argcount]
-    ndefaults = len(func.func_defaults or ())
-    if ndefaults:
-        optnames = argnames[-ndefaults:]
-        argnames = argnames[:-ndefaults]
-    else:
-        optnames = []
+    sig = inspect.signature(func)
+    required_args = []
+    optional_defaults = {}
+    accepts_varkw = False
+    for name, param in sig.parameters.items():
+        if param.kind == inspect.Parameter.VAR_KEYWORD:
+            accepts_varkw = True
+            continue
+        if param.kind not in (
+            inspect.Parameter.POSITIONAL_ONLY,
+            inspect.Parameter.POSITIONAL_OR_KEYWORD,
+            inspect.Parameter.KEYWORD_ONLY,
+        ):
+            continue
+        if param.default is inspect.Parameter.empty:
+            if param.kind != inspect.Parameter.KEYWORD_ONLY:
+                required_args.append(name)
+        else:
+            optional_defaults[name] = param.default
+
     def _f(*args, **opts):
-        try:
-            actualargs = args #[args[argname] for argname in argnames]
-            actualopts = {}
-            for io,optname in enumerate(optnames):
-                if optname in opts.keys():
-                    actualopts[optname] = opts[optname]
-                else:
-                    actualopts[optname] = func.func_defaults[io]
-#            print "Calling %s with arguments = %s and options = %s" % (func.func_name, actualargs, actualopts)
-        except TypeError:
-            raise TypeError('%s(...) requires arg(s) %r' % (func.func_name, [argname for argname in argnames]))
-        return func(*actualargs, **actualopts)
-    
-    _f.func_name = func.func_name
+        if len(args) < len(required_args):
+            missing = required_args[len(args):]
+            raise TypeError("%s(...) requires arg(s) %r" % (func.__name__, missing))
+
+        actualopts = dict(optional_defaults)
+        for optname in optional_defaults:
+            if optname in opts:
+                actualopts[optname] = opts[optname]
+
+        if accepts_varkw:
+            for key, val in opts.items():
+                if key not in actualopts:
+                    actualopts[key] = val
+
+        return func(*args, **actualopts)
+
+    _f.__name__ = func.__name__
     return _f
 
 # Old parts of the code still import the option parser from this module.
 # In order not to break this we have to import the option parser here.
-from optparse import OptionParserFuncWrapper
+from DFTB.optparse import OptionParserFuncWrapper
 
 
 if __name__ == "__main__":

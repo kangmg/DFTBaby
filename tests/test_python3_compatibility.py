@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
-Comprehensive Python 3.12+ and NumPy 2.0+ compatibility tests for DFTBaby
+Comprehensive Python 3.10+ and NumPy 1.26+ compatibility tests for DFTBaby
 
 This test suite validates:
-1. Python 3.12+ syntax compatibility
-2. NumPy 2.0+ API compatibility
+1. Python 3.10+ syntax compatibility
+2. NumPy API compatibility (including NumPy 2.x)
 3. Core functionality after migration
 """
 
@@ -19,12 +19,12 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 class TestPython3Compatibility(unittest.TestCase):
-    """Test Python 3.12+ compatibility"""
+    """Test Python 3.10+ compatibility"""
 
     def test_python_version(self):
-        """Verify Python version is 3.12+"""
+        """Verify Python version is 3.10+"""
         self.assertGreaterEqual(sys.version_info.major, 3)
-        self.assertGreaterEqual(sys.version_info.minor, 12)
+        self.assertGreaterEqual(sys.version_info.minor, 10)
 
     def test_print_function(self):
         """Test that print is a function, not a statement"""
@@ -82,13 +82,13 @@ class TestPython3Compatibility(unittest.TestCase):
         self.assertEqual(result, 10)
 
 
-class TestNumPy2Compatibility(unittest.TestCase):
-    """Test NumPy 2.0+ compatibility"""
+class TestNumPyCompatibility(unittest.TestCase):
+    """Test NumPy compatibility"""
 
     def test_numpy_version(self):
-        """Verify NumPy version is 2.0+"""
-        major = int(np.__version__.split('.')[0])
-        self.assertGreaterEqual(major, 2)
+        """Verify NumPy version is 1.26+"""
+        major, minor = (int(x) for x in np.__version__.split('.')[:2])
+        self.assertTrue((major > 1) or (major == 1 and minor >= 26))
 
     def test_numpy_memmap(self):
         """Test np.memmap is accessible (not np.core.memmap)"""
@@ -113,15 +113,17 @@ class TestNumPy2Compatibility(unittest.TestCase):
             os.unlink(path)
 
     def test_numpy_core_not_used(self):
-        """Ensure we don't use np.core.* internal APIs"""
-        # This is more of a code audit, but we can test the pattern
-        with self.assertRaises(AttributeError):
-            # np.core is deprecated/internal
-            # Accessing it should either fail or be discouraged
-            pass  # Can't actually test without triggering warnings
+        """Ensure we don't use np.core.* internal APIs in the codebase"""
+        repo_root = Path(__file__).resolve().parent.parent
+        offenders = []
+        for py_file in (repo_root / "DFTB").rglob("*.py"):
+            text = py_file.read_text(errors="ignore")
+            if "np.core." in text:
+                offenders.append(str(py_file.relative_to(repo_root)))
+        self.assertEqual(offenders, [])
 
     def test_numpy_basic_operations(self):
-        """Test basic NumPy operations work with NumPy 2.0"""
+        """Test basic NumPy operations"""
         arr = np.array([1, 2, 3, 4, 5])
 
         # Basic operations
@@ -138,7 +140,7 @@ class TestNumPy2Compatibility(unittest.TestCase):
         self.assertTrue(np.array_equal(result, [11, 12, 13, 14, 15]))
 
     def test_scipy_compatibility(self):
-        """Test SciPy works with NumPy 2.0"""
+        """Test SciPy works with NumPy"""
         from scipy import linalg
 
         # Test basic linear algebra
@@ -201,12 +203,12 @@ class TestCriticalFixes(unittest.TestCase):
     def test_integer_division_utils(self):
         """Test integer division in utils.py works correctly"""
         try:
-            from DFTB.utils import argsort_mat
+            from DFTB.utils import argsort_2d
             import numpy as np
 
             # Create test matrix
             arr = np.array([[5, 2], [9, 1]])
-            row_sort, col_sort = argsort_mat(arr)
+            row_sort, col_sort = argsort_2d(arr)
 
             # Verify integer division worked (row indices should be integers)
             self.assertTrue(all(isinstance(x, (int, np.integer)) for x in row_sort))
@@ -244,15 +246,17 @@ class TestNumPyDeprecations(unittest.TestCase):
 
     def test_no_numpy_int_float_aliases(self):
         """Test that old NumPy type aliases are not used"""
-        # In NumPy 2.0, np.int, np.float, etc. are removed
-        # We should use np.int64, np.float64, or Python's int, float
-
-        # These should NOT exist in NumPy 2.0
-        with self.assertRaises(AttributeError):
-            _ = np.int
-
-        with self.assertRaises(AttributeError):
-            _ = np.float
+        # In NumPy 2.0, np.int and np.float are removed.
+        # In NumPy 1.x they still exist but are deprecated.
+        major = int(np.__version__.split('.')[0])
+        if major >= 2:
+            with self.assertRaises(AttributeError):
+                _ = np.int
+            with self.assertRaises(AttributeError):
+                _ = np.float
+        else:
+            self.assertTrue(hasattr(np, "int"))
+            self.assertTrue(hasattr(np, "float"))
 
         # These SHOULD exist
         self.assertTrue(hasattr(np, 'int64'))
@@ -263,12 +267,12 @@ class TestNumPyDeprecations(unittest.TestCase):
         try:
             from DFTB.DiskMemory import DiskMemory
             import tempfile
-            import os
 
             # This should work without errors
             tmpdir = tempfile.mkdtemp()
             try:
-                dm = DiskMemory(disk_dir=tmpdir)
+                dm = DiskMemory()
+                dm.setScratchDirectory(tmpdir)
                 # Basic functionality test
                 self.assertIsNotNone(dm)
             finally:
@@ -348,7 +352,7 @@ def run_tests():
 
     # Add all test classes
     suite.addTests(loader.loadTestsFromTestCase(TestPython3Compatibility))
-    suite.addTests(loader.loadTestsFromTestCase(TestNumPy2Compatibility))
+    suite.addTests(loader.loadTestsFromTestCase(TestNumPyCompatibility))
     suite.addTests(loader.loadTestsFromTestCase(TestDFTBabyImports))
     suite.addTests(loader.loadTestsFromTestCase(TestCriticalFixes))
     suite.addTests(loader.loadTestsFromTestCase(TestNumPyDeprecations))
@@ -363,7 +367,7 @@ def run_tests():
 
 if __name__ == '__main__':
     print("=" * 70)
-    print("DFTBaby Python 3.12+ and NumPy 2.0+ Compatibility Test Suite")
+    print("DFTBaby Python 3.10+ and NumPy Compatibility Test Suite")
     print("=" * 70)
     print()
 

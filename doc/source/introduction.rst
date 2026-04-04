@@ -9,14 +9,15 @@ Prerequisites
 
 **Required:**
 
- - Python 3.12 or newer
- - NumPy 2.0.0 or newer
- - SciPy 1.14.0 or newer
- - Matplotlib 3.9.0 or newer
+ - Python 3.10 or newer
+ - NumPy 1.26.4 or newer
+ - SciPy 1.11.4 or newer
+ - Matplotlib 3.7.0 or newer
  - mpmath 1.3.0 or newer
- - sympy 1.13 or newer
+ - sympy 1.12 or newer
  - BLAS and LAPACK libraries
  - f2py (included with NumPy)
+ - setuptools and wheel (for extension builds on Python 3.12+)
 
 **Optional:**
 
@@ -49,7 +50,7 @@ For development mode::
 Migration from Python 2
 =======================
 
-This package has been migrated from Python 2.7 to Python 3.12+ with NumPy 2.0+ compatibility.
+This package has been migrated from Python 2.7 to Python 3.10+ with NumPy 1.26+ compatibility.
 See ``PYTHON3_MIGRATION.md`` for detailed migration information.
 
 Links
@@ -57,4 +58,3 @@ Links
 
  - **Documentation**: https://kangmg.github.io/DFTBaby/
  - **Repository**: https://github.com/kangmg/DFTBaby
-

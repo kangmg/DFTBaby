@@ -5,7 +5,8 @@ from numpy import array, where, reshape, zeros, linspace, hstack, exp, argmax
 import numpy as np
 from scipy import interpolate
 import os.path
-import imp
+import importlib.util
+import types
 
 from DFTB.SlaterKoster import hotbit_format
 from DFTB import AtomicData
@@ -264,9 +265,14 @@ def load_repulsive_potentials(atpairs, missing_reppots="error", reppot_paths=[])
         for path in reppot_paths:
             try:
                 name = "%s_%s" % (atI,atJ)
-                module_path = os.path.relpath(os.path.join(path, name+".py"))
-                atompairs[(Zi,Zj)] = imp.load_source(name, module_path)
-            except IOError as e:
+                module_path = os.path.abspath(os.path.join(path, name + ".py"))
+                spec = importlib.util.spec_from_file_location(name, module_path)
+                if spec is None or spec.loader is None:
+                    raise ImportError("Could not create import spec for %s" % module_path)
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                atompairs[(Zi,Zj)] = module
+            except (IOError, OSError, ImportError):
                 continue
             break
         else:
@@ -282,12 +288,12 @@ def load_repulsive_potentials(atpairs, missing_reppots="error", reppot_paths=[])
                     atompairs[(Zi,Zj)] = __import__("DFTB.RepulsivePotential.reppot_tables.dummy", fromlist=['Z1','Z2'])
                     # set correct atomic numbers
                     atompairs[(Zi,Zj)].Z1 = Zi
-                    atompairs[(Zi,Zj)].Z1 = Zj
+                    atompairs[(Zi,Zj)].Z2 = Zj
                 else:
                     raise e
             continue
         print("repulsive potential for %s-%s loaded from %s" % (atI.upper(), atJ.upper(), module_path))
-    reppot_tables = imp.new_module("reppot_tables")
+    reppot_tables = types.ModuleType("reppot_tables")
     reppot_tables.atompairs = atompairs
 
     return reppot_tables

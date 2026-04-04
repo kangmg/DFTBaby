@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
 """
-Python 3.12+ Syntax Validation Test
+Python 3.10+ Syntax Validation Test
 
 This test validates that all Python files in the DFTBaby codebase
-are syntactically correct Python 3.12+ code.
+are syntactically correct Python 3.10+ code.
 """
 
 import subprocess
 import sys
 from pathlib import Path
 
+LEGACY_WARNING_FILES = set()
 
 def test_python_syntax():
     """Test all Python files for syntax errors"""
     repo_root = Path(__file__).parent.parent
     python_files = list(repo_root.glob('DFTB/**/*.py'))
 
-    print(f"Testing {len(python_files)} Python files for Python 3.12+ syntax...")
+    print(f"Testing {len(python_files)} Python files for Python 3.10+ syntax...")
     print()
 
     errors = []
@@ -30,11 +31,12 @@ def test_python_syntax():
         )
 
         if result.returncode != 0:
+            rel_path = str(py_file.relative_to(repo_root))
             # Check if it's a visualization tool (lower priority)
-            if any(part in str(py_file) for part in ['blender', 'mayavi']):
-                warnings.append((str(py_file.relative_to(repo_root)), result.stderr))
+            if any(part in str(py_file) for part in ['blender', 'mayavi']) or rel_path in LEGACY_WARNING_FILES:
+                warnings.append((rel_path, result.stderr))
             else:
-                errors.append((str(py_file.relative_to(repo_root)), result.stderr))
+                errors.append((rel_path, result.stderr))
 
     return python_files, errors, warnings
 
@@ -159,7 +161,7 @@ def test_no_deprecated_patterns():
 
 def main():
     print("=" * 70)
-    print("DFTBaby Python 3.12+ Syntax Validation")
+    print("DFTBaby Python 3.10+ Syntax Validation")
     print("=" * 70)
     print()
 
@@ -217,7 +219,7 @@ def main():
 
     print()
     if len(errors) == 0 and pattern_success and deprecated_clean:
-        print("🎉 All tests PASSED! Code is Python 3.12+ compatible!")
+        print("All tests PASSED! Code is Python 3.10+ compatible.")
         return 0
     elif len(errors) == 0:
         print("✓ Core syntax is valid, minor issues found in patterns")

@@ -10,7 +10,7 @@ import numpy.linalg as la
 from DFTB.AtomicData import bohr_to_angs, atom_names
 from DFTB import XYZ
 
-import Checkpoint
+from DFTB.Formats.Gaussian2py import Checkpoint
 
 def read_geometry(log_file):
     """

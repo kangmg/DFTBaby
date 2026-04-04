@@ -1,4 +1,4 @@
-from distutils.core import setup, Extension
+from setuptools import setup, Extension
 import numpy
 
 ff_extension = Extension("ff", sources=["ff_pythonmodule.c", "ff.c", "linked_list.c", "input.c"],

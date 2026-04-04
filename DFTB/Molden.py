@@ -7,12 +7,12 @@ by a minimal contraction of Gaussians.
 """
 from DFTB import AtomicData, XYZ
 from DFTB.AtomicData import atom_names
-from STO3G_valence import STO3G_valence
+from DFTB.STO3G_valence import STO3G_valence
 from numpy import array, zeros, dot
 import numpy as np
 from itertools import groupby
 #from scipy.linalg import block_diag
-from utils import block_diag
+from DFTB.utils import block_diag
 from os.path import expandvars, expanduser
 
 def reorder_orbitals(orbs, atomlist, valorbs):

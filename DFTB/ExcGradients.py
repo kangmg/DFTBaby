@@ -144,7 +144,11 @@ def _gradients_H0andS(atomlist, valorbs, SKT, Mproximity):
 
 # FASTER SLATER-KOSTER RULES FOR GRADIENTS WITH FORTRAN
 from DFTB import XYZ
-from DFTB.extensions import slako, grad
+try:
+    from DFTB.extensions import slako, grad
+except ImportError:
+    slako = None
+    grad = None
 from DFTB.SlaterKoster.SKIntegrals import combine_slako_tables_f90
 from DFTB.SKMatrixElements import atomlist2orbitals
 
@@ -154,6 +158,11 @@ def _gradients_H0andS_f90(atomlist, valorbs, SKT, Mproximity):
     Since hashes and tuples cannot be used easily in Fortran, the arguments are brought
     into a form that can be fed into the Fortran function.
     """
+    if slako is None:
+        raise ImportError(
+            "F90 gradient backend is not available. Build DFTB extensions or use "
+            "the Python Slater-Koster backend."
+        )
     atom_type_dic, spline_deg, tab_filled_SH0, tab_filled_D, \
         (S_knots, S_coefs, H_knots, H_coefs, D_knots, D_coefs) = \
                             combine_slako_tables_f90(SKT)

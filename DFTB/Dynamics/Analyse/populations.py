@@ -49,12 +49,8 @@ if __name__ == "__main__":
     # divide populations by the number of trajectories
     for t in range(0, Nt):
         pop[t,1:] /= float(Ntraj[t])
-    fh = open("pop.dat", "w")
-    print>>fh, "# TIME / fs               ",
-    for st in range(0, Nst):
-        print>>fh, "POP_%d                   " % st,
-    print>>fh,""
-    np.savetxt(fh, pop)
-    fh.close()
+    with open("pop.dat", "w") as fh:
+        header = ["# TIME / fs"] + ["POP_%d" % st for st in range(0, Nst)]
+        fh.write(" ".join(header) + "\n")
+        np.savetxt(fh, pop)
     print("Populations saved to file 'pop.dat'")
-

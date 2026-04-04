@@ -1,14 +1,14 @@
 # DFTBaby
 
-[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
-[![NumPy 2.0+](https://img.shields.io/badge/numpy-2.0+-orange.svg)](https://numpy.org/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![NumPy 1.26+](https://img.shields.io/badge/numpy-1.26+-orange.svg)](https://numpy.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 > **Tight-binding DFT calculations for ground and excited states with non-adiabatic molecular dynamics**
 
 DFTBaby is a software package for tight-binding DFT calculations on ground and excited states of molecules and for non-adiabatic molecular dynamics simulations.
 
-📚 **[Documentation](https://kangmg.github.io/DFTBaby/)** | 📋 **[Migration Guide](PYTHON3_MIGRATION.md)**
+📚 **[Documentation (MkDocs)](https://kangmg.github.io/DFTBaby/)** | 📋 **[Migration Guide](PYTHON3_MIGRATION.md)**
 
 ---
 
@@ -45,18 +45,55 @@ DFTBaby is a software package for tight-binding DFT calculations on ground and e
 
 ### Requirements
 
-- **Python**: 3.12 or newer
-- **NumPy**: 2.0.0 or newer
-- **SciPy**: 1.14.0 or newer
-- **Matplotlib**: 3.9.0 or newer
-- **mpmath**: 1.3.0 or newer
-- **sympy**: 1.13 or newer
+- **Python**: 3.10 or newer
+- **NumPy**: 1.26.4 or newer
+- **SciPy**: 1.11.4 or newer
 - **BLAS and LAPACK**
 - **f2py** (included with NumPy)
+- **setuptools** and **wheel** (for extension builds on Python 3.12+)
 - **libxc** 3.0.0 (optional, for pseudoorbital calculations)
 
-> **Note**: This project has been migrated to Python 3.12+ and NumPy 2.0+.
+**Optional feature dependencies:**
+
+- **Matplotlib** (`.[plot]`) for plotting/analysis scripts
+- **Sympy + Matplotlib** (`.[metadynamics]`) for metadynamics mode
+- **mpmath** (`.[advanced]`) for selected advanced integral/continuum modules
+
+> **Note**: This project supports Python 3.10+ and NumPy 1.26+ (including NumPy 2.x).
 > See [PYTHON3_MIGRATION.md](PYTHON3_MIGRATION.md) for details.
+
+### Recommended Versions (Colab/CI)
+
+For the most reproducible setup (including Google Colab), install pinned dependencies:
+
+```bash
+pip install -r requirements-colab.txt
+```
+
+### Lightweight Core Setup
+
+For stable non-plotting core workflows with fewer dependencies:
+
+```bash
+pip install -r requirements-core.txt
+pip install -e .
+```
+
+Optional feature sets:
+
+```bash
+# Plotting/analysis scripts
+pip install ".[plot]"
+
+# Metadynamics features (dyn_mode="M")
+pip install ".[metadynamics]"
+
+# Advanced continuum/integral modules requiring mpmath
+pip install ".[advanced]"
+
+# Everything optional
+pip install ".[full]"
+```
 
 ### Quick Install
 
@@ -191,15 +228,27 @@ python3 tests/test_compilation.py
 ```
 
 **Test Results:**
-- ✅ 99.7% Python 3.12+ compatibility (293/294 files)
+- ✅ 99%+ Python 3 compatibility for core modules
 - ✅ All critical patterns validated
-- ✅ NumPy 2.0+ fully compatible
+- ✅ NumPy 1.26+/2.x compatibility for core workflows
 
 ---
 
 ## 📖 Documentation
 
 - **Full Documentation**: [https://kangmg.github.io/DFTBaby/](https://kangmg.github.io/DFTBaby/)
+- **Documentation Framework**: MkDocs
+- **Build docs locally**:
+
+```bash
+pip install ".[docs]"
+mkdocs serve
+```
+
+```bash
+mkdocs build
+```
+
 - **Migration Guide**: [PYTHON3_MIGRATION.md](PYTHON3_MIGRATION.md)
 - **Examples**: See `examples/` directory
 
@@ -226,7 +275,7 @@ See [LICENSE](LICENSE) file for details.
 ## 👥 Authors
 
 - **Original Author**: Alexander Humeniuk
-- **Python 3.12+ Migration**: kangmg
+- **Python 3 Migration**: kangmg
 
 ---
 
@@ -255,8 +304,8 @@ If you use DFTBaby in your research, please cite:
 ## 🆕 What's New
 
 ### Version 0.1.0 (2025)
-- ✅ **Python 3.12+ compatibility** (99.7% of codebase)
-- ✅ **NumPy 2.0+ compatibility** (100%)
+- ✅ **Python 3 compatibility improvements**
+- ✅ **NumPy compatibility improvements**
 - ✅ **Modern build system** (pyproject.toml)
 - ✅ **Comprehensive tests** (300+ fixes validated)
 - ✅ **Updated dependencies** (SciPy 1.14+, Matplotlib 3.9+, etc.)

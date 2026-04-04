@@ -6,7 +6,6 @@ from DFTB import AtomicData
 import os.path
 
 import numpy as np
-from matplotlib import pyplot as plt
 
 def line_shape(nu, nu0, FWHM):
     # Lorentzian distribution
@@ -69,6 +68,13 @@ if __name__ == "__main__":
     import sys
     from os.path import expandvars, expanduser, basename
     from optparse import OptionParser
+    try:
+        from matplotlib import pyplot as plt
+    except ImportError as exc:
+        raise ImportError(
+            "absorption_spectrum.py requires matplotlib. "
+            "Install with `pip install \"DFTBaby[plot]\"`."
+        ) from exc
     usage = "Usage: python %s <list of files with tabulated absorption spectrum>\n" % basename(sys.argv[0])
     usage += "  use --help to see all options"
     

@@ -12,8 +12,11 @@ import sys
 import subprocess
 import tempfile
 import shutil
+import importlib
 from pathlib import Path
 
+REPO_ROOT = Path(__file__).resolve().parent.parent
+LEGACY_WARNING_FILES = set()
 
 def test_package_metadata():
     """Validate pyproject.toml"""
@@ -23,9 +26,12 @@ def test_package_metadata():
         [sys.executable, '-m', 'pip', 'install', '--dry-run', '--no-deps', '--ignore-installed', '.'],
         capture_output=True,
         text=True,
-        cwd='/home/user/DFTBaby'
+        cwd=str(REPO_ROOT),
     )
 
+    if 'externally-managed-environment' in result.stderr:
+        print("⚠ Skipping pip dry-run in externally managed environment")
+        return True
     if 'DFTBaby' in result.stdout or result.returncode == 0:
         print("✓ Package metadata valid")
         return True
@@ -39,7 +45,7 @@ def test_syntax_comprehensive():
     """Comprehensive syntax check"""
     print("\nTesting Python syntax...")
 
-    python_files = list(Path('/home/user/DFTBaby/DFTB').rglob('*.py'))
+    python_files = list((REPO_ROOT / "DFTB").rglob("*.py"))
     errors = []
     warnings = []
 
@@ -52,7 +58,8 @@ def test_syntax_comprehensive():
 
         if result.returncode != 0:
             # Check if it's a critical file
-            if any(x in str(py_file) for x in ['blender', 'mayavi']):
+            rel = str(py_file.relative_to(REPO_ROOT))
+            if any(x in str(py_file) for x in ['blender', 'mayavi']) or rel in LEGACY_WARNING_FILES:
                 warnings.append(str(py_file))
             else:
                 errors.append(str(py_file))
@@ -68,10 +75,10 @@ def test_syntax_comprehensive():
     if errors:
         print("\nCore files with errors:")
         for err in errors:
-            print(f"    - {Path(err).relative_to('/home/user/DFTBaby')}")
+            print(f"    - {Path(err).relative_to(REPO_ROOT)}")
 
-    # Pass if >= 99% valid
-    return (valid / total) >= 0.99
+    # Non-critical files (visualization + legacy scripts) are counted as warnings.
+    return len(errors) == 0
 
 
 def test_setuptools_build():
@@ -83,7 +90,7 @@ def test_setuptools_build():
         [sys.executable, 'setup.py', 'check'],
         capture_output=True,
         text=True,
-        cwd='/home/user/DFTBaby'
+        cwd=str(REPO_ROOT),
     )
 
     if result.returncode == 0:
@@ -91,7 +98,7 @@ def test_setuptools_build():
         return True
     else:
         # setup.py check might not work, try alternative
-        setup_py = Path('/home/user/DFTBaby/setup.py')
+        setup_py = REPO_ROOT / "setup.py"
         if setup_py.exists():
             print("✓ setup.py exists and is readable")
             return True
@@ -104,7 +111,7 @@ def test_manifest_files():
     """Check if all files listed in MANIFEST.in exist"""
     print("\nTesting MANIFEST.in...")
 
-    manifest = Path('/home/user/DFTBaby/MANIFEST.in')
+    manifest = REPO_ROOT / "MANIFEST.in"
     if not manifest.exists():
         print("⚠ MANIFEST.in not found (optional)")
         return True
@@ -120,7 +127,7 @@ def test_manifest_files():
                     path_pattern = parts[1]
                     # Basic check - just verify directory exists
                     if '/' in path_pattern:
-                        dir_path = Path('/home/user/DFTBaby') / path_pattern.split('/')[0]
+                        dir_path = REPO_ROOT / path_pattern.split('/')[0]
                         if not dir_path.exists():
                             missing.append(path_pattern)
 
@@ -137,6 +144,8 @@ def test_manifest_files():
 def test_entry_points():
     """Check if entry points are valid"""
     print("\nTesting entry points...")
+    if str(REPO_ROOT) not in sys.path:
+        sys.path.insert(0, str(REPO_ROOT))
 
     try:
         import tomllib
@@ -147,7 +156,7 @@ def test_entry_points():
             print("⚠ Cannot validate entry points (no toml parser)")
             return True
 
-    pyproject = Path('/home/user/DFTBaby/pyproject.toml')
+    pyproject = REPO_ROOT / "pyproject.toml"
     with open(pyproject, 'rb') as f:
         data = tomllib.load(f)
 
@@ -163,11 +172,19 @@ def test_entry_points():
         if ':' in entry_point:
             module_path, func = entry_point.split(':', 1)
             # Convert to file path
-            file_path = Path('/home/user/DFTBaby') / module_path.replace('.', '/') / '__init__.py'
+            file_path = REPO_ROOT / module_path.replace('.', '/') / '__init__.py'
             parent_path = file_path.parent
             py_file = parent_path.with_suffix('.py')
 
             if not (file_path.exists() or py_file.exists() or parent_path.exists()):
+                invalid.append((script_name, entry_point))
+                continue
+
+            try:
+                module = importlib.import_module(module_path)
+                if not hasattr(module, func):
+                    invalid.append((script_name, entry_point))
+            except Exception:
                 invalid.append((script_name, entry_point))
 
     print(f"  Defined entry points: {len(scripts)}")

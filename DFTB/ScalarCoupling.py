@@ -97,7 +97,10 @@ def _overlap_AB(atomlistA, atomlistB, valorbsA, valorbsB, SKT):
 
 # FASTER FORTRAN CODE
 from DFTB import XYZ
-from DFTB.extensions import slako
+try:
+    from DFTB.extensions import slako
+except ImportError:
+    slako = None
 from DFTB.SlaterKoster.SKIntegrals import combine_slako_tables_f90
 
 def _overlap_AB_f90(atomlist1, atomlist2, valorbs1, valorbs2, SKT):
@@ -106,6 +109,11 @@ def _overlap_AB_f90(atomlist1, atomlist2, valorbs1, valorbs2, SKT):
     Since hashes and tuples cannot be used easily in Fortran, the arguments are brought
     into a form that can be fed into the Fortran function.
     """
+    if slako is None:
+        raise ImportError(
+            "F90 overlap backend is not available. Build DFTB extensions or use "
+            "the Python Slater-Koster backend."
+        )
     atom_type_dic, spline_deg, tab_filled_SH0, tab_filled_D, \
         (S_knots, S_coefs, H_knots, H_coefs, D_knots, D_coefs) = \
                             combine_slako_tables_f90(SKT)

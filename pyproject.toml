@@ -1,10 +1,8 @@
 [build-system]
 requires = [
-    "setuptools>=80.0",
+    "setuptools>=65.0",
     "wheel>=0.40",
-    "numpy>=2.0.0",
-    "meson>=1.10.0",
-    "ninja>=1.11.0",
+    "numpy>=1.26.4",
 ]
 build-backend = "setuptools.build_meta"
 
@@ -17,13 +15,14 @@ license = {text = "See LICENSE file"}
 authors = [
     {name = "Alexander Humeniuk", email = "alexander.humeniuk@gmail.com"}
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Chemistry",
     "Topic :: Scientific/Engineering :: Physics",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -32,60 +31,76 @@ classifiers = [
     "Operating System :: POSIX :: Linux",
 ]
 dependencies = [
-    "numpy>=2.0.0",
-    "scipy>=1.17.0",
-    "matplotlib>=3.9.0",
-    "mpmath>=1.3.0",
-    "sympy>=1.13",
+    "numpy>=1.26.4,<3",
+    "scipy>=1.11.4",
 ]
 
 [project.optional-dependencies]
+plot = [
+    "matplotlib>=3.7.0",
+]
+metadynamics = [
+    "matplotlib>=3.7.0",
+    "sympy>=1.12",
+]
+advanced = [
+    "mpmath>=1.3.0",
+]
 gui = [
+    "matplotlib>=3.7.0",
+    "mayavi>=4.8.0",
+]
+full = [
+    "matplotlib>=3.7.0",
+    "sympy>=1.12",
+    "mpmath>=1.3.0",
     "mayavi>=4.8.0",
 ]
 dev = [
     "pytest>=7.0",
     "pytest-cov",
 ]
+docs = [
+    "mkdocs>=1.6.0",
+]
 build = [
     # Fortran extension compilation requirements
     # Note: gfortran must be installed separately via system package manager
-    "numpy>=2.0.0",
-    "meson>=1.10.0",
-    "ninja>=1.11.0",
+    "numpy>=1.26.4,<3",
 ]
 
 [project.scripts]
-"DFTB2.py" = "DFTB.DFTB2:main"
-"LR_TDDFTB.py" = "DFTB.LR_TDDFTB:main"
-"optimize.py" = "DFTB.optimize:main"
-"optimize_neb.py" = "DFTB.optimize_neb:main"
-"optimize_meci.py" = "DFTB.optimize_meci:main"
-"scan.py" = "DFTB.scan:main"
-"split_xyz.py" = "DFTB.Modeling.split_xyz:main"
-"show_molcoords.py" = "DFTB.Modeling.show_molcoords:main"
-"modify_internal.py" = "DFTB.Modeling.modify_internal:main"
-"cut_sphere.py" = "DFTB.Modeling.cut_sphere:main"
-"convert_xyz.py" = "DFTB.Modeling.convert_xyz:main"
-"nanotube_builder.py" = "DFTB.Modeling.nanotube_builder:main"
-"filter_fragments.py" = "DFTB.Modeling.filter_fragments:main"
-"check_initial_distribution.py" = "DFTB.Dynamics.check_initial_distribution:main"
-"random_velocities.py" = "DFTB.Dynamics.random_velocities:main"
-"absorption_spectrum.py" = "DFTB.Analyse.absorption_spectrum:main"
-"ph_correlation.py" = "DFTB.Analyse.ph_correlation:main"
-"SurfaceHopping.py" = "DFTB.Dynamics.SurfaceHopping:main"
-"populations.py" = "DFTB.Dynamics.Analyse.populations:main"
-"trajViewer2.py" = "DFTB.Dynamics.Analyse.Viewer.trajViewer2:main"
-"reconstruct.py" = "DFTB.MetaDynamics.reconstruct:main"
-"GeometryOptimization.py" = "DFTB.Optimize.GeometryOptimization:main"
-"assign_atom_types.py" = "DFTB.ForceField.assign_atom_types:main"
-"copy_atom_types.py" = "DFTB.ForceField.copy_atom_types:main"
-"ff_optimize.py" = "DFTB.ForceField.ff_optimize:main"
-"fit_electric_charges.py" = "DFTB.ForceField.fit_electric_charges:main"
-"fit_magnetic_dipoles.py" = "DFTB.ForceField.fit_magnetic_dipoles:main"
-"electrostatic_potential.py" = "DFTB.Poisson.electrostatic_potential:main"
-"vector_potential.py" = "DFTB.Poisson.vector_potential:main"
-"electroSka.py" = "DFTB.MultipleScattering.electroSka:main"
+"DFTB2.py" = "DFTB.cli:dispatch"
+"LR_TDDFTB.py" = "DFTB.cli:dispatch"
+"optimize.py" = "DFTB.cli:dispatch"
+"optimize_neb.py" = "DFTB.cli:dispatch"
+"optimize_meci.py" = "DFTB.cli:dispatch"
+"scan.py" = "DFTB.cli:dispatch"
+"split_xyz.py" = "DFTB.cli:dispatch"
+"show_molcoords.py" = "DFTB.cli:dispatch"
+"modify_internal.py" = "DFTB.cli:dispatch"
+"cut_sphere.py" = "DFTB.cli:dispatch"
+"convert_xyz.py" = "DFTB.cli:dispatch"
+"nanotube_builder.py" = "DFTB.cli:dispatch"
+"filter_fragments.py" = "DFTB.cli:dispatch"
+"check_initial_distribution.py" = "DFTB.cli:dispatch"
+"random_velocities.py" = "DFTB.cli:dispatch"
+"initial_conditions.py" = "DFTB.cli:dispatch"
+"absorption_spectrum.py" = "DFTB.cli:dispatch"
+"ph_correlation.py" = "DFTB.cli:dispatch"
+"SurfaceHopping.py" = "DFTB.cli:dispatch"
+"populations.py" = "DFTB.cli:dispatch"
+"trajViewer2.py" = "DFTB.cli:dispatch"
+"reconstruct.py" = "DFTB.cli:dispatch"
+"GeometryOptimization.py" = "DFTB.cli:dispatch"
+"assign_atom_types.py" = "DFTB.cli:dispatch"
+"copy_atom_types.py" = "DFTB.cli:dispatch"
+"ff_optimize.py" = "DFTB.cli:dispatch"
+"fit_electric_charges.py" = "DFTB.cli:dispatch"
+"fit_magnetic_dipoles.py" = "DFTB.cli:dispatch"
+"electrostatic_potential.py" = "DFTB.cli:dispatch"
+"vector_potential.py" = "DFTB.cli:dispatch"
+"electroSka.py" = "DFTB.cli:dispatch"
 
 [project.urls]
 Repository = "https://github.com/kangmg/DFTBaby"

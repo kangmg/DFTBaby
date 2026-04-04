@@ -11,13 +11,15 @@ References
     Journal of the Chemical Society, Perkin Transactions 2 5 (1993): 799-805.
 """
 from DFTB import XYZ, AtomicData
-from DFTB.MolecularIntegrals.LebedevQuadrature import get_lebedev_grid, Lebedev_L2max, Lebedev_Npts
 
 from DFTB.Timer import GlobalTimer as T
 
 # faster Fortran implementation for constructing gamma_solvent
 # and its gradients
-from DFTB.extensions import cosmo
+try:
+    from DFTB.extensions import cosmo
+except ImportError:
+    cosmo = None
 
 import numpy as np
 import numpy.linalg as la
@@ -40,10 +42,13 @@ class SolventCavity:
         self.delta_sc = delta_sc / AtomicData.bohr_to_angs
         assert 0.0 <= self.delta_sc <= self.solvent_radius
         self.points_per_sphere = points_per_sphere
-        # find Lebedev grid with the number of requested points
-        ileb = np.argmin( abs(np.array(Lebedev_Npts) - points_per_sphere) )
-        # order of request grid
-        self.lebedev_order = Lebedev_L2max[ileb]
+        self.lebedev_order = None
+        if self.implicit_solvent != 0:
+            # Import Lebedev tables lazily so core workflows do not require
+            # optional mpmath-heavy integral modules.
+            from DFTB.MolecularIntegrals.LebedevQuadrature import Lebedev_L2max, Lebedev_Npts
+            ileb = np.argmin( abs(np.array(Lebedev_Npts) - points_per_sphere) )
+            self.lebedev_order = Lebedev_L2max[ileb]
 
         # scaling of the dielect screening energy as a function of the permittivity
         # epsilon relative to the conductor-like case
@@ -76,6 +81,7 @@ class SolventCavity:
         parent_spheres = []
         # The points are distributed on each sphere on a Lebedev grid.
         # The number of points is determined by the `order` of the grid. 
+        from DFTB.MolecularIntegrals.LebedevQuadrature import get_lebedev_grid
         ths,phs,ws = get_lebedev_grid(self.lebedev_order)
         # convert from spherical coordinates on the unit sphere
         # to cartesian coordinates
@@ -155,12 +161,14 @@ class SolventCavity:
         -------
         gamma_solvent   :  numpy array with gamma matrix of size Nat x Nat
         """
-        # slow python implementation
-        #A, B = self._cosmo_ab_matrices()
-        # faster Fortran implementation
-        A, B = cosmo.cosmo_ab_matrices(self.centers.transpose(),
-                                       self.surface_points.transpose(),
-                                       self.surface_areas)
+        if cosmo is None:
+            # python fallback
+            A, B = self._cosmo_ab_matrices()
+        else:
+            # faster Fortran implementation
+            A, B = cosmo.cosmo_ab_matrices(self.centers.transpose(),
+                                           self.surface_points.transpose(),
+                                           self.surface_areas)
         #
         BinvA = np.dot(B, la.inv(A))
         gamma_solvent = -self.f * np.dot(B, BinvA.transpose())
@@ -221,14 +229,16 @@ class SolventCavity:
         dg       :  dg[3*k+xyz,i,j] is the derivative of the matrix element gamma_solvent_{i,j}
                     with respect to the xyz-th coordinate of atom k
         """
-        # slow python implementation
-        #grad_gamma_solvent = self._constructCOSMOgradient()
-        # Fortran implementation
-        grad_gamma_solvent = cosmo.cosmo_gamma_gradient(\
-            self.centers.transpose(),
-            self.surface_points.transpose(),
-            self.parent_atoms,
-            self.BinvA, self.f)
+        if cosmo is None:
+            # python fallback
+            grad_gamma_solvent = self._constructCOSMOgradient()
+        else:
+            # Fortran implementation
+            grad_gamma_solvent = cosmo.cosmo_gamma_gradient(\
+                self.centers.transpose(),
+                self.surface_points.transpose(),
+                self.parent_atoms,
+                self.BinvA, self.f)
         return self.gamma_solvent, grad_gamma_solvent
 
     def _constructCOSMOgradient(self):

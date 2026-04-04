@@ -1,0 +1,6 @@
+# Core runtime dependencies for stable ground/excited-state workflows.
+# Use this when you want the lightest environment.
+numpy==1.26.4
+scipy==1.11.4
+setuptools>=65
+wheel>=0.40

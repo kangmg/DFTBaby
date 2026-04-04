@@ -217,13 +217,19 @@ def TDA(gamma, gamma_lr, qtrans_oo, qtrans_vv, qtrans_ov, \
 implementation of Stratmann's algorithm for solving the non-hermitian
 TD-DFT eigenvalue problem iteratively
 
-see  
+see
      Stratmann,~E., Scuseria,~G., Frisch,~M.
-    "An efficient implementation of time-dependent density-functional theory 
+    "An efficient implementation of time-dependent density-functional theory
      for the calculation of excitation energies of large molecules."
      J. Chem. Phys., 109, 8218, (1998).
 """
-from DFTB.extensions import tddftb
+try:
+    from DFTB.extensions import tddftb
+except ImportError:
+    tddftb = None
+
+if SOLVER_IMPLEMENTATION == "F90" and tddftb is None:
+    SOLVER_IMPLEMENTATION = "PY"
 
 def initial_expansion_vectors(omega, lmax):
     """

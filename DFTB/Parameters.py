@@ -6,7 +6,7 @@ Paramters of DFTB calculations
    files have to be regenerated.
  - Hubbard U
 """
-import AtomicData
+from DFTB import AtomicData
 
 ############ XC Functional for atomic orbitals ##########
 pseudo_orbital_x = "gga_x_pbe" 

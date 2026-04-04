@@ -2,7 +2,7 @@
 
 """
 import multiprocessing as mp
-from Queue import Empty
+from queue import Empty
 import time
 
 class Worker(mp.Process):
@@ -28,7 +28,8 @@ class Jobs:
         self.nr_jobs = 0
         self.wait_time = wait_time
     def job(self, f):
-        self.jobs.append( Worker(self.results_queue, self.finished_queue, self.nr_jobs, target=f, name=f.func_name) )
+        name = getattr(f, "__name__", "job_%d" % self.nr_jobs)
+        self.jobs.append(Worker(self.results_queue, self.finished_queue, self.nr_jobs, target=f, name=name))
         self.nr_jobs += 1
     def count_running(self):
         nr_running = 0
@@ -36,7 +37,11 @@ class Jobs:
 #            print "Is worker %s alive? %s" % (i,p.is_alive())
             if p.is_alive():
                 nr_running += 1
-        nr_running -= self.results_queue.qsize()
+        try:
+            nr_running -= self.results_queue.qsize()
+        except (NotImplementedError, OSError):
+            # qsize is not implemented on all platforms.
+            pass
         return nr_running
     def run_parallel(self):
         for p in self.jobs:
@@ -70,8 +75,9 @@ class Jobs:
             assert p.exitcode == 0, "some process failed"
         results = []
         while True:
-            results.append(self.queue.get(False))
-            if self.queue.empty():
+            try:
+                results.append(self.results_queue.get(False))
+            except Empty:
                 break
         # sort results in the same order as the jobs were submitted
         results.sort(key=lambda tup: tup[0])

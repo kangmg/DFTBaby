@@ -134,7 +134,12 @@ def _H0andS(atomlist1, atomlist2, valorbs, SKT, orbital_energies, Mproximity):
 
 # FASTER SLATER-KOSTER RULES WITH FORTRAN
 from DFTB import XYZ
-from DFTB.extensions import slako
+try:
+    from DFTB.extensions import slako
+except ImportError:
+    slako = None
+    # Fall back to the pure Python implementation when compiled extensions are not available.
+    SLAKO_IMPLEMENTATION = "PY"
 from DFTB.SlaterKoster.SKIntegrals import combine_slako_tables_f90
 
 def atomlist2orbitals(atomlist, valorbs, atom_type_dic):

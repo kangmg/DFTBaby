@@ -35,7 +35,7 @@ def atomic_number(atom):
         atno = float(atom)
     except ValueError:
         # remove integers meant to label inequivalent atoms of the same element, C12 -> C
-        elem = atom.lower().translate(None, digits)
+        elem = atom.lower().translate(str.maketrans("", "", digits))
         atno = atom_names.index(elem) + 1
     return atno
 

@@ -1773,7 +1773,7 @@ Usage example:
 """
 
 
-import ConfigParser
+import configparser
 import inspect
 
 class OptionParserFuncWrapper:
@@ -1796,7 +1796,7 @@ class OptionParserFuncWrapper:
         WARNING: functions must only contain keyword arguments
         """
         # read values from configuration file
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         conffiles = config.read("dftbaby.cfg")
         if len(conffiles) > 0:
             #print "configuration read from %s" % conffiles[0]
@@ -1818,9 +1818,11 @@ class OptionParserFuncWrapper:
         for func in funcs:
             fvars = []
             # total number of variables, required + keywords
-            varnames = inspect.getargspec(func)[0]
+            spec = inspect.getfullargspec(func)
+            varnames = spec.args
+            defaults = spec.defaults or ()
             nvars = len(varnames)
-            nreq = nvars - len(func.func_defaults)
+            nreq = nvars - len(defaults)
             ivar = 0
             for var in varnames[nreq:nvars]:
                 fvars.append(var)
@@ -1828,7 +1830,8 @@ class OptionParserFuncWrapper:
                 help_text=""
                 found = 0
                 v = None
-                for l in func.__doc__.split('\n'):
+                doc = func.__doc__ or ""
+                for l in doc.split('\n'):
                     if ":" in l:
                         if found == 1:
                             # stop at the next keyword
@@ -1858,7 +1861,7 @@ class OptionParserFuncWrapper:
                 else:
                     section, option = "", var
                     option_group = self.parser
-                default = func.func_defaults[ivar]
+                default = defaults[ivar]
                 if type(default) == type(1):
                     numtype = "int"
                 elif type(default) == type(1.0):
@@ -1875,9 +1878,9 @@ class OptionParserFuncWrapper:
                         default = config.get(section_header, option)
                         if verbose > 0:
                             print("Option %s => %s" % (option, default))
-                    except ConfigParser.NoOptionError as e:
+                    except configparser.NoOptionError:
                         continue
-                    except ConfigParser.NoSectionError as e:
+                    except configparser.NoSectionError:
                         # go to next section
                         continue
                     break
@@ -1927,5 +1930,7 @@ def unique_func_name(f):
     build a unique function name as
       <module name>_<func_name>
     """
-    unique_name = inspect.getmodule(f).__name__ + "_" + f.func_name
+    module = inspect.getmodule(f)
+    module_name = module.__name__ if module is not None else "__main__"
+    unique_name = module_name + "_" + f.__name__
     return unique_name

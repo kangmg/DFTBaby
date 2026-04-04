@@ -4,7 +4,6 @@ by a second order polynomial.
   V(x) ~ V(x0) + 1/2 sum_ij Hij (x-x0)_i (x-x0)_j
 """
 from scipy import optimize
-from scipy.misc import factorial
 import numpy as np
 import numpy.linalg as la
 import scipy.linalg as sla
@@ -303,4 +302,3 @@ def save_initial_conditions(atomlist, qs, ps, inidir, name, frmt="FISH"):
 
 if __name__ == "__main__":
     pass
-

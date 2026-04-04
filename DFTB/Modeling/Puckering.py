@@ -119,10 +119,10 @@ class Ring:
 def maximum_m(N):
     if N % 2 == 0:
         """N is even"""
-        mmax = N/2-1
+        mmax = N // 2 - 1
     else:
         """N is odd"""
-        mmax = (N-1)/2
+        mmax = (N - 1) // 2
     return mmax
 
 def test_puckering_coords():
@@ -181,4 +181,3 @@ if __name__ == "__main__":
     xyz_file = "/tmp/furan_puckering.xyz"
     XYZ.write_xyz(xyz_file, puckered_geometries)
     print("different puckered geometries of furan written to '%s'" % xyz_file)
-

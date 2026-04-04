@@ -32,7 +32,7 @@ else
   #
   OPTIMIZATION= --opt="-O3"
   # Note: -fexternal-blas removed for NumPy 2.0+ compatibility
-  F2PY_OPTIONS= --fcompiler=gfortran --f90flags="-Wall -fopenmp" $(OpenMP) $(BLAS) $(OPTIMIZATION)
+  F2PY_OPTIONS= --fcompiler=gfortran --f90flags="-I$(PWD) -Wall -fopenmp" $(OpenMP) $(BLAS) $(OPTIMIZATION)
 endif
 
 thomson.so: thomson.f90
@@ -54,8 +54,7 @@ cosmo.so: cosmo.f90
 	python3 -m numpy.f2py -c cosmo.f90 -m cosmo $(F2PY_OPTIONS)
 
 clean:
-	rm -f thomson.so tddftb.so mulliken.so slako.so grad.so cosmo.so
+	rm -f thomson.so tddftb.so mulliken.so slako.so grad.so cosmo.so *.cpython-*.so
 
 find_bug.exe:
 	gfortran -g -O0 -Wall find_bug.f90 grad.f90 $(BLAS) -fopenmp $(OpenMP) -o find_bug.exe
-

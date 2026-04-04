@@ -27,7 +27,7 @@ all: ../Wigner3j.so ../coul90.so ../mod_bessel.so ../sphharm.so ../cms.so ../ms.
 	# create signature file
 	python3 -m numpy.f2py mod_bessel.f90 -m mod_bessel -h mod_bessel.pyf --overwrite-signature
 	# compile module
-	python3 -m numpy.f2py -c mod_bessel.pyf mod_bessel.f90 --f90flags="-fbounds-check"
+	python3 -m numpy.f2py -c mod_bessel.pyf mod_bessel.f90 --f90flags="-I$(PWD) -fbounds-check"
 	# move module
 	mv mod_bessel.*.so ../ || mv mod_bessel.so ../
 
@@ -45,7 +45,7 @@ all: ../Wigner3j.so ../coul90.so ../mod_bessel.so ../sphharm.so ../cms.so ../ms.
 	# create signature file
 	python3 -m numpy.f2py cms.f90 -m cms -h cms.pyf --overwrite-signature
 	# compile module
-	python3 -m numpy.f2py -c cms.pyf cms.f90 sphharm.f90 coul90_wrapper.f90 COUL90.FOR Wigner3j.f95 cart2sph.f90 splines.f90 --f90flags="-fbounds-check" -llapack
+	python3 -m numpy.f2py -c cms.pyf cms.f90 sphharm.f90 coul90_wrapper.f90 COUL90.FOR Wigner3j.f95 cart2sph.f90 splines.f90 --f90flags="-I$(PWD) -fbounds-check" -llapack
 	# move module
 	mv cms.*.so ../ || mv cms.so ../
 
@@ -54,7 +54,7 @@ all: ../Wigner3j.so ../coul90.so ../mod_bessel.so ../sphharm.so ../cms.so ../ms.
 	# create signature file
 	python3 -m numpy.f2py ms.f90 -m ms -h ms.pyf --overwrite-signature
 	# compile module
-	python3 -m numpy.f2py -c ms.pyf ms.f90 sphharm.f90 mod_bessel.f90 coul90_wrapper.f90 COUL90.FOR Wigner3j.f95 cart2sph.f90 splines.f90 --f90flags="-fbounds-check" -llapack
+	python3 -m numpy.f2py -c ms.pyf ms.f90 sphharm.f90 mod_bessel.f90 coul90_wrapper.f90 COUL90.FOR Wigner3j.f95 cart2sph.f90 splines.f90 --f90flags="-I$(PWD) -fbounds-check" -llapack
 	# move module
 	mv ms.*.so ../ || mv ms.so ../
 
@@ -64,7 +64,7 @@ all: ../Wigner3j.so ../coul90.so ../mod_bessel.so ../sphharm.so ../cms.so ../ms.
 	# create signature file
 	python3 -m numpy.f2py photo.f90 -m photo -h photo.pyf --overwrite-signature
 	# compile module
-	python3 -m numpy.f2py -c photo.pyf photo.f90 Wigner3j.f95 sphharm.f90 --f90flags="-fbounds-check"
+	python3 -m numpy.f2py -c photo.pyf photo.f90 Wigner3j.f95 sphharm.f90 --f90flags="-I$(PWD) -fbounds-check"
 	# move module
 	mv photo.*.so ../ || mv photo.so ../
 
@@ -73,7 +73,7 @@ all: ../Wigner3j.so ../coul90.so ../mod_bessel.so ../sphharm.so ../cms.so ../ms.
 	# create signature file
 	python3 -m numpy.f2py numerov.f90 -m numerov -h numerov.pyf --overwrite-signature
 	# compile module
-	python3 -m numpy.f2py -c numerov.pyf numerov.f90 --f90flags="-fbounds-check"
+	python3 -m numpy.f2py -c numerov.pyf numerov.f90 --f90flags="-I$(PWD) -fbounds-check"
 	# move module
 	mv numerov.*.so ../ || mv numerov.so ../
 
@@ -81,4 +81,3 @@ all: ../Wigner3j.so ../coul90.so ../mod_bessel.so ../sphharm.so ../cms.so ../ms.
 
 clean:
 	rm -f ../Wigner3j.so ../coul90.so ../mod_bessel.so ../sphharm.so ../cms.so ../ms.so ../photo.so ../numerov.so Wigner3j.pyf coul90.pyf sphharm.pyf cms.pyf photo.pyf numerov.pyf
-
