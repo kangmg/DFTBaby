@@ -89,3 +89,5 @@ gfortran --version
 pip install ".[docs]"
 mkdocs serve
 ```
+
+This now uses Material for MkDocs via the `.[docs]` extra.

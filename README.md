@@ -8,7 +8,7 @@
 
 DFTBaby is a software package for tight-binding DFT calculations on ground and excited states of molecules and for non-adiabatic molecular dynamics simulations.
 
-📚 **[Documentation (MkDocs)](https://kangmg.github.io/DFTBaby/)** | 📋 **[Migration Guide](PYTHON3_MIGRATION.md)**
+📚 **[Documentation (Material for MkDocs)](https://kangmg.github.io/DFTBaby/)** | 📋 **[Migration Guide](PYTHON3_MIGRATION.md)**
 
 ---
 
@@ -261,7 +261,7 @@ python3 tests/test_compilation.py
 ## 📖 Documentation
 
 - **Full Documentation**: [https://kangmg.github.io/DFTBaby/](https://kangmg.github.io/DFTBaby/)
-- **Documentation Framework**: MkDocs
+- **Documentation Framework**: Material for MkDocs
 - **Build docs locally**:
 
 ```bash

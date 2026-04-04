@@ -6,7 +6,11 @@ repo_name: kangmg/DFTBaby
 docs_dir: docs
 
 theme:
-  name: mkdocs
+  name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
 
 markdown_extensions:
   - admonition
