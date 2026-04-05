@@ -22,5 +22,8 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Installation Profiles: installation.md
+  - Tutorials: tutorials.md
   - Run By Goal: usage.md
+  - Example Catalog: examples.md
+  - Configuration Guide: configuration.md
   - Troubleshooting: troubleshooting.md

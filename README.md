@@ -262,6 +262,7 @@ python3 tests/test_compilation.py
 
 - **Full Documentation**: [https://kangmg.github.io/DFTBaby/](https://kangmg.github.io/DFTBaby/)
 - **Documentation Framework**: Material for MkDocs
+- **Tutorials**: step-by-step workflows for excited states, NAMD, scans, NEB, and optional advanced modules
 - **Build docs locally**:
 
 ```bash

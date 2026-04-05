@@ -4,6 +4,12 @@ All options can be passed on the command line or through `dftbaby.cfg` in the wo
 
 Primary supported path is non-periodic molecular dynamics/photochemistry. Periodic workflows are available but currently a secondary path.
 
+Need deeper, end-to-end walkthroughs?
+
+- Use `Tutorials` for step-by-step runs.
+- Use `Example Catalog` to match example folders to commands.
+- Use `Configuration Guide` for reusable `dftbaby.cfg` templates.
+
 ## Main Programs (Legacy Compatible)
 
 - `DFTB2.py`: ground-state SCC-DFTB

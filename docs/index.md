@@ -2,11 +2,11 @@
 
 DFTBaby implements long-range corrected DFTB / TD-DFTB workflows for excited states and non-adiabatic molecular dynamics (surface hopping), following the original DFTBaby methodology.
 
-This documentation is intentionally minimal:
+This documentation is organized for practical use:
 
-- choose a stable install profile first
-- enable only the features you need
-- compile only the native extensions needed for your workflow
+- install only what your workflow needs
+- follow step-by-step tutorials for common tasks
+- use the example catalog for advanced/legacy workflows
 - runtime/build configuration is managed via `pyproject.toml`
 
 ## Scope
@@ -30,9 +30,17 @@ pip install -r requirements-colab.txt
 pip install -e .
 ```
 
-## Original Usage Is Preserved
+## What To Read First
 
-Legacy CLI workflows from the old wiki are still supported and documented, including:
+1. `Installation Profiles` for environment setup (`pip` or `uv`)
+2. `Tutorials` for end-to-end runs (excited states, NAMD, scans, NEB)
+3. `Run By Goal` for command quick-reference
+4. `Configuration Guide` for `dftbaby.cfg` templates and key options
+5. `Example Catalog` for all shipped example folders
+
+## Original Usage Is Still Preserved
+
+Legacy CLI workflows from the old wiki remain available, including:
 
 - `DFTB2.py`
 - `LR_TDDFTB.py`
@@ -40,7 +48,11 @@ Legacy CLI workflows from the old wiki are still supported and documented, inclu
 - `initial_conditions.py`
 - `SurfaceHopping.py`
 
-See `Run By Goal` for the updated short manual that keeps the original flow.
+Command-style aliases are documented in tutorials and usage pages:
+
+- `dftbaby dftb2 ...`
+- `dftbaby lrtddftb ...`
+- `dftbaby surface-hopping ...`
 
 ## References
 
